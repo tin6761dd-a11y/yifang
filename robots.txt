@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://tin6761dd-a11y.github.io/yifang/sitemap.xml

@@ -1,0 +1,470 @@
+{
+  "shop": {
+    "brand": "益芳封口機維護中心",
+    "theme_primary": "#1d4ed8",
+    "locale": "zh-Hant-TW",
+    "tagline": "台中合法專業「益芳封口機授權代理經銷商」",
+    "services": [
+      "封口機",
+      "果糖機",
+      "封口膜",
+      "私版封口膜印刷",
+      "醬包機"
+    ],
+    "repair": {
+      "name": "維修與大保養",
+      "price_from": 800,
+      "price_label": "NT$800 起",
+      "area": "限中彰投",
+      "shopee": "https://shopee.tw/tin6761"
+    },
+    "address": "台中市霧峰區林森路827號",
+    "telephone": "04-23398679",
+    "telephone_link": "tel:0423398679",
+    "hours": "週一至週五 9:00–18:00（12:00–13:00 午休）",
+    "opening_hours": [
+      "Mo-Fr 09:00-12:00",
+      "Mo-Fr 13:00-18:00"
+    ],
+    "shopee": "https://shopee.tw/tin6761",
+    "shopee_rating": "5.0",
+    "shopee_reviews": 1439,
+    "years": 10,
+    "used_machine_note": "價格為參考，依機況與口徑而定；二手機流動快，實際庫存請來電 04-23398679 或看蝦皮賣場；中古機僅售中彰投。",
+    "used_machine_area": "中古機僅售台中、彰化、南投"
+  },
+  "collected_at": "2026-11-17T00:50:00+08:00",
+  "source": "Shopee shop tin6761 (shopid 10362769), in-stock used machines collected from logged-in product pages / PDP API",
+  "in_stock_item_count": 18,
+  "groups": [
+    {
+      "slug": "microcomputer-90-95",
+      "name": "微電腦封口機 90/95口徑",
+      "category": "二手封口機",
+      "sealer_type": "微電腦",
+      "price_label": "約 NT$9,000",
+      "item_ids": [
+        "56121056767",
+        "49621210554",
+        "42786571430"
+      ],
+      "summary": "益芳微電腦中古機，含烤漆款與白鐵款，90口徑、95&90口徑。機況良好，整台已大整理過，功能正常。實際口徑依現場剩餘機種為主。",
+      "notes": [],
+      "source_prices": [
+        9000
+      ],
+      "image_ids": [
+        "tw-11134207-820lc-mv2zxtykq3gh41",
+        "tw-11134207-820l4-mv5q9y68nkli87",
+        "tw-11134207-820l6-mv5qeqcs98ned0"
+      ],
+      "source_items": [
+        {
+          "item_id": 56121056767,
+          "title": "益芳二手封口機 微電腦中古機 95&90口徑 烤漆款",
+          "price": 9000,
+          "price_min": 9000,
+          "price_max": 9000,
+          "url": "https://shopee.tw/product/10362769/56121056767"
+        },
+        {
+          "item_id": 49621210554,
+          "title": "益芳二手封口機 微電腦中古機 90口徑 烤漆款",
+          "price": 9000,
+          "price_min": 9000,
+          "price_max": 9000,
+          "url": "https://shopee.tw/product/10362769/49621210554"
+        },
+        {
+          "item_id": 42786571430,
+          "title": "益芳二手封口機 微電腦中古機 95&90口徑 白鐵款",
+          "price": 9000,
+          "price_min": 9000,
+          "price_max": 9000,
+          "url": "https://shopee.tw/product/10362769/42786571430"
+        }
+      ],
+      "local_images": [
+        "microcomputer-90-95-1.jpg",
+        "microcomputer-90-95-2.jpg",
+        "microcomputer-90-95-3.jpg"
+      ]
+    },
+    {
+      "slug": "microcomputer-70-tear",
+      "name": "微電腦封口機 7.0口徑 右下帶撕角",
+      "category": "二手封口機",
+      "sealer_type": "微電腦",
+      "item_ids": [
+        "54459208031"
+      ],
+      "summary": "益芳微電腦中古機，7.0特殊口徑，右下帶撕角。機況良好，整台已大整理過，功能正常。實際口徑依現場剩餘機種為主。",
+      "notes": [],
+      "price_label": "約 NT$15,000",
+      "source_prices": [
+        15000
+      ],
+      "image_ids": [
+        "tw-11134207-820li-mnawrwek2e4l38",
+        "tw-11134207-820l4-mnaws6rpgavc95",
+        "tw-11134207-820la-mnawsei5sq2t1a"
+      ],
+      "source_items": [
+        {
+          "item_id": 54459208031,
+          "title": "益芳二手封口機 微電腦中古機 7.0口徑 右下帶撕角",
+          "price": 15000,
+          "price_min": 15000,
+          "price_max": 15000,
+          "url": "https://shopee.tw/product/10362769/54459208031"
+        }
+      ],
+      "local_images": [
+        "microcomputer-70-tear-1.jpg",
+        "microcomputer-70-tear-2.jpg",
+        "microcomputer-70-tear-3.jpg"
+      ]
+    },
+    {
+      "slug": "timer-mechanical-90-95",
+      "name": "碼錶機械式封口機 90/95口徑",
+      "category": "二手封口機",
+      "sealer_type": "碼錶機械式",
+      "item_ids": [
+        "50119465907",
+        "28646157959",
+        "53120111667"
+      ],
+      "summary": "益芳機械式中古機，含碼錶烤漆款與碼表白鐵款，95&90口徑。機況良好，整台已大整理過，功能正常。實際口徑依現場剩餘機種為主。",
+      "notes": [],
+      "price_label": "約 NT$10,000",
+      "source_prices": [
+        10000
+      ],
+      "image_ids": [
+        "tw-11134207-820lc-muheeryiyr5sd6",
+        "tw-11134207-820l8-muvpqtfzs6ptde",
+        "tw-11134207-820lc-muvpmv5jagap2c"
+      ],
+      "source_items": [
+        {
+          "item_id": 50119465907,
+          "title": "益芳二手封口機 機械式中古機  95&90口徑 碼錶烤漆款",
+          "price": 10000,
+          "price_min": 10000,
+          "price_max": 10000,
+          "url": "https://shopee.tw/product/10362769/50119465907"
+        },
+        {
+          "item_id": 28646157959,
+          "title": "益芳二手封口機 機械式中古機  95&90口徑 碼表白鐵款",
+          "price": 10000,
+          "price_min": 10000,
+          "price_max": 10000,
+          "url": "https://shopee.tw/product/10362769/28646157959"
+        },
+        {
+          "item_id": 53120111667,
+          "title": "益芳二手封口機 機械式中古機  95&90口徑 碼表白鐵款",
+          "price": 10000,
+          "price_min": 10000,
+          "price_max": 10000,
+          "url": "https://shopee.tw/product/10362769/53120111667"
+        }
+      ],
+      "local_images": [
+        "timer-mechanical-90-95-1.jpg",
+        "timer-mechanical-90-95-2.jpg",
+        "timer-mechanical-90-95-3.jpg"
+      ]
+    },
+    {
+      "slug": "mechanical-95-tear",
+      "name": "機械式封口機 95口徑 右下帶撕角",
+      "category": "二手封口機",
+      "sealer_type": "機械式",
+      "item_ids": [
+        "54768214211"
+      ],
+      "summary": "益芳機械式白鐵中古機，95口徑右下帶撕角。機況良好，整台已大整理過，功能正常。實際口徑依現場剩餘機種為主。",
+      "notes": [],
+      "price_label": "約 NT$15,000",
+      "source_prices": [
+        15000
+      ],
+      "image_ids": [
+        "tw-11134207-820lg-mtevunve8zk99f",
+        "tw-11134207-820l9-mtevunvo9zihda",
+        "tw-11134207-820l4-mtevunvobe2tf7"
+      ],
+      "source_items": [
+        {
+          "item_id": 54768214211,
+          "title": "益芳二手封口機 機械式白鐵中古機 95口徑 右下帶撕角",
+          "price": 15000,
+          "price_min": 15000,
+          "price_max": 15000,
+          "url": "https://shopee.tw/product/10362769/54768214211"
+        }
+      ],
+      "local_images": [
+        "mechanical-95-tear-1.jpg",
+        "mechanical-95-tear-2.jpg",
+        "mechanical-95-tear-3.jpg"
+      ]
+    },
+    {
+      "slug": "chubby-105-113",
+      "name": "胖胖杯 機械式封口機 105/113口徑",
+      "category": "二手封口機",
+      "sealer_type": "機械式",
+      "item_ids": [
+        "49467840147",
+        "49321612723"
+      ],
+      "summary": "益芳胖胖杯 機械式中古機，含 ET-89M 105口徑與 113口徑。105口徑可以使用套圈改為95口徑；113口徑可以使用套圈改為105口徑。機況良好，整台已大整理過，功能正常。",
+      "notes": [],
+      "price_label": "約 NT$15,000–19,000",
+      "source_prices": [
+        15000,
+        19000
+      ],
+      "image_ids": [
+        "tw-11134207-820le-mtrxxiwj79qcba",
+        "tw-11134207-820l4-mvh6z84kq51ia9",
+        "tw-11134207-820l7-mtrxxiwc0t8nf1"
+      ],
+      "source_items": [
+        {
+          "item_id": 49467840147,
+          "title": "益芳胖胖杯 機械式中古機 ET-89M 105口徑",
+          "price": 19000,
+          "price_min": 19000,
+          "price_max": 19000,
+          "url": "https://shopee.tw/product/10362769/49467840147"
+        },
+        {
+          "item_id": 49321612723,
+          "title": "益芳胖胖杯 機械式中古機 113口徑",
+          "price": 15000,
+          "price_min": 15000,
+          "price_max": 15000,
+          "url": "https://shopee.tw/product/10362769/49321612723"
+        }
+      ],
+      "local_images": [
+        "chubby-105-113-1.jpg",
+        "chubby-105-113-2.jpg",
+        "chubby-105-113-3.jpg"
+      ]
+    },
+    {
+      "slug": "et-58l-178",
+      "name": "全自動 ET-58L 178口徑",
+      "category": "二手封口機",
+      "sealer_type": "全自動",
+      "item_ids": [
+        "42558568590"
+      ],
+      "summary": "ET-58L全自動二手封口機，178(碗)口徑（需攜帶容器來現場測試為準），使用225寬度封膜，110V伏特電壓。請先私訊確認商品庫存與機台型號，請勿直接下單。",
+      "notes": [],
+      "price_label": "約 NT$45,000",
+      "source_prices": [
+        45000
+      ],
+      "image_ids": [
+        "tw-11134207-7ra0p-mc7k9ecvrpsy6c",
+        "tw-11134207-7ra0j-mc7k9irla1q1eb",
+        "tw-11134207-7ra0h-mc7k9lxcozmqb1"
+      ],
+      "source_items": [
+        {
+          "item_id": 42558568590,
+          "title": "ET-58L全自動二手封口機 178(碗)口徑",
+          "price": 45000,
+          "price_min": 45000,
+          "price_max": 45000,
+          "url": "https://shopee.tw/product/10362769/42558568590"
+        }
+      ],
+      "local_images": [
+        "et-58l-178-1.jpg",
+        "et-58l-178-2.jpg",
+        "et-58l-178-3.jpg"
+      ]
+    },
+    {
+      "slug": "non-yifang",
+      "name": "非益芳二手封口機",
+      "category": "二手封口機",
+      "sealer_type": "非益芳",
+      "item_ids": [
+        "23060999064"
+      ],
+      "summary": "非益芳中古封口機，是其他品牌封口機，便宜出清。口徑含 90口徑、94口徑（特殊帶撕角），以現貨為主。只售台中。",
+      "notes": [],
+      "price_label": "約 NT$7,000–11,000",
+      "source_prices": [
+        7000,
+        11000
+      ],
+      "image_ids": [
+        "tw-11134207-7r98q-lo6ca03imu6a14",
+        "tw-11134207-7r992-lo6ca04cofwt3a",
+        "tw-11134207-7r98z-lo6ca038ont9b4"
+      ],
+      "source_items": [
+        {
+          "item_id": 23060999064,
+          "title": "非益芳二手飲料封口機-便宜出清",
+          "price": 7000,
+          "price_min": 7000,
+          "price_max": 11000,
+          "url": "https://shopee.tw/product/10362769/23060999064"
+        }
+      ],
+      "local_images": [
+        "non-yifang-1.jpg",
+        "non-yifang-2.jpg",
+        "non-yifang-3.jpg"
+      ]
+    },
+    {
+      "slug": "cp-value",
+      "name": "益芳二手封口機 CP值超高飲料封口機",
+      "category": "二手封口機",
+      "sealer_type": "未分類（標題未標示單一機型）",
+      "uncertain": true,
+      "item_ids": [
+        "193696301"
+      ],
+      "summary": "蝦皮標題為「益芳二手封口機 CP值超高飲料封口機」。商品說明寫「益芳微電腦封口機&機械式封口機」，並列 ET899、ET899-1、ET95S 等等的不同機型；實際價格與機器型號以現場庫存為主。",
+      "notes": [
+        "此檔同時提到微電腦封口機與機械式封口機，未單獨歸入三種機型之一，請來電確認實際機型。"
+      ],
+      "price_label": "約 NT$9,000",
+      "source_prices": [
+        9000
+      ],
+      "image_ids": [
+        "6bed5309d2b3278acccd9affb89e46dd",
+        "48cf6666292aa3991263eb84ac46d234"
+      ],
+      "source_items": [
+        {
+          "item_id": 193696301,
+          "title": "益芳二手封口機 CP值超高飲料封口機",
+          "price": 9000,
+          "price_min": 9000,
+          "price_max": 9000,
+          "url": "https://shopee.tw/product/10362769/193696301"
+        }
+      ],
+      "local_images": [
+        "cp-value-1.jpg",
+        "cp-value-2.jpg"
+      ]
+    },
+    {
+      "slug": "fructose-16-24",
+      "name": "二手果糖機 16/24鍵",
+      "category": "二手果糖機",
+      "sealer_type": null,
+      "item_ids": [
+        "41574106028",
+        "42834948782",
+        "50959222005",
+        "57309395477"
+      ],
+      "summary": "益芳二手果糖機，含 16鍵、24鍵與 YF-8E 24鍵。機況良好，整台已大整理過，功能正常，依現場剩餘機種為主。下單前請先確認容器規格是否適用。",
+      "notes": [
+        "其中一筆標題為「益芳二手24鍵果糖機」，說明卻寫「益芳中古16鍵果糖機」，規格請來電確認。"
+      ],
+      "price_label": "約 NT$7,000–9,000",
+      "source_prices": [
+        7000,
+        8000,
+        9000
+      ],
+      "image_ids": [
+        "tw-11134207-81ztm-mftjb7k1fz0q85",
+        "tw-11134207-820le-mtyo5m0imlflab",
+        "tw-11134207-820lg-mnb13dk6npq81c"
+      ],
+      "source_items": [
+        {
+          "item_id": 41574106028,
+          "title": "益芳二手16鍵果糖機",
+          "price": 7000,
+          "price_min": 7000,
+          "price_max": 7000,
+          "url": "https://shopee.tw/product/10362769/41574106028"
+        },
+        {
+          "item_id": 42834948782,
+          "title": "益芳二手YF-8E 24鍵果糖機",
+          "price": 9000,
+          "price_min": 9000,
+          "price_max": 9000,
+          "url": "https://shopee.tw/product/10362769/42834948782"
+        },
+        {
+          "item_id": 50959222005,
+          "title": "益芳二手24鍵果糖機",
+          "price": 8000,
+          "price_min": 8000,
+          "price_max": 8000,
+          "url": "https://shopee.tw/product/10362769/50959222005"
+        },
+        {
+          "item_id": 57309395477,
+          "title": "益芳二手24鍵果糖機",
+          "price": 9000,
+          "price_min": 9000,
+          "price_max": 9000,
+          "url": "https://shopee.tw/product/10362769/57309395477"
+        }
+      ],
+      "local_images": [
+        "fructose-16-24-1.jpg",
+        "fructose-16-24-2.jpg",
+        "fructose-16-24-3.jpg"
+      ]
+    },
+    {
+      "slug": "powder-dispenser",
+      "name": "中古粉末定量機",
+      "category": "其他設備",
+      "sealer_type": null,
+      "item_ids": [
+        "55809296478"
+      ],
+      "summary": "益芳中古粉末定量機，適用奶粉、奶精粉。機況良好，整台已大整理過，功能正常，依現場剩餘機種為主。",
+      "notes": [],
+      "price_label": "約 NT$10,000",
+      "source_prices": [
+        10000
+      ],
+      "image_ids": [
+        "tw-11134207-820ld-mnckinnanxmu28",
+        "tw-11134207-820lg-mnckix6wg3ya22",
+        "tw-11134207-820le-mnckix58fqiqd3"
+      ],
+      "source_items": [
+        {
+          "item_id": 55809296478,
+          "title": "益芳中古粉末定量機 奶粉 奶精粉 定量機",
+          "price": 10000,
+          "price_min": 10000,
+          "price_max": 10000,
+          "url": "https://shopee.tw/product/10362769/55809296478"
+        }
+      ],
+      "local_images": [
+        "powder-dispenser-1.jpg",
+        "powder-dispenser-2.jpg",
+        "powder-dispenser-3.jpg"
+      ]
+    }
+  ]
+}
