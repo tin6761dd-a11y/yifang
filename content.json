@@ -1,0 +1,244 @@
+{
+  "site": {
+    "baseUrl": "https://tin6761dd-a11y.github.io/yifang/",
+    "lang": "zh-Hant-TW",
+    "title": "益芳封口機維護中心｜台中封口機、果糖機維修與中古機買賣",
+    "description": "台中合法專業益芳封口機授權代理經銷商。提供封口機、果糖機、封口膜、私版封口膜印刷與醬包機之維修、大保養與中古機買賣。中古機僅售台中、彰化、南投。地址：台中市霧峰區林森路827號，電話 04-23398679。",
+    "ogImage": "og.jpg",
+    "googleSiteVerification": "TMotljLi8N9T8eN1rEUwGY-5XhxSS1maZnJGADRjB00"
+  },
+  "store": {
+    "name": "益芳封口機維護中心",
+    "mark": "益",
+    "slogan": "台中合法專業「益芳封口機授權代理經銷商」",
+    "heroText": "台中霧峰在地經營，專營封口機、果糖機、封口膜、私版封口膜印刷與醬包機的維修、大保養與中古機買賣。中古機僅售台中、彰化、南投；口徑與型號以現貨為主，下單前請先聯絡。",
+    "aboutLead": "本公司是台中合法專業「益芳封口機授權代理經銷商」，門市位於台中市霧峰區林森路827號，服務中部手搖飲與餐飲業者的封口、給糖與相關設備需求。",
+    "aboutBody": "現場可看機、測試容器規格，並提供維修與大保養（NT$800 起，限中彰投）。二手機流動較快，歡迎先來電或至蝦皮賣場確認現貨。",
+    "address": "台中市霧峰區林森路827號",
+    "streetAddress": "林森路827號",
+    "addressLocality": "霧峰區",
+    "addressRegion": "台中市",
+    "addressCountry": "TW",
+    "phone": "04-23398679",
+    "hours": "週一至週五 9:00–18:00（12:00–13:00 午休）",
+    "openingHours": [
+      {
+        "days": [
+          "Monday",
+          "Tuesday",
+          "Wednesday",
+          "Thursday",
+          "Friday"
+        ],
+        "opens": "09:00",
+        "closes": "12:00"
+      },
+      {
+        "days": [
+          "Monday",
+          "Tuesday",
+          "Wednesday",
+          "Thursday",
+          "Friday"
+        ],
+        "opens": "13:00",
+        "closes": "18:00"
+      }
+    ],
+    "shopeeUrl": "https://shopee.tw/tin6761",
+    "shopeeRating": "5.0",
+    "shopeeReviews": 1439,
+    "years": 10,
+    "usedMachineNote": "價格為參考，依機況與口徑而定；二手機流動快，實際庫存請來電 04-23398679 或看蝦皮賣場；中古機僅售中彰投。",
+    "usedMachineArea": "中古機僅售台中、彰化、南投",
+    "footerNote": "台中合法專業「益芳封口機授權代理經銷商」"
+  },
+  "services": {
+    "title": "服務項目",
+    "lead": "設備買賣、維修與耗材一次諮詢。維修與大保養NT$800 起，限中彰投。",
+    "items": [
+      {
+        "title": "封口機",
+        "description": "買賣、維修與大保養，含微電腦、機械式、碼錶機械式等機型。"
+      },
+      {
+        "title": "果糖機",
+        "description": "16鍵、24鍵等機型之維修、保養與中古機買賣。"
+      },
+      {
+        "title": "封口膜",
+        "description": "封口膜供應與使用諮詢。"
+      },
+      {
+        "title": "私版封口膜印刷",
+        "description": "可依店家需求洽詢私版封口膜印刷。"
+      },
+      {
+        "title": "醬包機",
+        "description": "醬包機維修與相關設備諮詢。"
+      },
+      {
+        "title": "維修與大保養",
+        "description": "NT$800 起，限中彰投。歡迎先來電預約。",
+        "priceFrom": "NT$800 起"
+      }
+    ]
+  },
+  "usedSection": {
+    "title": "中古機專區",
+    "lead": "以下依機型整理參考售價，不逐台上架。價格僅由目前蝦皮賣場現貨計算，實際成交依機況與口徑而定。",
+    "note": "價格為參考，依機況與口徑而定；二手機流動快，實際庫存請來電 04-23398679 或看蝦皮賣場；中古機僅售中彰投。",
+    "buyLabel": "到蝦皮購買",
+    "callLabel": "電話詢問"
+  },
+  "contact": {
+    "title": "聯絡我們",
+    "lead": "看機、維修預約與中古機規格確認，歡迎直接來電。中古機僅售台中、彰化、南投。"
+  },
+  "groups": [
+    {
+      "id": "microcomputer-90-95",
+      "name": "微電腦封口機 90/95口徑",
+      "category": "二手封口機",
+      "sealerType": "微電腦",
+      "price": "約 NT$9,000",
+      "description": "益芳微電腦中古機，含烤漆款與白鐵款，90口徑、95&90口徑。機況良好，整台已大整理過，功能正常。實際口徑依現場剩餘機種為主。",
+      "notes": [],
+      "images": [
+        "images/microcomputer-90-95-1.jpg",
+        "images/microcomputer-90-95-2.jpg",
+        "images/microcomputer-90-95-3.jpg"
+      ]
+    },
+    {
+      "id": "microcomputer-70-tear",
+      "name": "微電腦封口機 7.0口徑 右下帶撕角",
+      "category": "二手封口機",
+      "sealerType": "微電腦",
+      "price": "約 NT$15,000",
+      "description": "益芳微電腦中古機，7.0特殊口徑，右下帶撕角。機況良好，整台已大整理過，功能正常。實際口徑依現場剩餘機種為主。",
+      "notes": [],
+      "images": [
+        "images/microcomputer-70-tear-1.jpg",
+        "images/microcomputer-70-tear-2.jpg",
+        "images/microcomputer-70-tear-3.jpg"
+      ]
+    },
+    {
+      "id": "timer-mechanical-90-95",
+      "name": "碼錶機械式封口機 90/95口徑",
+      "category": "二手封口機",
+      "sealerType": "碼錶機械式",
+      "price": "約 NT$10,000",
+      "description": "益芳機械式中古機，含碼錶烤漆款與碼表白鐵款，95&90口徑。機況良好，整台已大整理過，功能正常。實際口徑依現場剩餘機種為主。",
+      "notes": [],
+      "images": [
+        "images/timer-mechanical-90-95-1.jpg",
+        "images/timer-mechanical-90-95-2.jpg",
+        "images/timer-mechanical-90-95-3.jpg"
+      ]
+    },
+    {
+      "id": "mechanical-95-tear",
+      "name": "機械式封口機 95口徑 右下帶撕角",
+      "category": "二手封口機",
+      "sealerType": "機械式",
+      "price": "約 NT$15,000",
+      "description": "益芳機械式白鐵中古機，95口徑右下帶撕角。機況良好，整台已大整理過，功能正常。實際口徑依現場剩餘機種為主。",
+      "notes": [],
+      "images": [
+        "images/mechanical-95-tear-1.jpg",
+        "images/mechanical-95-tear-2.jpg",
+        "images/mechanical-95-tear-3.jpg"
+      ]
+    },
+    {
+      "id": "chubby-105-113",
+      "name": "胖胖杯 機械式封口機 105/113口徑",
+      "category": "二手封口機",
+      "sealerType": "機械式",
+      "price": "約 NT$15,000–19,000",
+      "description": "益芳胖胖杯 機械式中古機，含 ET-89M 105口徑與 113口徑。105口徑可以使用套圈改為95口徑；113口徑可以使用套圈改為105口徑。機況良好，整台已大整理過，功能正常。",
+      "notes": [],
+      "images": [
+        "images/chubby-105-113-1.jpg",
+        "images/chubby-105-113-2.jpg",
+        "images/chubby-105-113-3.jpg"
+      ]
+    },
+    {
+      "id": "et-58l-178",
+      "name": "全自動 ET-58L 178口徑",
+      "category": "二手封口機",
+      "sealerType": "全自動",
+      "price": "約 NT$45,000",
+      "description": "ET-58L全自動二手封口機，178(碗)口徑（需攜帶容器來現場測試為準），使用225寬度封膜，110V伏特電壓。請先私訊確認商品庫存與機台型號，請勿直接下單。",
+      "notes": [],
+      "images": [
+        "images/et-58l-178-1.jpg",
+        "images/et-58l-178-2.jpg",
+        "images/et-58l-178-3.jpg"
+      ]
+    },
+    {
+      "id": "non-yifang",
+      "name": "非益芳二手封口機",
+      "category": "二手封口機",
+      "sealerType": "非益芳",
+      "price": "約 NT$7,000–11,000",
+      "description": "非益芳中古封口機，是其他品牌封口機，便宜出清。口徑含 90口徑、94口徑（特殊帶撕角），以現貨為主。只售台中。",
+      "notes": [],
+      "images": [
+        "images/non-yifang-1.jpg",
+        "images/non-yifang-2.jpg",
+        "images/non-yifang-3.jpg"
+      ]
+    },
+    {
+      "id": "cp-value",
+      "name": "益芳二手封口機 CP值超高飲料封口機",
+      "category": "二手封口機",
+      "sealerType": "未分類",
+      "price": "約 NT$9,000",
+      "description": "蝦皮標題為「益芳二手封口機 CP值超高飲料封口機」。商品說明寫「益芳微電腦封口機&機械式封口機」，並列 ET899、ET899-1、ET95S 等等的不同機型；實際價格與機器型號以現場庫存為主。",
+      "notes": [
+        "此檔同時提到微電腦封口機與機械式封口機，未單獨歸入三種機型之一，請來電確認實際機型。"
+      ],
+      "images": [
+        "images/cp-value-1.jpg",
+        "images/cp-value-2.jpg"
+      ]
+    },
+    {
+      "id": "fructose-16-24",
+      "name": "二手果糖機 16/24鍵",
+      "category": "二手果糖機",
+      "sealerType": "",
+      "price": "約 NT$7,000–9,000",
+      "description": "益芳二手果糖機，含 16鍵、24鍵與 YF-8E 24鍵。機況良好，整台已大整理過，功能正常，依現場剩餘機種為主。下單前請先確認容器規格是否適用。",
+      "notes": [
+        "其中一筆標題為「益芳二手24鍵果糖機」，說明卻寫「益芳中古16鍵果糖機」，規格請來電確認。"
+      ],
+      "images": [
+        "images/fructose-16-24-1.jpg",
+        "images/fructose-16-24-2.jpg",
+        "images/fructose-16-24-3.jpg"
+      ]
+    },
+    {
+      "id": "powder-dispenser",
+      "name": "中古粉末定量機",
+      "category": "其他設備",
+      "sealerType": "",
+      "price": "約 NT$10,000",
+      "description": "益芳中古粉末定量機，適用奶粉、奶精粉。機況良好，整台已大整理過，功能正常，依現場剩餘機種為主。",
+      "notes": [],
+      "images": [
+        "images/powder-dispenser-1.jpg",
+        "images/powder-dispenser-2.jpg",
+        "images/powder-dispenser-3.jpg"
+      ]
+    }
+  ],
+  "faq": []
+}

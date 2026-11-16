@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="zh-Hant-TW">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>益芳官網編輯</title>
+  <meta name="description" content="益芳封口機維護中心官方網站的後台編輯頁。">
+  <meta name="robots" content="noindex,nofollow">
+  <meta name="theme-color" content="#1d4ed8">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="益芳官網編輯">
+  <link rel="manifest" href="manifest.json">
+  <link rel="apple-touch-icon" href="apple-touch-icon.png">
+  <link rel="icon" href="apple-touch-icon.png" type="image/png">
+  <link rel="stylesheet" href="admin.css">
+</head>
+<body>
+  <div id="login-view" class="screen" hidden>
+    <header class="topbar">
+      <div class="brand-mark" aria-hidden="true">編</div>
+      <div>
+        <h1>益芳官網編輯</h1>
+        <p class="sub">登入後就能改價格、文字和照片</p>
+      </div>
+    </header>
+
+    <section class="panel tips">
+      <h2>加到手機桌面，以後一點就能改</h2>
+      <details>
+        <summary>iPhone / iPad（請用 Safari 打開本頁）</summary>
+        <ol>
+          <li>點下方的「分享」按鈕（方框加上向上箭頭）。</li>
+          <li>向下滑，選擇「加入主畫面」。</li>
+          <li>名稱確認是「益芳官網編輯」後，按「新增」。</li>
+        </ol>
+      </details>
+      <details>
+        <summary>Android（請用 Chrome 打開本頁）</summary>
+        <ol>
+          <li>點右上角「⋮」選單。</li>
+          <li>選擇「加到主畫面」或「安裝應用程式」。</li>
+          <li>按「新增」或「安裝」。</li>
+        </ol>
+      </details>
+      <details>
+        <summary>電腦（書籤或安裝）</summary>
+        <ol>
+          <li>在 Chrome 或 Edge，如果網址列右側出現安裝圖示，點一下即可裝成小應用程式。</li>
+          <li>也可以把本頁加入書籤，之後一鍵開啟。</li>
+        </ol>
+      </details>
+      <p class="hint">第一次貼上權杖並登入後，權杖會留在這個裝置的瀏覽器裡。下次從桌面開啟會直接進入編輯畫面。</p>
+    </section>
+
+    <section class="panel">
+      <h2>第一次使用：建立專用權杖</h2>
+      <p>請先用 <strong>tin6761dd-a11y</strong> 這個 GitHub 帳號登入，再依下面步驟做一組「只給這個官網用」的權杖。</p>
+      <ol class="steps">
+        <li>打開這個頁面：<a href="https://github.com/settings/personal-access-tokens/new" target="_blank" rel="noopener noreferrer">https://github.com/settings/personal-access-tokens/new</a>（請用瀏覽器開啟，不要用應用程式內建瀏覽器）。</li>
+        <li><strong>Token name</strong>（權杖名稱）：填「益芳官網編輯」。</li>
+        <li><strong>Expiration</strong>（到期日）：建議選 <strong>90 days</strong>（90 天）。到期後再重新建立一次即可。</li>
+        <li><strong>Resource owner</strong>（資源擁有者）：選 <strong>tin6761dd-a11y</strong>。</li>
+        <li><strong>Repository access</strong>（儲存庫存取）：選 <strong>Only select repositories</strong>（只選特定儲存庫）。</li>
+        <li>在 <strong>Selected repositories</strong> 裡，只勾選 <strong>yifang</strong>，不要選其他專案。</li>
+        <li>在 <strong>Permissions</strong> → <strong>Repository permissions</strong>（儲存庫權限）中，找到 <strong>Contents</strong>（內容），設成 <strong>Read and write</strong>（讀寫）。其他項目都維持 <strong>No access</strong> 即可。</li>
+        <li>按頁面最下方的 <strong>Generate token</strong>（產生權杖）。</li>
+        <li>立刻複製那一串以 <strong>github_pat_</strong> 開頭的文字（GitHub 只會顯示一次），貼到下面欄位。</li>
+      </ol>
+      <p class="warn-note">這組權杖等於能改官網的鑰匙。請不要傳給別人，也不要貼在網址、訊息或電子郵件裡。權杖只會保存在這個裝置，不會存進官網或 GitHub 檔案。</p>
+    </section>
+
+    <section class="panel">
+      <h2>貼上權杖後登入</h2>
+      <form id="login-form" action="#" method="post" autocomplete="off">
+        <label for="token-input">GitHub 權杖</label>
+        <div class="token-row">
+          <input id="token-input" name="token" type="password" autocomplete="off" spellcheck="false" placeholder="github_pat_ 開頭的一串文字" required>
+        </div>
+        <label class="check">
+          <input type="checkbox" id="show-token"> 顯示權杖
+        </label>
+        <p id="login-error" class="error" hidden></p>
+        <button type="submit" class="btn btn-primary" id="login-btn">登入並開始編輯</button>
+      </form>
+    </section>
+  </div>
+
+  <div id="editor-view" class="screen" hidden>
+    <header class="topbar">
+      <div class="brand-mark" aria-hidden="true">編</div>
+      <div class="grow">
+        <h1>益芳官網編輯</h1>
+        <p class="sub" id="load-status">正在載入官網內容…</p>
+      </div>
+      <button type="button" class="btn btn-ghost" id="logout-btn">登出</button>
+    </header>
+
+    <p id="editor-error" class="banner error" hidden></p>
+    <p id="editor-ok" class="banner ok" hidden></p>
+
+    <nav class="jump" aria-label="編輯區塊">
+      <a href="#sec-store">店家資料</a>
+      <a href="#sec-services">服務項目</a>
+      <a href="#sec-used">中古機</a>
+      <a href="#sec-faq">常見問題</a>
+    </nav>
+
+    <section id="sec-store" class="panel">
+      <h2>店家資料</h2>
+      <div class="grid">
+        <label>店名 <input id="store-name" type="text"></label>
+        <label>標語 <input id="store-slogan" type="text"></label>
+        <label>電話 <input id="store-phone" type="text" inputmode="tel"></label>
+        <label>地址 <input id="store-address" type="text"></label>
+        <label class="wide">營業時間 <input id="store-hours" type="text"></label>
+        <label class="wide">蝦皮賣場網址 <input id="store-shopee" type="url"></label>
+        <label>蝦皮評價星等 <input id="store-rating" type="text"></label>
+        <label>評價則數 <input id="store-reviews" type="number" min="0" step="1"></label>
+        <label>經營年數 <input id="store-years" type="number" min="0" step="1"></label>
+        <label class="wide">中古機銷售地區說明 <input id="store-area" type="text"></label>
+        <label class="wide">首頁介紹文字 <textarea id="store-hero" rows="4"></textarea></label>
+        <label class="wide">關於我們（第一段） <textarea id="store-about-lead" rows="3"></textarea></label>
+        <label class="wide">關於我們（第二段） <textarea id="store-about-body" rows="3"></textarea></label>
+        <label class="wide">中古機注意事項 <textarea id="store-note" rows="3"></textarea></label>
+        <label class="wide">聯絡我們引言 <textarea id="contact-lead" rows="2"></textarea></label>
+        <label class="wide">中古機專區引言 <textarea id="used-lead" rows="2"></textarea></label>
+      </div>
+      <details class="advanced">
+        <summary>進階：地圖與搜尋資料</summary>
+        <div class="grid">
+          <label>網站標題 <input id="site-title" type="text"></label>
+          <label class="wide">網站說明（搜尋結果會看到） <textarea id="site-desc" rows="3"></textarea></label>
+          <label>路名門牌 <input id="store-street" type="text"></label>
+          <label>區 <input id="store-locality" type="text"></label>
+          <label>縣市 <input id="store-region" type="text"></label>
+        </div>
+      </details>
+    </section>
+
+    <section id="sec-services" class="panel">
+      <h2>服務項目</h2>
+      <label class="wide">服務區引言 <textarea id="services-lead" rows="2"></textarea></label>
+      <div id="services-list" class="stack"></div>
+      <button type="button" class="btn btn-secondary" id="add-service">新增一項服務</button>
+    </section>
+
+    <section id="sec-used" class="panel">
+      <h2>中古機分組（封口機、果糖機等）</h2>
+      <p class="hint">機型一樣、售價差不多的可以放在同一組，只寫大概價格。機器賣掉了也不必立刻改網站。名稱請沿用「微電腦」「機械式」「碼錶機械式」等專有名詞，不要自行改寫。</p>
+      <div id="groups-list" class="stack"></div>
+      <button type="button" class="btn btn-secondary" id="add-group">新增一組機型</button>
+    </section>
+
+    <section id="sec-faq" class="panel">
+      <h2>常見問題（選填）</h2>
+      <p class="hint">沒有內容時，官網不會顯示這個區塊。</p>
+      <div id="faq-list" class="stack"></div>
+      <button type="button" class="btn btn-secondary" id="add-faq">新增一則問答</button>
+    </section>
+
+    <section class="panel tips">
+      <h2>加到手機桌面</h2>
+      <p class="hint">用 Safari（iPhone）或 Chrome（Android）打開本頁後，「分享／選單」裡選擇「加入主畫面」或「安裝應用程式」，名稱是「益芳官網編輯」。之後點桌面圖示就會直接進入編輯畫面。</p>
+    </section>
+
+    <div class="spacer"></div>
+    <div class="savebar">
+      <button type="button" class="btn btn-secondary" id="preview-btn">預覽</button>
+      <button type="button" class="btn btn-primary" id="save-btn">儲存並發布</button>
+    </div>
+  </div>
+
+  <div id="preview-overlay" class="overlay" hidden>
+    <div class="overlay-bar">
+      <strong>官網預覽</strong>
+      <button type="button" class="btn btn-ghost" id="close-preview">關閉預覽</button>
+    </div>
+    <iframe id="preview-frame" title="官網預覽"></iframe>
+  </div>
+
+  <script src="../js/render.js"></script>
+  <script src="admin.js"></script>
+</body>
+</html>

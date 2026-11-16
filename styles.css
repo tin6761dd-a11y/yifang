@@ -145,3 +145,7 @@ footer .wrap{display:flex;flex-wrap:wrap;gap:1rem;justify-content:space-between}
   .call-chip{font-size:.8rem;padding:.35rem .7rem!important;white-space:nowrap}
   .nav{gap:.5rem}
 }
+
+.faq-list{display:grid;gap:1rem}
+.faq-list .card h3{margin:0 0 .35rem}
+.faq-list .card p{margin:0;color:var(--muted)}

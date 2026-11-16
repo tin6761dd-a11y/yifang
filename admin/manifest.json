@@ -1,0 +1,27 @@
+{
+  "name": "益芳官網編輯",
+  "short_name": "益芳官網編輯",
+  "description": "編輯益芳封口機維護中心官方網站的內容與照片",
+  "start_url": "/yifang/admin/",
+  "scope": "/yifang/admin/",
+  "id": "/yifang/admin/",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#f8fafc",
+  "theme_color": "#1d4ed8",
+  "lang": "zh-Hant-TW",
+  "icons": [
+    {
+      "src": "icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
