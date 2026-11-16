@@ -142,7 +142,7 @@
     var owner = CONFIG.owner;
     var repo = CONFIG.repo;
     var branch = CONFIG.branch;
-    var refPath = "/repos/" + owner + "/" + repo + "/git/ref/heads/" + branch;
+    var refPath = "/repos/" + owner + "/" + repo + "/git/refs/heads/" + branch;
     var ref = await gh(refPath);
     var latestSha = ref.object && ref.object.sha;
     if (expectedCommitSha && latestSha && expectedCommitSha !== latestSha) {
@@ -634,7 +634,7 @@
     els.loadStatus.textContent = "正在載入官網內容…";
     setBanner("", "");
     try {
-      var ref = await gh("/repos/" + CONFIG.owner + "/" + CONFIG.repo + "/git/ref/heads/" + CONFIG.branch);
+      var ref = await gh("/repos/" + CONFIG.owner + "/" + CONFIG.repo + "/git/refs/heads/" + CONFIG.branch);
       state.loadedCommitSha = ref.object.sha;
       var file = await gh(
         "/repos/" +

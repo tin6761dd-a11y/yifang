@@ -92,7 +92,7 @@ async function commitFiles({ token, files, deletes, message, expectedCommitSha, 
     repo: repo || DEFAULTS.repo,
     branch: branch || DEFAULTS.branch
   };
-  const refPath = `/repos/${cfg.owner}/${cfg.repo}/git/ref/heads/${cfg.branch}`;
+  const refPath = `/repos/${cfg.owner}/${cfg.repo}/git/refs/heads/${cfg.branch}`;
   const ref = await gh(token, refPath, {}, cfg);
   const latestSha = ref.object && ref.object.sha;
   if (expectedCommitSha && latestSha && expectedCommitSha !== latestSha) {
