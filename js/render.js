@@ -23,11 +23,121 @@
     return escapeHtml(value);
   }
 
-  function phoneHref(store) {
-    if (store.phoneLink) return store.phoneLink;
-    var digits = String(store.phone || "").replace(/[^0-9+]/g, "");
-    return digits ? "tel:" + digits : "#";
+  function normalizePhones(store) {
+    store = store || {};
+    var list = [];
+    var seen = Object.create(null);
+    function add(label, number) {
+      number = String(number || "").trim();
+      if (!number) return;
+      var key = number.replace(/[^0-9+]/g, "");
+      if (!key || seen[key]) return;
+      seen[key] = true;
+      list.push({
+        label: String(label || "").trim(),
+        number: number
+      });
+    }
+    if (Array.isArray(store.phones) && store.phones.length) {
+      store.phones.forEach(function (item) {
+        if (item == null) return;
+        if (typeof item === "string") add("", item);
+        else add(item.label, item.number || item.phone);
+      });
+    }
+    if (!list.length) add("", store.phone);
+    return list;
   }
+
+  function primaryPhone(store) {
+    var list = normalizePhones(store);
+    return list.length ? list[0] : { label: "", number: "" };
+  }
+
+  function toTelHref(number) {
+    var digits = String(number || "").replace(/[^0-9+]/g, "");
+    if (!digits) return "#";
+    if (digits.indexOf("+") === 0) return "tel:" + digits;
+    if (digits.charAt(0) === "0") return "tel:+886" + digits.slice(1);
+    return "tel:" + digits;
+  }
+
+  function phoneHref(store) {
+    if (store && store.phoneLink) return store.phoneLink;
+    return toTelHref(primaryPhone(store).number);
+  }
+
+  function phoneDisplay(item) {
+    if (!item || !item.number) return "";
+    return item.label ? item.label + " " + item.number : item.number;
+  }
+
+  function phonesPlainText(store, sep) {
+    return normalizePhones(store)
+      .map(phoneDisplay)
+      .filter(Boolean)
+      .join(sep || "、");
+  }
+
+  function toSchemaTelephone(number) {
+    var phone = String(number || "").trim();
+    if (!phone) return "";
+    if (phone.indexOf("+") === 0) return phone;
+    if (phone.charAt(0) === "0") return "+886-" + phone.slice(1);
+    return phone;
+  }
+
+  function renderPhoneLinks(store, options) {
+    options = options || {};
+    var className = options.className || "";
+    var phones = normalizePhones(store);
+    if (!phones.length) return "";
+    return phones
+      .map(function (item) {
+        var cls = className ? ' class="' + escapeAttr(className) + '"' : "";
+        return (
+          "<a" +
+          cls +
+          ' href="' +
+          escapeAttr(toTelHref(item.number)) +
+          '">' +
+          escapeHtml(phoneDisplay(item)) +
+          "</a>"
+        );
+      })
+      .join(options.join || "");
+  }
+
+  function renderPhoneButtons(store, options) {
+    options = options || {};
+    var className = options.className || "btn btn-outline";
+    var phones = normalizePhones(store);
+    if (!phones.length) return "";
+    return phones
+      .map(function (item) {
+        var text = phoneDisplay(item);
+        if (options.singlePrefix && phones.length === 1) {
+          text = options.singlePrefix + (options.singlePrefix.slice(-1) === " " ? item.number : "");
+        }
+        return (
+          '<a class="' +
+          escapeAttr(className) +
+          '" href="' +
+          escapeAttr(toTelHref(item.number)) +
+          '">' +
+          escapeHtml(text) +
+          "</a>"
+        );
+      })
+      .join(options.join || "\n      ");
+  }
+
+  function renderPhoneDefinition(store) {
+    var links = renderPhoneLinks(store, { join: "<br>\n            " });
+    if (!links) return "";
+    return "            <dt>電話</dt>\n            <dd>" + links + "</dd>\n";
+  }
+
 
   function formatInt(n) {
     var s = String(n);
@@ -79,10 +189,8 @@
         closes: h.closes
       };
     });
-    var phone = String(store.phone || "").trim();
-    var telephone = phone;
-    if (phone.indexOf("+") === 0) telephone = phone;
-    else if (phone.charAt(0) === "0") telephone = "+886-" + phone.slice(1);
+    var phones = normalizePhones(store);
+    var telephone = phones.length ? toSchemaTelephone(phones[0].number) : "";
     var data = {
       "@context": "https://schema.org",
       "@type": "LocalBusiness",
@@ -103,6 +211,20 @@
       areaServed: ["台中市", "彰化縣", "南投縣"],
       priceRange: "$$"
     };
+    if (phones.length) {
+      data.contactPoint = phones.map(function (item) {
+        var contactType = "customer service";
+        if (item.label === "手機") contactType = "mobile";
+        else if (item.label && item.label !== "客服") contactType = item.label;
+        return {
+          "@type": "ContactPoint",
+          telephone: toSchemaTelephone(item.number),
+          contactType: contactType,
+          areaServed: "TW",
+          availableLanguage: ["zh-TW"]
+        };
+      });
+    }
     return JSON.stringify(data);
   }
 
@@ -199,6 +321,11 @@
     var buyLabel = section.buyLabel || "到蝦皮購買";
     var callLabel = section.callLabel || "電話詢問";
     var shopee = store.shopeeUrl || "#";
+    var callButtons = renderPhoneButtons(store, {
+      className: "btn btn-outline",
+      singlePrefix: callLabel,
+      join: "\n      "
+    });
     return (
       '<article class="card machine" data-category="' +
       escapeAttr(category) +
@@ -228,11 +355,7 @@
       '" rel="noopener noreferrer" target="_blank">' +
       escapeHtml(buyLabel) +
       "</a>\n" +
-      '      <a class="btn btn-outline" href="' +
-      escapeAttr(phoneHref(store)) +
-      '">' +
-      escapeHtml(callLabel) +
-      "</a>\n" +
+      (callButtons ? "      " + callButtons + "\n" : "") +
       "    </div>\n" +
       "  </div>\n" +
       "</article>"
@@ -363,7 +486,6 @@
     var site = content.site || {};
     var contact = content.contact || {};
     var url = siteUrl(content);
-    var tel = phoneHref(store);
     var shopee = store.shopeeUrl || "#";
     var reviews = formatInt(store.shopeeReviews || 0);
     var mapSrc =
@@ -398,11 +520,13 @@
       '          <li><a href="#contact">聯絡我們</a></li>\n' +
       "        </ul>\n" +
       "      </nav>\n" +
-      '      <a class="call-chip" href="' +
-      escapeAttr(tel) +
-      '">來電 ' +
-      escapeHtml(store.phone || "") +
-      "</a>\n" +
+      '      <div class="call-chips">\n        ' +
+      renderPhoneButtons(store, {
+        className: "call-chip",
+        singlePrefix: "來電 ",
+        join: "\n        "
+      }) +
+      "\n      </div>\n" +
       "    </div>\n" +
       "  </header>\n" +
       "\n" +
@@ -419,11 +543,13 @@
       escapeHtml(store.heroText || "") +
       "</p>\n" +
       '        <div class="actions">\n' +
-      '          <a class="btn btn-light" href="' +
-      escapeAttr(tel) +
-      '">電話詢問 ' +
-      escapeHtml(store.phone || "") +
-      "</a>\n" +
+      "          " +
+      renderPhoneButtons(store, {
+        className: "btn btn-light",
+        singlePrefix: "電話詢問 ",
+        join: "\n          "
+      }) +
+      "\n" +
       '          <a class="btn btn-ghost" href="' +
       escapeAttr(shopee) +
       '" rel="noopener noreferrer" target="_blank">蝦皮賣場</a>\n' +
@@ -463,12 +589,7 @@
       "            <dd>" +
       escapeHtml(store.address || "") +
       "</dd>\n" +
-      "            <dt>電話</dt>\n" +
-      '            <dd><a href="' +
-      escapeAttr(tel) +
-      '">' +
-      escapeHtml(store.phone || "") +
-      "</a></dd>\n" +
+      renderPhoneDefinition(store) +
       "            <dt>營業時間</dt>\n" +
       "            <dd>" +
       escapeHtml(store.hours || "") +
@@ -498,12 +619,7 @@
       escapeHtml(contact.lead || "") +
       "</p>\n" +
       "          <dl>\n" +
-      "            <dt>電話</dt>\n" +
-      '            <dd><a href="' +
-      escapeAttr(tel) +
-      '">' +
-      escapeHtml(store.phone || "") +
-      "</a></dd>\n" +
+      renderPhoneDefinition(store) +
       "            <dt>地址</dt>\n" +
       "            <dd>" +
       escapeHtml(store.address || "") +
@@ -526,9 +642,13 @@
       " 年）</dd>\n" +
       "          </dl>\n" +
       '          <div class="actions" style="margin-top:1.2rem">\n' +
-      '            <a class="btn btn-blue" href="' +
-      escapeAttr(tel) +
-      '">電話詢問</a>\n' +
+      "            " +
+      renderPhoneButtons(store, {
+        className: "btn btn-blue",
+        singlePrefix: "電話詢問",
+        join: "\n            "
+      }) +
+      "\n" +
       '            <a class="btn btn-outline" href="' +
       escapeAttr(shopee) +
       '" rel="noopener noreferrer" target="_blank">打開蝦皮賣場</a>\n' +
@@ -554,11 +674,9 @@
       "        " +
       escapeHtml(store.address || "") +
       "<br>\n" +
-      '        <a href="' +
-      escapeAttr(tel) +
-      '">' +
-      escapeHtml(store.phone || "") +
-      "</a>\n" +
+      "        " +
+      renderPhoneLinks(store, { join: "<br>\n        " }) +
+      "\n" +
       "      </div>\n" +
       "      <div>\n" +
       "        " +
@@ -633,8 +751,8 @@
 
   function render404(content) {
     var store = content.store || {};
-    var tel = phoneHref(store);
     var url = siteUrl(content);
+    var phoneLinks = renderPhoneLinks(store, { join: "<br>" });
     return (
       "<!DOCTYPE html>\n" +
       '<html lang="zh-Hant-TW">\n' +
@@ -657,11 +775,9 @@
       '    <p><a class="btn btn-blue" href="./">回到' +
       escapeHtml(store.name || "首頁") +
       "首頁</a></p>\n" +
-      "    <p><a href=\"" +
-      escapeAttr(tel) +
-      '">電話 ' +
-      escapeHtml(store.phone || "") +
-      "</a></p>\n" +
+      "    <p>" +
+      (phoneLinks ? "電話<br>" + phoneLinks : "") +
+      "</p>\n" +
       "  </main>\n" +
       "</body>\n" +
       "</html>\n"
@@ -685,7 +801,12 @@
   return {
     escapeHtml: escapeHtml,
     assetUrl: assetUrl,
+    normalizePhones: normalizePhones,
+    primaryPhone: primaryPhone,
+    toTelHref: toTelHref,
     phoneHref: phoneHref,
+    phoneDisplay: phoneDisplay,
+    phonesPlainText: phonesPlainText,
     uniqueCategories: uniqueCategories,
     siteUrl: siteUrl,
     todayStamp: todayStamp,

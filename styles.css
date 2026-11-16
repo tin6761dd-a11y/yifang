@@ -49,6 +49,9 @@ header{
 .nav ul{display:flex;gap:.2rem 1rem;list-style:none;margin:0;padding:0;flex-wrap:wrap}
 .nav a:not(.brand){text-decoration:none;color:var(--muted);font-weight:600;font-size:.95rem;padding:.35rem .2rem}
 .nav a:not(.brand):hover,.nav a:not(.brand)[aria-current="page"]{color:var(--blue)}
+.call-chips{
+  display:flex;flex-wrap:wrap;gap:.4rem;align-items:center;justify-content:flex-end;
+}
 .call-chip{
   background:var(--blue);color:#fff!important;border-radius:999px;padding:.4rem .9rem!important;
   text-decoration:none;font-weight:700
@@ -142,8 +145,9 @@ footer .wrap{display:flex;flex-wrap:wrap;gap:1rem;justify-content:space-between}
   .nav ul{display:none}
   .hero{padding:2.2rem 0 2.5rem}
   .brand span:not(.mark){white-space:nowrap;font-size:.9rem}
-  .call-chip{font-size:.8rem;padding:.35rem .7rem!important;white-space:nowrap}
-  .nav{gap:.5rem}
+  .call-chips{flex:1 1 auto;justify-content:flex-end}
+  .call-chip{font-size:.75rem;padding:.3rem .55rem!important;white-space:nowrap}
+  .nav{gap:.5rem;flex-wrap:wrap}
 }
 
 .faq-list{display:grid;gap:1rem}

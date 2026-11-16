@@ -364,6 +364,62 @@
       .join("");
   }
 
+  function phonesFromStore(store) {
+    if (window.YifangRender && typeof YifangRender.normalizePhones === "function") {
+      var normalized = YifangRender.normalizePhones(store || {});
+      if (normalized.length) return normalized;
+    }
+    store = store || {};
+    var list = [];
+    if (Array.isArray(store.phones) && store.phones.length) {
+      store.phones.forEach(function (item) {
+        if (!item) return;
+        if (typeof item === "string") {
+          if (item.trim()) list.push({ label: "", number: item.trim() });
+        } else {
+          var number = String(item.number || item.phone || "").trim();
+          if (number) list.push({ label: String(item.label || "").trim(), number: number });
+        }
+      });
+    }
+    if (!list.length && store.phone) {
+      list.push({ label: "", number: String(store.phone).trim() });
+    }
+    return list;
+  }
+
+  function renderPhones() {
+    var store = (state.content && state.content.store) || {};
+    var items = Array.isArray(store.phones) ? store.phones.slice() : phonesFromStore(store);
+    if (!items.length) items = [{ label: "客服", number: "" }];
+    els.phonesList.innerHTML = items
+      .map(function (item, i) {
+        return (
+          '<article class="card phone-card" data-phone="' +
+          i +
+          '">' +
+          '<div class="card-head">' +
+          '<span class="title">電話 ' +
+          (i + 1) +
+          "</span>" +
+          '<button type="button" class="btn btn-tiny btn-ghost" data-act="phone-up">上移</button>' +
+          '<button type="button" class="btn btn-tiny btn-ghost" data-act="phone-down">下移</button>' +
+          '<button type="button" class="btn btn-tiny btn-danger" data-act="phone-del">刪除</button>' +
+          "</div>" +
+          '<div class="grid">' +
+          "<label>名稱（選填） <input data-field=\"label\" type=\"text\" placeholder=\"例如 客服、手機\" value=\"" +
+          YifangRender.escapeHtml(item.label || "") +
+          '"></label>' +
+          "<label>號碼 <input data-field=\"number\" type=\"text\" inputmode=\"tel\" value=\"" +
+          YifangRender.escapeHtml(item.number || "") +
+          '"></label>' +
+          "</div>" +
+          "</article>"
+        );
+      })
+      .join("");
+  }
+
   function fillStoreForm() {
     var c = state.content;
     var store = c.store || {};
@@ -372,7 +428,6 @@
     var used = c.usedSection || {};
     $("store-name").value = store.name || "";
     $("store-slogan").value = store.slogan || "";
-    $("store-phone").value = store.phone || "";
     $("store-address").value = store.address || "";
     $("store-hours").value = store.hours || "";
     $("store-shopee").value = store.shopeeUrl || "";
@@ -400,7 +455,17 @@
     var site = Object.assign({}, prev.site);
     store.name = $("store-name").value.trim();
     store.slogan = $("store-slogan").value.trim();
-    store.phone = $("store-phone").value.trim();
+    store.phones = Array.prototype.map.call(els.phonesList.querySelectorAll("[data-phone]"), function (card) {
+      return {
+        label: card.querySelector('[data-field="label"]').value.trim(),
+        number: card.querySelector('[data-field="number"]').value.trim()
+      };
+    });
+    var firstFilled = store.phones.filter(function (item) {
+      return item.number;
+    })[0];
+    store.phone = firstFilled ? firstFilled.number : "";
+    delete store.phoneLink;
     store.address = $("store-address").value.trim();
     store.hours = $("store-hours").value.trim();
     store.shopeeUrl = $("store-shopee").value.trim();
@@ -508,6 +573,7 @@
   }
 
   function refreshLists() {
+    renderPhones();
     renderServices();
     renderGroups();
     renderFaq();
@@ -748,10 +814,15 @@
       setBanner("error", "每一組機器都需要填寫名稱和參考售價。");
       return;
     }
-    if (!state.content.store.name || !state.content.store.phone) {
-      setBanner("error", "請填寫店名和電話。");
+    var filledPhones = ((state.content.store && state.content.store.phones) || []).filter(function (item) {
+      return item && String(item.number || "").trim();
+    });
+    if (!state.content.store.name || !filledPhones.length) {
+      setBanner("error", "請填寫店名和至少一組電話。");
       return;
     }
+    state.content.store.phones = filledPhones;
+    state.content.store.phone = filledPhones[0].number;
 
     state.saving = true;
     els.saveBtn.disabled = true;
@@ -894,6 +965,33 @@
     input.value = "";
   }
 
+  function onPhonesClick(event) {
+    var btn = event.target.closest("button");
+    if (!btn) return;
+    var card = event.target.closest("[data-phone]");
+    if (!card) return;
+    var index = Number(card.getAttribute("data-phone"));
+    var act = btn.getAttribute("data-act");
+    syncFormsToState();
+    var phones = state.content.store.phones || [];
+    if (act === "phone-del") {
+      if (phones.length <= 1) {
+        setBanner("error", "至少要保留一組電話。");
+        renderPhones();
+        return;
+      }
+      phones.splice(index, 1);
+    }
+    if (act === "phone-up") phones = moveItem(phones, index, -1);
+    if (act === "phone-down") phones = moveItem(phones, index, 1);
+    state.content.store.phones = phones;
+    var firstFilled = phones.filter(function (item) {
+      return item && item.number;
+    })[0];
+    state.content.store.phone = firstFilled ? firstFilled.number : "";
+    renderPhones();
+  }
+
   function onFaqClick(event) {
     var btn = event.target.closest("button");
     if (!btn || btn.getAttribute("data-act") !== "faq-del") return;
@@ -913,6 +1011,7 @@
     els.loadStatus = $("load-status");
     els.editorError = $("editor-error");
     els.editorOk = $("editor-ok");
+    els.phonesList = $("phones-list");
     els.servicesList = $("services-list");
     els.groupsList = $("groups-list");
     els.faqList = $("faq-list");
@@ -925,6 +1024,13 @@
       $("token-input").type = this.checked ? "text" : "password";
     });
     $("logout-btn").addEventListener("click", logout);
+    $("add-phone").addEventListener("click", function () {
+      syncFormsToState();
+      state.content.store.phones = state.content.store.phones || [];
+      state.content.store.phones.push({ label: "", number: "" });
+      renderPhones();
+    });
+    els.phonesList.addEventListener("click", onPhonesClick);
     $("add-service").addEventListener("click", function () {
       syncFormsToState();
       state.content.services.items.push({ title: "", description: "" });

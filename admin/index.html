@@ -112,8 +112,13 @@
       <div class="grid">
         <label>店名 <input id="store-name" type="text"></label>
         <label>標語 <input id="store-slogan" type="text"></label>
-        <label>電話 <input id="store-phone" type="text" inputmode="tel"></label>
         <label>地址 <input id="store-address" type="text"></label>
+        <div class="wide field-block">
+          <div class="field-label">電話</div>
+          <p class="hint">可填多組電話。第一組會作為主要聯絡電話（搜尋資料也會用這組）。名稱可填「客服」或「手機」，也可以留空。</p>
+          <div id="phones-list" class="stack"></div>
+          <button type="button" class="btn btn-secondary" id="add-phone">新增電話</button>
+        </div>
         <label class="wide">營業時間 <input id="store-hours" type="text"></label>
         <label class="wide">蝦皮賣場網址 <input id="store-shopee" type="url"></label>
         <label>蝦皮評價星等 <input id="store-rating" type="text"></label>

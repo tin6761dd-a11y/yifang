@@ -131,3 +131,8 @@ input:focus, textarea:focus, select:focus{outline:3px solid var(--blue-line);bor
 }
 #preview-frame{flex:1;border:0;width:100%;background:#f8fafc}
 .spacer{height:1rem}
+
+.field-block{display:flex;flex-direction:column;gap:.4rem}
+.field-label{font-weight:700;font-size:.9rem;color:var(--blue-ink)}
+.field-block .hint{margin:0}
+.phone-card .grid{margin-top:.2rem}
