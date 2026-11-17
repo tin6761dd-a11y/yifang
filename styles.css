@@ -326,6 +326,23 @@ body.tawk-maximized .float-contact{
   pointer-events:none;
 }
 
+/* Always hide Tawk's green launcher / minimize bubble and message preview. */
+#min-widget,#min-widget+iframe,#message-preview,#message-preview+iframe{
+  display:none!important;visibility:hidden!important;opacity:0!important;
+  pointer-events:none!important;width:0!important;height:0!important;overflow:hidden!important;
+}
+/* Hide the chat window itself until the visitor opens it from 免費客服諮詢. */
+body:not(.tawk-maximized) #max-widget,
+body:not(.tawk-maximized) #max-widget+iframe,
+body:not(.tawk-maximized) #branding-widget,
+body:not(.tawk-maximized) #branding-widget+iframe,
+body:not(.tawk-maximized) iframe[title="聊天小工具"],
+body:not(.tawk-maximized) iframe[title="chat widget"],
+body:not(.tawk-maximized) iframe[title="造訪 tawk.to"]{
+  display:none!important;visibility:hidden!important;opacity:0!important;
+  pointer-events:none!important;width:0!important;height:0!important;
+}
+
 /* Quoted product card sits above the FAB, or to the left of the open Tawk window */
 .inquire-quote{
   position:fixed;

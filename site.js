@@ -69,9 +69,19 @@
         e.preventDefault();
         if (window.YifangRender && typeof window.YifangRender.openTawkChat === "function") {
           window.YifangRender.openTawkChat();
-        } else if (window.Tawk_API) {
-          try { if (window.Tawk_API.showWidget) window.Tawk_API.showWidget(); } catch (err) {}
-          try { if (window.Tawk_API.maximize) window.Tawk_API.maximize(); } catch (err2) {}
+        } else {
+          try { if (window.YifangTawk && window.YifangTawk.load) window.YifangTawk.load(); localStorage.setItem("yifang_tawk_opened", "1"); } catch (err) {}
+          var api = window.Tawk_API || {};
+          function go() {
+            try { if (api.showWidget) api.showWidget(); } catch (err2) {}
+            try { if (api.maximize) api.maximize(); } catch (err3) {}
+          }
+          if (typeof api.maximize === "function") go();
+          else {
+            var prev = api.onLoad;
+            window.Tawk_API = api;
+            api.onLoad = function () { if (typeof prev === "function") prev(); go(); };
+          }
         }
         return;
       }

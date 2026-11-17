@@ -23,7 +23,7 @@
     return escapeHtml(value);
   }
 
-  var ASSET_VERSION = "202611172310";
+  var ASSET_VERSION = "202611172320";
 
   function withCacheBust(href) {
     href = String(href || "");
@@ -99,28 +99,57 @@
     );
   }
 
+  function tawkHideCss() {
+    return (
+      "#min-widget,#min-widget+iframe,#message-preview,#message-preview+iframe{" +
+      "display:none!important;visibility:hidden!important;opacity:0!important;" +
+      "pointer-events:none!important;width:0!important;height:0!important;overflow:hidden!important}" +
+      "body:not(.tawk-maximized) #max-widget,body:not(.tawk-maximized) #max-widget+iframe," +
+      "body:not(.tawk-maximized) #branding-widget,body:not(.tawk-maximized) #branding-widget+iframe," +
+      'body:not(.tawk-maximized) iframe[title="聊天小工具"],' +
+      'body:not(.tawk-maximized) iframe[title="chat widget"],' +
+      'body:not(.tawk-maximized) iframe[title="造訪 tawk.to"]{' +
+      "display:none!important;visibility:hidden!important;opacity:0!important;" +
+      "pointer-events:none!important;width:0!important;height:0!important}"
+    );
+  }
+
   function renderTawkScript(content) {
     var src = tawkEmbedSrc(content);
     if (!src) return "";
     return (
       "  <script>\n" +
       "    var Tawk_API=Tawk_API||{}, Tawk_LoadStart=new Date();\n" +
+      "    window.YifangTawk=window.YifangTawk||{};\n" +
+      "    YifangTawk.src=" +
+      JSON.stringify(src) +
+      ";\n" +
+      "    YifangTawk.started=false;\n" +
+      "    YifangTawk.load=function(){\n" +
+      "      if(YifangTawk.started)return;YifangTawk.started=true;\n" +
+      "      Tawk_LoadStart=new Date();\n" +
+      "      var s1=document.createElement('script'),s0=document.getElementsByTagName('script')[0];\n" +
+      "      s1.async=true;s1.src=YifangTawk.src;s1.charset='UTF-8';s1.setAttribute('crossorigin','*');\n" +
+      "      if(s0&&s0.parentNode)s0.parentNode.insertBefore(s1,s0);\n" +
+      "      else (document.head||document.documentElement).appendChild(s1);\n" +
+      "    };\n" +
       "    (function(a){\n" +
-      "      function hide(){try{if(a.hideWidget)a.hideWidget();}catch(e){}}\n" +
-      "      var _load=a.onLoad,_min=a.onChatMinimized;\n" +
+      "      function hide(){\n" +
+      "        try{if(a.hideWidget)a.hideWidget();}catch(e){}\n" +
+      "        try{if(a.minimize&&a.isChatMaximized&&a.isChatMaximized())a.minimize();}catch(e){}\n" +
+      "      }\n" +
+      "      var _before=a.onBeforeLoad,_load=a.onLoad,_min=a.onChatMinimized;\n" +
+      "      a.onBeforeLoad=function(){if(typeof _before==='function')_before();hide();};\n" +
       "      a.onLoad=function(){if(typeof _load==='function')_load();hide();};\n" +
       "      a.onChatMinimized=function(){if(typeof _min==='function')_min();hide();};\n" +
       "    })(Tawk_API);\n" +
       "    (function(){\n" +
-      '      var s1=document.createElement("script"),s0=document.getElementsByTagName("script")[0];\n' +
-      "      s1.async=true;\n" +
-      "      s1.src=" +
-      JSON.stringify(src) +
-      ";\n" +
-      '      s1.charset="UTF-8";\n' +
-      '      s1.setAttribute("crossorigin","*");\n' +
-      "      if(s0&&s0.parentNode)s0.parentNode.insertBefore(s1,s0);\n" +
-      "      else (document.head||document.documentElement).appendChild(s1);\n" +
+      "      var preload=false;\n" +
+      "      try{if(localStorage.getItem('yifang_tawk_opened'))preload=true;\n" +
+      "        if(!preload){for(var i=0;i<localStorage.length;i++){var k=localStorage.key(i);if(k&&k.indexOf('twk_')===0){preload=true;break;}}}\n" +
+      "      }catch(e){}\n" +
+      "      try{if(!preload&&document.cookie&&document.cookie.indexOf('twk_uuid_')!==-1)preload=true;}catch(e){}\n" +
+      "      if(preload)YifangTawk.load();\n" +
       "    })();\n" +
       "  </script>\n"
     );
@@ -251,8 +280,23 @@
     try {
       if (api && typeof api.hideWidget === "function") api.hideWidget();
     } catch (err) {}
+    try {
+      if (api && typeof api.minimize === "function" && isTawkMaximized()) api.minimize();
+    } catch (err2) {}
     if (typeof document !== "undefined" && document.body) {
       document.body.classList.remove("tawk-maximized");
+    }
+  }
+
+  function markTawkSession() {
+    try {
+      if (typeof localStorage !== "undefined") localStorage.setItem("yifang_tawk_opened", "1");
+    } catch (err) {}
+  }
+
+  function loadTawkEmbed() {
+    if (typeof window !== "undefined" && window.YifangTawk && typeof window.YifangTawk.load === "function") {
+      window.YifangTawk.load();
     }
   }
 
@@ -302,7 +346,9 @@
   function openTawkChat(api) {
     if (typeof window === "undefined") return;
     initTawkLauncher.userOpened = true;
+    markTawkSession();
     closeFloatPanel();
+    loadTawkEmbed();
     window.Tawk_API = window.Tawk_API || {};
     function go(a) {
       try {
@@ -1025,7 +1071,7 @@
       "function apply(scope,cat,btn){scope=scope||s;var btns=scope.querySelectorAll('.filters button'),cards=scope.querySelectorAll('.filter-item'),qEl=scope.querySelector('.filter-search'),q=qEl?(qEl.value||'').trim().toLowerCase():'',i;if(cat==null){var a=scope.querySelector('.filters button.is-active');cat=a?a.getAttribute('data-cat'):'all';}for(i=0;i<btns.length;i++){var on=btn?btns[i]===btn:btns[i].getAttribute('data-cat')===cat;btns[i].setAttribute('aria-pressed',on?'true':'false');btns[i].classList.toggle('is-active',on);if(on)cat=btns[i].getAttribute('data-cat')||cat;}for(i=0;i<cards.length;i++){var ok=cat==='all'||cards[i].getAttribute('data-category')===cat;var hay=(cards[i].getAttribute('data-search')||cards[i].textContent||'').toLowerCase();cards[i].hidden=!(ok&&(!q||hay.indexOf(q)!==-1));}}\n" +
       "function inquire(btn){if(window.YifangRender&&typeof window.YifangRender.openProductInquiry==='function'){window.YifangRender.openProductInquiry(btn);}}\n" +
       "function setOpen(open){var w=s.querySelector('.float-contact');if(!w)return;var t=w.querySelector('.float-toggle'),p=w.querySelector('.float-panel');w.classList.toggle('is-open',open);if(t)t.setAttribute('aria-expanded',open?'true':'false');if(p)p.hidden=!open;}\n" +
-      "function openChat(){setOpen(false);if(window.YifangRender&&typeof window.YifangRender.openTawkChat==='function'){window.YifangRender.openTawkChat();return;}var a=window.Tawk_API;if(!a)return;try{if(a.showWidget)a.showWidget();}catch(err){}try{if(a.maximize)a.maximize();}catch(err2){}}\n" +
+      "function openChat(){setOpen(false);if(window.YifangRender&&typeof window.YifangRender.openTawkChat==='function'){window.YifangRender.openTawkChat();return;}try{if(window.YifangTawk&&YifangTawk.load)YifangTawk.load();localStorage.setItem('yifang_tawk_opened','1');}catch(e){}function go(){var a=window.Tawk_API;if(!a)return;try{if(a.showWidget)a.showWidget();}catch(err){}try{if(a.maximize)a.maximize();}catch(err2){}}if(window.Tawk_API&&typeof window.Tawk_API.maximize==='function')go();else{var prev=window.Tawk_API&&window.Tawk_API.onLoad;window.Tawk_API=window.Tawk_API||{};window.Tawk_API.onLoad=function(){if(typeof prev==='function')prev();go();};}}\n" +
       "s.addEventListener('click',function(e){var t=e.target;if(!t||!t.closest)return;var fb=t.closest('.filters button');if(fb){apply(scopeOf(fb),fb.getAttribute('data-cat'),fb);return;}var th=t.closest('.thumbs button');if(th){var g=th.closest('.gallery');if(!g)return;var main=g.querySelector('.main-photo');if(main&&th.getAttribute('data-src')){main.src=th.getAttribute('data-src');if(th.getAttribute('data-alt'))main.alt=th.getAttribute('data-alt');}g.querySelectorAll('.thumbs button').forEach(function(x){x.setAttribute('aria-current',x===th?'true':'false');});return;}var iq=t.closest('.inquire-product');if(iq){e.preventDefault();inquire(iq);return;}var oc=t.closest('.open-site-chat');if(oc){e.preventDefault();openChat();return;}var tg=t.closest('.float-toggle');if(tg){var w=tg.closest('.float-contact');if(w&&w.classList.contains('has-unread')){openChat();return;}setOpen(!(w&&w.classList.contains('is-open')));return;}if(!t.closest('.float-contact'))setOpen(false);});\n" +
       "s.addEventListener('input',function(e){var t=e.target;if(t&&t.classList&&t.classList.contains('filter-search'))apply(scopeOf(t));});\n" +
       "r.addEventListener('keydown',function(e){if(e.key==='Escape')setOpen(false);});})();</script>\n"
@@ -1197,6 +1243,7 @@
       '  <meta name="twitter:image" content="' + escapeAttr(image) + '">\n' +
       '  <link rel="icon" href="favicon.png" type="image/png">\n' +
       '  <link rel="apple-touch-icon" href="apple-touch-icon.png">\n' +
+      (chatEnabled(content) ? '  <style id="tawk-launcher-hide">' + tawkHideCss() + "</style>\n" : "") +
       '  <link rel="stylesheet" href="' + escapeAttr(withCacheBust((options && options.stylesheet) || "styles.css")) + '">\n' +
       '  <script type="application/ld+json">' + renderJsonLd(content) + "</script>\n" +
       (function () {
