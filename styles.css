@@ -304,13 +304,13 @@ footer{padding-bottom:5.5rem}
 @media (max-width:1100px){.nav ul{gap:.2rem .6rem}.nav ul a{font-size:.85rem}}
 @media (max-width:960px){.nav ul{display:none}}
 
-/* Keep the existing contact FAB above the Tawk.to bubble */
+/* Keep the existing contact FAB above the Tawk.to bubble and attention prompts */
 .has-tawk .float-contact{
-  bottom:max(5.75rem, calc(env(safe-area-inset-bottom) + 5.25rem));
+  bottom:max(10.5rem, calc(env(safe-area-inset-bottom) + 10rem));
 }
-.has-tawk footer{padding-bottom:10rem}
+.has-tawk footer{padding-bottom:13rem}
 @media (max-width:640px){
   .has-tawk .float-contact{
-    bottom:max(5.5rem, calc(env(safe-area-inset-bottom) + 5rem));
+    bottom:max(11.5rem, calc(env(safe-area-inset-bottom) + 11rem));
   }
 }
