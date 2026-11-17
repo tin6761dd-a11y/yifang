@@ -288,3 +288,9 @@ footer{padding-bottom:5.5rem}
 @media (max-width:640px){
   .hero .actions .btn{font-size:.9rem;padding:.6rem .9rem}
 }
+
+/* brand name stays on one line */
+.brand{flex:none;white-space:nowrap}
+.brand span:not(.mark){white-space:nowrap}
+.nav nav{min-width:0}
+@media (max-width:380px){.brand span:not(.mark){font-size:.82rem}}
