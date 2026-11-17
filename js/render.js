@@ -23,7 +23,7 @@
     return escapeHtml(value);
   }
 
-  var ASSET_VERSION = "202611171900";
+  var ASSET_VERSION = "202611171910";
 
   function withCacheBust(href) {
     href = String(href || "");
@@ -169,11 +169,43 @@
     return info;
   }
 
+  function syncQuotePosition() {
+    if (typeof document === "undefined" || !document.body) return;
+    var maximized = false;
+    try {
+      maximized = !!(
+        window.Tawk_API &&
+        typeof window.Tawk_API.isChatMaximized === "function" &&
+        window.Tawk_API.isChatMaximized()
+      );
+    } catch (err) {}
+    document.body.classList.toggle("tawk-maximized", maximized);
+  }
+
+  function bindTawkQuotePosition() {
+    if (bindTawkQuotePosition.bound || typeof window === "undefined") return;
+    window.Tawk_API = window.Tawk_API || {};
+    function wrap(name) {
+      var prev = window.Tawk_API[name];
+      window.Tawk_API[name] = function () {
+        if (typeof prev === "function") prev.apply(this, arguments);
+        if (typeof setTimeout === "function") setTimeout(syncQuotePosition, 60);
+        else syncQuotePosition();
+      };
+    }
+    wrap("onChatMaximized");
+    wrap("onChatMinimized");
+    bindTawkQuotePosition.bound = true;
+  }
+
   function hideInquireQuote() {
     if (typeof document === "undefined") return;
     var wrap = document.getElementById("inquire-quote");
     if (wrap) wrap.hidden = true;
-    if (document.body) document.body.classList.remove("has-inquire-quote");
+    if (document.body) {
+      document.body.classList.remove("has-inquire-quote");
+      document.body.classList.remove("tawk-maximized");
+    }
   }
 
   function showInquireQuote(info) {
@@ -272,7 +304,12 @@
     var info = productInfoFromButton(btn);
     showInquireQuote(info);
     whenTawkReady(function (api) {
+      bindTawkQuotePosition();
       sendProductToTawk(api, info);
+      if (typeof setTimeout === "function") {
+        setTimeout(syncQuotePosition, 80);
+        setTimeout(syncQuotePosition, 600);
+      } else syncQuotePosition();
     });
   }
 

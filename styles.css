@@ -364,3 +364,16 @@ footer{padding-bottom:5.5rem}
     bottom:max(19rem, calc(env(safe-area-inset-bottom) + 18.5rem));
   }
 }
+
+/* When the Tawk window is open, sit the quote card to the left of it (not over the input) */
+body.tawk-maximized .inquire-quote{
+  right:max(1rem, calc(env(safe-area-inset-right) + 25.25rem));
+  bottom:max(1.25rem, calc(env(safe-area-inset-bottom) + 1.15rem));
+}
+@media (max-width:640px){
+  body.tawk-maximized .inquire-quote{
+    right:.7rem;left:.7rem;width:auto;
+    bottom:auto;
+    top:max(.6rem, env(safe-area-inset-top));
+  }
+}
