@@ -23,7 +23,7 @@
     return escapeHtml(value);
   }
 
-  var ASSET_VERSION = "202611172300";
+  var ASSET_VERSION = "202611172255";
 
   function withCacheBust(href) {
     href = String(href || "");
@@ -256,8 +256,51 @@
     }
   }
 
+  function chatIsOngoing() {
+    try {
+      return !!(
+        window.Tawk_API &&
+        typeof window.Tawk_API.isChatOngoing === "function" &&
+        window.Tawk_API.isChatOngoing()
+      );
+    } catch (err) {
+      return false;
+    }
+  }
+
+  function currentUnreadCount() {
+    try {
+      if (window.Tawk_API && typeof window.Tawk_API.getUnreadCount === "function") {
+        return Number(window.Tawk_API.getUnreadCount()) || 0;
+      }
+    } catch (err) {}
+    return 0;
+  }
+
+  function maybeOpenForUnread(count) {
+    count = Number(count);
+    if (isNaN(count)) count = currentUnreadCount();
+    setUnreadBadge(count);
+    if (count <= 0 || isTawkMaximized()) return;
+    // Do not pop the window for a first-time greeting. Auto-open only when
+    // the visitor already started a chat, so agent replies are not missed.
+    if (initTawkLauncher.userOpened || chatIsOngoing()) openTawkChat(window.Tawk_API);
+  }
+
+  function enforceHiddenLauncher() {
+    if (initTawkLauncher.userOpened) return;
+    if (chatIsOngoing() && currentUnreadCount() > 0) return;
+    try {
+      if (window.Tawk_API && typeof window.Tawk_API.minimize === "function" && isTawkMaximized()) {
+        window.Tawk_API.minimize();
+      }
+    } catch (err) {}
+    hideTawkLauncher(window.Tawk_API);
+  }
+
   function openTawkChat(api) {
     if (typeof window === "undefined") return;
+    initTawkLauncher.userOpened = true;
     closeFloatPanel();
     window.Tawk_API = window.Tawk_API || {};
     function go(a) {
@@ -285,12 +328,17 @@
     initTawkLauncher.bound = true;
     window.Tawk_API = window.Tawk_API || {};
     hookTawk("onLoad", function () {
-      if (!isTawkMaximized()) hideTawkLauncher(window.Tawk_API);
-      try {
-        if (typeof window.Tawk_API.getUnreadCount === "function") {
-          setUnreadBadge(window.Tawk_API.getUnreadCount());
+      var unread = currentUnreadCount();
+      setUnreadBadge(unread);
+      if (unread > 0 && chatIsOngoing()) {
+        openTawkChat(window.Tawk_API);
+      } else {
+        hideTawkLauncher(window.Tawk_API);
+        if (typeof setTimeout === "function") {
+          setTimeout(enforceHiddenLauncher, 400);
+          setTimeout(enforceHiddenLauncher, 1200);
         }
-      } catch (err) {}
+      }
     });
     hookTawk("onChatMinimized", function () {
       hideTawkLauncher(window.Tawk_API);
@@ -303,19 +351,24 @@
       syncQuotePosition();
     });
     hookTawk("onChatMaximized", function () {
+      if (!initTawkLauncher.userOpened) {
+        enforceHiddenLauncher();
+        return;
+      }
       closeFloatPanel();
       setUnreadBadge(0);
       syncQuotePosition();
     });
     hookTawk("onChatMessageAgent", function () {
-      openTawkChat(window.Tawk_API);
+      maybeOpenForUnread(currentUnreadCount() || 1);
     });
     hookTawk("onUnreadCountChanged", function (count) {
-      setUnreadBadge(count);
-      if (Number(count) > 0 && !isTawkMaximized()) openTawkChat(window.Tawk_API);
+      maybeOpenForUnread(count);
     });
     if (typeof window.Tawk_API.maximize === "function") {
-      if (!isTawkMaximized()) hideTawkLauncher(window.Tawk_API);
+      if (!initTawkLauncher.userOpened && !(chatIsOngoing() && currentUnreadCount() > 0)) {
+        hideTawkLauncher(window.Tawk_API);
+      }
     }
   }
 
