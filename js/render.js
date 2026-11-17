@@ -23,7 +23,7 @@
     return escapeHtml(value);
   }
 
-  var ASSET_VERSION = "202611171850";
+  var ASSET_VERSION = "202611171900";
 
   function withCacheBust(href) {
     href = String(href || "");
@@ -54,9 +54,32 @@
     return "https://embed.tawk.to/" + encodeURIComponent(chat.propertyId) + "/" + encodeURIComponent(widgetId);
   }
 
+  function absoluteAssetUrl(content, path, options) {
+    var url = assetUrl(path, options);
+    if (!url) return "";
+    if (/^(https?:|blob:|data:)/i.test(url)) return url;
+    return siteUrl(content) + String(url).replace(/^\//, "");
+  }
+
+  function productAnchorId(item, prefix) {
+    var id = String((item && item.id) || "").trim();
+    if (id) return id;
+    var src = String((item && (item.name || item.title)) || prefix || "item");
+    var slug = src.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "").slice(0, 40);
+    return (prefix || "item") + (slug ? "-" + slug : "");
+  }
+
+  function productPageLink(content, id) {
+    var base = siteUrl(content);
+    id = String(id || "").trim();
+    return id ? base + "#" + id : base;
+  }
+
   function renderInquireButton(content, info) {
     if (!chatEnabled(content)) return "";
     info = info || {};
+    var id = info.id || "";
+    var link = info.link || productPageLink(content, id);
     return (
       '<button type="button" class="btn btn-blue inquire-product" data-name="' +
       escapeAttr(info.name || "") +
@@ -66,6 +89,12 @@
       escapeAttr(info.price || "") +
       '" data-section="' +
       escapeAttr(info.section || "") +
+      '" data-image="' +
+      escapeAttr(info.image || "") +
+      '" data-link="' +
+      escapeAttr(link) +
+      '" data-id="' +
+      escapeAttr(id) +
       '">詢問這個商品</button>'
     );
   }
@@ -91,57 +120,160 @@
     );
   }
 
-  function openProductInquiry(btn) {
-    if (!btn || typeof window === "undefined") return;
-    var attrs = {
+  function tawkSafeValue(value) {
+    var text = String(value == null ? "" : value).trim();
+    if (!text) return "";
+    if (text.length > 255) return text.slice(0, 252) + "...";
+    return text;
+  }
+
+  function tawkSafeMeta(obj) {
+    var out = {};
+    Object.keys(obj || {}).forEach(function (key) {
+      if (!/^[A-Za-z0-9-]+$/.test(key)) return;
+      var val = tawkSafeValue(obj[key]);
+      if (val) out[key] = val;
+    });
+    return out;
+  }
+
+  function inquirySummary(info) {
+    var bits = [info.name, info.model, info.price].filter(function (part) {
+      return String(part || "").trim();
+    });
+    var text = "客人詢問商品：" + bits.join(" ");
+    if (info.section) text += "（" + info.section + "）";
+    return text;
+  }
+
+  function inquiryPrefill(info) {
+    var bits = [info.name, info.model, info.price].filter(function (part) {
+      return String(part || "").trim();
+    });
+    return "我想詢問：" + bits.join(" ");
+  }
+
+  function productInfoFromButton(btn) {
+    var info = {
       name: btn.getAttribute("data-name") || "",
       model: btn.getAttribute("data-model") || "",
       price: btn.getAttribute("data-price") || "",
-      section: btn.getAttribute("data-section") || ""
+      section: btn.getAttribute("data-section") || "",
+      image: btn.getAttribute("data-image") || "",
+      link: btn.getAttribute("data-link") || "",
+      id: btn.getAttribute("data-id") || ""
     };
-    function apply(api) {
-      if (!api) return;
-      try {
-        if (typeof api.setAttributes === "function") {
-          api.setAttributes(
-            {
-              name: attrs.name,
-              model: attrs.model,
-              price: attrs.price,
-              section: attrs.section
-            },
-            function () {}
-          );
-        }
-      } catch (err) {}
-      try {
-        if (typeof api.addEvent === "function") {
-          api.addEvent(
-            "詢問商品",
-            {
-              name: attrs.name,
-              model: attrs.model,
-              price: attrs.price,
-              section: attrs.section
-            },
-            function () {}
-          );
-        }
-      } catch (err2) {}
-      try {
-        if (typeof api.maximize === "function") api.maximize();
-      } catch (err3) {}
+    if (!info.link && info.id && typeof location !== "undefined") {
+      info.link = location.protocol + "//" + location.host + location.pathname.replace(/index\.html$/, "") + "#" + info.id;
     }
+    return info;
+  }
+
+  function hideInquireQuote() {
+    if (typeof document === "undefined") return;
+    var wrap = document.getElementById("inquire-quote");
+    if (wrap) wrap.hidden = true;
+    if (document.body) document.body.classList.remove("has-inquire-quote");
+  }
+
+  function showInquireQuote(info) {
+    if (typeof document === "undefined" || !document.body) return;
+    info = info || {};
+    var wrap = document.getElementById("inquire-quote");
+    if (!wrap) {
+      wrap = document.createElement("aside");
+      wrap.id = "inquire-quote";
+      wrap.className = "inquire-quote";
+      wrap.setAttribute("role", "status");
+      document.body.appendChild(wrap);
+    }
+    var thumb = info.image
+      ? '<img class="inquire-quote-thumb" src="' + escapeAttr(info.image) + '" alt="">'
+      : '<div class="inquire-quote-thumb inquire-quote-placeholder" aria-hidden="true">維</div>';
+    var meta = [info.model, info.price].filter(Boolean).join(" · ");
+    wrap.innerHTML =
+      '<button type="button" class="inquire-quote-close" aria-label="關閉引用">✕</button>' +
+      thumb +
+      '<div class="inquire-quote-body">' +
+      '<p class="inquire-quote-kicker">正在詢問此商品</p>' +
+      '<p class="inquire-quote-name">' +
+      escapeHtml(info.name || "商品") +
+      "</p>" +
+      (meta ? '<p class="inquire-quote-meta">' + escapeHtml(meta) + "</p>" : "") +
+      "</div>";
+    wrap.hidden = false;
+    document.body.classList.add("has-inquire-quote");
+    var close = wrap.querySelector(".inquire-quote-close");
+    if (close) close.onclick = function (e) {
+      if (e) e.preventDefault();
+      hideInquireQuote();
+    };
+  }
+
+  function whenTawkReady(fn) {
     window.Tawk_API = window.Tawk_API || {};
     if (typeof window.Tawk_API.maximize === "function") {
-      apply(window.Tawk_API);
+      fn(window.Tawk_API);
       return;
     }
     var prev = window.Tawk_API.onLoad;
     window.Tawk_API.onLoad = function () {
       if (typeof prev === "function") prev();
-      apply(window.Tawk_API);
+      fn(window.Tawk_API);
     };
+  }
+
+  function sendProductToTawk(api, info) {
+    if (!api) return;
+    var meta = tawkSafeMeta({
+      summary: inquirySummary(info),
+      name: info.name,
+      model: info.model,
+      price: info.price,
+      section: info.section,
+      image: info.image,
+      link: info.link
+    });
+    var attrs = tawkSafeMeta({
+      "product-name": info.name,
+      "product-model": info.model,
+      "product-price": info.price,
+      "product-section": info.section,
+      "product-image": info.image,
+      "product-link": info.link
+    });
+    try {
+      if (typeof api.setAttributes === "function" && Object.keys(attrs).length) {
+        api.setAttributes(attrs, function () {});
+      }
+    } catch (err) {}
+    try {
+      if (typeof api.addEvent === "function") {
+        // Event names may only be alphanumeric or dash; Chinese text goes in metadata.summary
+        api.addEvent("product-inquiry", meta, function () {});
+      }
+    } catch (err2) {}
+    try {
+      if (typeof api.maximize === "function") api.maximize();
+    } catch (err3) {}
+    function prefill() {
+      try {
+        if (typeof api.setChatInputMessage === "function") {
+          api.setChatInputMessage(inquiryPrefill(info), function () {});
+        }
+      } catch (err4) {}
+    }
+    prefill();
+    if (typeof setTimeout === "function") setTimeout(prefill, 500);
+  }
+
+  function openProductInquiry(btn) {
+    if (!btn || typeof window === "undefined") return;
+    var info = productInfoFromButton(btn);
+    showInquireQuote(info);
+    whenTawkReady(function (api) {
+      sendProductToTawk(api, info);
+    });
   }
 
   function normalizePhones(store) {
@@ -645,7 +777,8 @@
       "  <script>(function(){var r=document,s=r.body;if(!s||s.getAttribute('data-yf-bound')==='1')return;s.setAttribute('data-yf-bound','1');\n" +
       "function scopeOf(el){return (el&&el.closest&&el.closest('.filter-scope'))||s;}\n" +
       "function apply(scope,cat,btn){scope=scope||s;var btns=scope.querySelectorAll('.filters button'),cards=scope.querySelectorAll('.filter-item'),qEl=scope.querySelector('.filter-search'),q=qEl?(qEl.value||'').trim().toLowerCase():'',i;if(cat==null){var a=scope.querySelector('.filters button.is-active');cat=a?a.getAttribute('data-cat'):'all';}for(i=0;i<btns.length;i++){var on=btn?btns[i]===btn:btns[i].getAttribute('data-cat')===cat;btns[i].setAttribute('aria-pressed',on?'true':'false');btns[i].classList.toggle('is-active',on);if(on)cat=btns[i].getAttribute('data-cat')||cat;}for(i=0;i<cards.length;i++){var ok=cat==='all'||cards[i].getAttribute('data-category')===cat;var hay=(cards[i].getAttribute('data-search')||cards[i].textContent||'').toLowerCase();cards[i].hidden=!(ok&&(!q||hay.indexOf(q)!==-1));}}\n" +
-      "function inquire(btn){if(!btn)return;var a={name:btn.getAttribute('data-name')||'',model:btn.getAttribute('data-model')||'',price:btn.getAttribute('data-price')||'',section:btn.getAttribute('data-section')||''};function go(api){if(!api)return;try{if(typeof api.setAttributes==='function')api.setAttributes({name:a.name,model:a.model,price:a.price,section:a.section},function(){});}catch(err){}try{if(typeof api.addEvent==='function')api.addEvent('\u8a62\u554f\u5546\u54c1',{name:a.name,model:a.model,price:a.price,section:a.section},function(){});}catch(err){}try{if(typeof api.maximize==='function')api.maximize();}catch(err){}}window.Tawk_API=window.Tawk_API||{};if(typeof window.Tawk_API.maximize==='function'){go(window.Tawk_API);return;}var prev=window.Tawk_API.onLoad;window.Tawk_API.onLoad=function(){if(typeof prev==='function')prev();go(window.Tawk_API);};}\nfunction setOpen(open){var w=s.querySelector('.float-contact');if(!w)return;var t=w.querySelector('.float-toggle'),p=w.querySelector('.float-panel');w.classList.toggle('is-open',open);if(t)t.setAttribute('aria-expanded',open?'true':'false');if(p)p.hidden=!open;}\n" +
+      "function inquire(btn){if(window.YifangRender&&typeof window.YifangRender.openProductInquiry==='function'){window.YifangRender.openProductInquiry(btn);}}\n" +
+      "function setOpen(open){var w=s.querySelector('.float-contact');if(!w)return;var t=w.querySelector('.float-toggle'),p=w.querySelector('.float-panel');w.classList.toggle('is-open',open);if(t)t.setAttribute('aria-expanded',open?'true':'false');if(p)p.hidden=!open;}\n" +
       "s.addEventListener('click',function(e){var t=e.target;if(!t||!t.closest)return;var fb=t.closest('.filters button');if(fb){apply(scopeOf(fb),fb.getAttribute('data-cat'),fb);return;}var th=t.closest('.thumbs button');if(th){var g=th.closest('.gallery');if(!g)return;var main=g.querySelector('.main-photo');if(main&&th.getAttribute('data-src')){main.src=th.getAttribute('data-src');if(th.getAttribute('data-alt'))main.alt=th.getAttribute('data-alt');}g.querySelectorAll('.thumbs button').forEach(function(x){x.setAttribute('aria-current',x===th?'true':'false');});return;}var iq=t.closest('.inquire-product');if(iq){e.preventDefault();inquire(iq);return;}var tg=t.closest('.float-toggle');if(tg){var w=tg.closest('.float-contact');setOpen(!(w&&w.classList.contains('is-open')));return;}if(!t.closest('.float-contact'))setOpen(false);});\n" +
       "s.addEventListener('input',function(e){var t=e.target;if(t&&t.classList&&t.classList.contains('filter-search'))apply(scopeOf(t));});\n" +
       "r.addEventListener('keydown',function(e){if(e.key==='Escape')setOpen(false);});})();</script>\n"
@@ -834,7 +967,7 @@
     var images = (group.images || []).filter(Boolean);
     var name = group.name || "";
     var alt = name;
-    var id = group.id || "";
+    var id = productAnchorId(group, "used");
     var category = group.category || "";
     var main = images[0] ? assetUrl(images[0], options) : "";
     var thumbs = "";
@@ -880,7 +1013,9 @@
       name: name,
       model: group.sealerType || "",
       price: group.price || "",
-      section: labelsOf(content).used
+      section: labelsOf(content).used,
+      id: id,
+      image: images[0] ? absoluteAssetUrl(content, images[0], options) : ""
     });
     var callButtons = renderPhoneButtons(store, {
       className: "btn btn-outline",
@@ -1029,11 +1164,14 @@
         '" width="800" height="800" loading="lazy"></div>'
       : '<div class="gallery">' + (badgeHtml ? '<div class="badge-wrap">' + badgeHtml + "</div>" : "") + "</div>";
     var callLabel = section.callLabel || "電話詢問";
+    var id = productAnchorId(item, "new");
     var inquireBtn = renderInquireButton(content, {
       name: title,
       model: item.model || "",
       price: item.price || "",
-      section: labelsOf(content).new
+      section: labelsOf(content).new,
+      id: id,
+      image: item.image ? absoluteAssetUrl(content, item.image, options) : ""
     });
     var inquiry = renderInquiryButtons(content, {
       className: "btn btn-outline",
@@ -1041,7 +1179,7 @@
     });
     return (
       '<article class="card machine new-machine" id="' +
-      escapeAttr(item.id || "") +
+      escapeAttr(id) +
       '">\n' +
       "  " +
       gallery +
@@ -1095,11 +1233,14 @@
     var section = content.partsSection || {};
     var title = item.title || "";
     var img = item.image ? assetUrl(item.image, options) : "";
+    var id = productAnchorId(item, "part");
     var inquireBtn = renderInquireButton(content, {
       name: title,
       model: item.model || "",
       price: item.price || "",
-      section: labelsOf(content).parts
+      section: labelsOf(content).parts,
+      id: id,
+      image: item.image ? absoluteAssetUrl(content, item.image, options) : ""
     });
     var search = (title + " " + (item.category || "")).toLowerCase();
     var thumb = img
@@ -1115,7 +1256,7 @@
       '" data-search="' +
       escapeAttr(search) +
       '" id="' +
-      escapeAttr(item.id || "") +
+      escapeAttr(id) +
       '">' +
       thumb +
       '<div class="part-body">' +
