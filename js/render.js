@@ -182,20 +182,38 @@
     var labels = (content && content.labels) || {};
     var services = (content && content.services) || {};
     var used = (content && content.usedSection) || {};
+    var neu = (content && content.newSection) || {};
+    var partsSec = (content && content.partsSection) || {};
     var contact = (content && content.contact) || {};
     return {
       about: labels.about || "關於我們",
       services: labels.services || services.title || "服務項目",
       used: labels.used || used.title || "中古機專區",
+      new: labels.new || neu.title || "全新封口機",
+      parts: labels.parts || partsSec.title || "零件專區",
       contact: labels.contact || contact.title || "聯絡我們",
       faq: labels.faq || "常見問題",
       support: labels.support || "客服諮詢",
       heroShopee: labels.heroShopee || "蝦皮賣場",
-      heroUsed: labels.heroUsed || "中古機專區",
+      heroUsed: labels.heroUsed || labels.used || used.title || "中古機專區",
+      heroNew: labels.heroNew || labels.new || neu.title || "全新封口機",
+      heroParts: labels.heroParts || labels.parts || partsSec.title || "零件專區",
       contactShopee: labels.contactShopee || "打開蝦皮賣場",
       filterAll: labels.filterAll || "全部",
-      floatToggle: labels.floatToggle || labels.support || "客服諮詢"
+      floatToggle: labels.floatToggle || labels.support || "客服諮詢",
+      partsSearch: labels.partsSearch || partsSec.searchPlaceholder || "搜尋零件名稱"
     };
+  }
+
+  function visibleCatalog(items) {
+    return (items || []).filter(function (item) {
+      return item && item.hidden !== true;
+    });
+  }
+
+  function parseTwdPrice(value) {
+    var digits = String(value || "").replace(/[^\d.]/g, "");
+    return digits || "";
   }
 
   function paymentNoteOf(content) {
@@ -385,21 +403,45 @@
     );
   }
 
+  function filterScopeOf(el, fallback) {
+    if (el && el.closest) {
+      var found = el.closest(".filter-scope");
+      if (found) return found;
+    }
+    return fallback;
+  }
+
+  function currentFilterCat(scope) {
+    if (!scope || !scope.querySelector) return "all";
+    var active = scope.querySelector('.filters button[aria-pressed="true"]');
+    return (active && active.getAttribute("data-cat")) || "all";
+  }
+
   function applyCategoryFilter(root, cat, btn) {
     root = root || (typeof document !== "undefined" ? document : null);
     if (!root || !root.querySelectorAll) return;
-    var scope = root.body || root;
-    var buttons = (scope.querySelectorAll ? scope : root).querySelectorAll(".filters button");
-    var cards = (scope.querySelectorAll ? scope : root).querySelectorAll(".machine");
+    var scope = filterScopeOf(btn, root.body || root);
+    if (!scope || !scope.querySelectorAll) scope = root.body || root;
+    var buttons = scope.querySelectorAll(".filters button");
+    var cards = scope.querySelectorAll(".filter-item");
+    var qEl = scope.querySelector(".filter-search");
+    var q = qEl ? String(qEl.value || "").trim().toLowerCase() : "";
+    if (cat == null) cat = currentFilterCat(scope);
     for (var i = 0; i < buttons.length; i++) {
       var on = btn ? buttons[i] === btn : buttons[i].getAttribute("data-cat") === cat;
       buttons[i].setAttribute("aria-pressed", on ? "true" : "false");
-      if (on) buttons[i].classList.add("is-active");
-      else buttons[i].classList.remove("is-active");
+      if (on) {
+        buttons[i].classList.add("is-active");
+        cat = buttons[i].getAttribute("data-cat") || cat;
+      } else {
+        buttons[i].classList.remove("is-active");
+      }
     }
     for (var j = 0; j < cards.length; j++) {
-      var show = cat === "all" || cards[j].getAttribute("data-category") === cat;
-      cards[j].hidden = !show;
+      var matchCat = cat === "all" || cards[j].getAttribute("data-category") === cat;
+      var hay = (cards[j].getAttribute("data-search") || cards[j].textContent || "").toLowerCase();
+      var matchQ = !q || hay.indexOf(q) !== -1;
+      cards[j].hidden = !(matchCat && matchQ);
     }
   }
 
@@ -427,7 +469,7 @@
       if (!t || !t.closest) return;
       var filterBtn = t.closest(".filters button");
       if (filterBtn && scope.contains(filterBtn)) {
-        applyCategoryFilter(scope, filterBtn.getAttribute("data-cat"), filterBtn);
+        applyCategoryFilter(filterScopeOf(filterBtn, scope), filterBtn.getAttribute("data-cat"), filterBtn);
         return;
       }
       var thumb = t.closest(".thumbs button");
@@ -455,6 +497,14 @@
       if (!t.closest(".float-contact")) setFloatOpen(false);
     });
 
+    if (scope.addEventListener) {
+      scope.addEventListener("input", function (e) {
+        var t = e.target;
+        if (!t || !t.classList || !t.classList.contains("filter-search")) return;
+        applyCategoryFilter(filterScopeOf(t, scope), null, null);
+      });
+    }
+
     var doc = scope.ownerDocument || (scope.nodeType === 9 ? scope : document);
     if (doc && doc.addEventListener) {
       doc.addEventListener("keydown", function (e) {
@@ -466,9 +516,11 @@
   function interactionScript() {
     return (
       "  <script>(function(){var r=document,s=r.body;if(!s||s.getAttribute('data-yf-bound')==='1')return;s.setAttribute('data-yf-bound','1');\n" +
-      "function apply(cat,btn){var btns=s.querySelectorAll('.filters button'),cards=s.querySelectorAll('.machine'),i;for(i=0;i<btns.length;i++){var on=btn?btns[i]===btn:btns[i].getAttribute('data-cat')===cat;btns[i].setAttribute('aria-pressed',on?'true':'false');btns[i].classList.toggle('is-active',on);}for(i=0;i<cards.length;i++){cards[i].hidden=!(cat==='all'||cards[i].getAttribute('data-category')===cat);}}\n" +
+      "function scopeOf(el){return (el&&el.closest&&el.closest('.filter-scope'))||s;}\n" +
+      "function apply(scope,cat,btn){scope=scope||s;var btns=scope.querySelectorAll('.filters button'),cards=scope.querySelectorAll('.filter-item'),qEl=scope.querySelector('.filter-search'),q=qEl?(qEl.value||'').trim().toLowerCase():'',i;if(cat==null){var a=scope.querySelector('.filters button.is-active');cat=a?a.getAttribute('data-cat'):'all';}for(i=0;i<btns.length;i++){var on=btn?btns[i]===btn:btns[i].getAttribute('data-cat')===cat;btns[i].setAttribute('aria-pressed',on?'true':'false');btns[i].classList.toggle('is-active',on);if(on)cat=btns[i].getAttribute('data-cat')||cat;}for(i=0;i<cards.length;i++){var ok=cat==='all'||cards[i].getAttribute('data-category')===cat;var hay=(cards[i].getAttribute('data-search')||cards[i].textContent||'').toLowerCase();cards[i].hidden=!(ok&&(!q||hay.indexOf(q)!==-1));}}\n" +
       "function setOpen(open){var w=s.querySelector('.float-contact');if(!w)return;var t=w.querySelector('.float-toggle'),p=w.querySelector('.float-panel');w.classList.toggle('is-open',open);if(t)t.setAttribute('aria-expanded',open?'true':'false');if(p)p.hidden=!open;}\n" +
-      "s.addEventListener('click',function(e){var t=e.target;if(!t||!t.closest)return;var fb=t.closest('.filters button');if(fb){apply(fb.getAttribute('data-cat'),fb);return;}var th=t.closest('.thumbs button');if(th){var g=th.closest('.gallery');if(!g)return;var main=g.querySelector('.main-photo');if(main&&th.getAttribute('data-src')){main.src=th.getAttribute('data-src');if(th.getAttribute('data-alt'))main.alt=th.getAttribute('data-alt');}g.querySelectorAll('.thumbs button').forEach(function(x){x.setAttribute('aria-current',x===th?'true':'false');});return;}var tg=t.closest('.float-toggle');if(tg){var w=tg.closest('.float-contact');setOpen(!(w&&w.classList.contains('is-open')));return;}if(!t.closest('.float-contact'))setOpen(false);});\n" +
+      "s.addEventListener('click',function(e){var t=e.target;if(!t||!t.closest)return;var fb=t.closest('.filters button');if(fb){apply(scopeOf(fb),fb.getAttribute('data-cat'),fb);return;}var th=t.closest('.thumbs button');if(th){var g=th.closest('.gallery');if(!g)return;var main=g.querySelector('.main-photo');if(main&&th.getAttribute('data-src')){main.src=th.getAttribute('data-src');if(th.getAttribute('data-alt'))main.alt=th.getAttribute('data-alt');}g.querySelectorAll('.thumbs button').forEach(function(x){x.setAttribute('aria-current',x===th?'true':'false');});return;}var tg=t.closest('.float-toggle');if(tg){var w=tg.closest('.float-contact');setOpen(!(w&&w.classList.contains('is-open')));return;}if(!t.closest('.float-contact'))setOpen(false);});\n" +
+      "s.addEventListener('input',function(e){var t=e.target;if(t&&t.classList&&t.classList.contains('filter-search'))apply(scopeOf(t));});\n" +
       "r.addEventListener('keydown',function(e){if(e.key==='Escape')setOpen(false);});})();</script>\\n"
     );
   }
@@ -540,6 +592,67 @@
     return JSON.stringify(data);
   }
 
+  function renderCatalogJsonLd(content) {
+    var url = siteUrl(content);
+    var items = visibleCatalog(content.newMachines || []);
+    if (!items.length) return "";
+    var list = items.map(function (item, i) {
+      var product = {
+        "@type": "Product",
+        name: item.title || "",
+        url: item.url || url,
+        offers: {
+          "@type": "Offer",
+          priceCurrency: "TWD",
+          price: parseTwdPrice(item.price),
+          availability: "https://schema.org/InStock",
+          url: item.url || url
+        }
+      };
+      if (item.image) product.image = url + String(item.image).replace(/^\//, "");
+      if (item.badge) product.description = item.badge;
+      return {
+        "@type": "ListItem",
+        position: i + 1,
+        item: product
+      };
+    });
+    return JSON.stringify({
+      "@context": "https://schema.org",
+      "@type": "ItemList",
+      name: labelsOf(content).new,
+      numberOfItems: list.length,
+      itemListElement: list
+    });
+  }
+
+  function renderInquiryButtons(content, options) {
+    options = options || {};
+    var className = options.className || "btn btn-outline";
+    var store = (content && content.store) || {};
+    var callLabel = options.callLabel || "電話詢問";
+    var html = [];
+    var phones = renderPhoneButtons(store, {
+      className: className,
+      singlePrefix: callLabel,
+      join: "\n      "
+    });
+    if (phones) html.push(phones);
+    visibleChannels(content).forEach(function (ch) {
+      if (String(ch.type || "").toLowerCase() !== "line") return;
+      html.push(
+        '<a class="' +
+          escapeAttr(className) +
+          ' channel-line" href="' +
+          escapeAttr(channelHref(ch)) +
+          '" rel="noopener noreferrer" target="_blank">' +
+          escapeHtml(channelDisplay(ch)) +
+          "</a>"
+      );
+    });
+    return html.join("\n      ");
+  }
+
   function renderHead(content, options) {
     var site = content.site || {};
     var store = content.store || {};
@@ -578,6 +691,10 @@
       '  <link rel="apple-touch-icon" href="apple-touch-icon.png">\n' +
       '  <link rel="stylesheet" href="' + escapeAttr((options && options.stylesheet) || "styles.css") + '">\n' +
       '  <script type="application/ld+json">' + renderJsonLd(content) + "</script>\n" +
+      (function () {
+        var extra = renderCatalogJsonLd(content);
+        return extra ? '  <script type="application/ld+json">' + extra + "</script>\n" : "";
+      })() +
       "</head>\n"
     );
   }
@@ -639,7 +756,7 @@
       join: "\n      "
     });
     return (
-      '<article class="card machine" data-category="' +
+      '<article class="card machine filter-item" data-category="' +
       escapeAttr(category) +
       '" id="' +
       escapeAttr(id) +
@@ -742,7 +859,7 @@
       .join("\n");
     return (
       '    <section id="used">\n' +
-      '      <div class="wrap">\n' +
+      '      <div class="wrap filter-scope">\n' +
       "        <h2>" +
       escapeHtml(labelsOf(content).used) +
       "</h2>\n" +
@@ -761,6 +878,188 @@
       cards +
       "\n" +
       "        </div>\n" +
+      "      </div>\n" +
+      "    </section>\n"
+    );
+  }
+
+
+  function renderNewMachineCard(item, content, options) {
+    options = options || {};
+    var section = content.newSection || {};
+    var title = item.title || "";
+    var img = item.image ? assetUrl(item.image, options) : "";
+    var badge = String(item.badge || "").trim();
+    var badgeHtml = badge ? '<span class="badge">' + escapeHtml(badge) + "</span>" : "";
+    var gallery = img
+      ? '<div class="gallery">' +
+        (badgeHtml ? '<div class="badge-wrap">' + badgeHtml + "</div>" : "") +
+        '<img class="main-photo" src="' +
+        escapeAttr(img) +
+        '" alt="' +
+        escapeAttr(title) +
+        '" width="800" height="800" loading="lazy"></div>'
+      : '<div class="gallery">' + (badgeHtml ? '<div class="badge-wrap">' + badgeHtml + "</div>" : "") + "</div>";
+    var buyLabel = section.buyLabel || "到蝦皮購買";
+    var callLabel = section.callLabel || "電話詢問";
+    var inquiry = renderInquiryButtons(content, {
+      className: "btn btn-outline",
+      callLabel: callLabel
+    });
+    return (
+      '<article class="card machine new-machine" id="' +
+      escapeAttr(item.id || "") +
+      '">\n' +
+      "  " +
+      gallery +
+      "\n" +
+      '  <div class="machine-body">\n' +
+      (badgeHtml ? "    " + badgeHtml + "\n" : "") +
+      "    <h3>" +
+      escapeHtml(title) +
+      "</h3>\n" +
+      '    <p class="approx">' +
+      escapeHtml(item.price || "") +
+      "</p>\n" +
+      '    <div class="actions">\n' +
+      '      <a class="btn btn-blue" href="' +
+      escapeAttr(item.url || "#") +
+      '" rel="noopener noreferrer" target="_blank">' +
+      escapeHtml(buyLabel) +
+      "</a>\n" +
+      (inquiry ? "      " + inquiry + "\n" : "") +
+      "    </div>\n" +
+      "  </div>\n" +
+      "</article>"
+    );
+  }
+
+  function renderNewSection(content, options) {
+    var items = visibleCatalog(content.newMachines || []);
+    if (!items.length) return "";
+    var section = content.newSection || {};
+    var cards = items
+      .map(function (item) {
+        return renderNewMachineCard(item, content, options);
+      })
+      .join("\n");
+    return (
+      '    <section id="new">\n' +
+      '      <div class="wrap">\n' +
+      "        <h2>" +
+      escapeHtml(labelsOf(content).new) +
+      "</h2>\n" +
+      '        <p class="lead">' +
+      escapeHtml(section.lead || "") +
+      "</p>\n" +
+      renderPaymentLine(content) +
+      '        <div class="cards">\n' +
+      cards +
+      "\n        </div>\n" +
+      "      </div>\n" +
+      "    </section>\n"
+    );
+  }
+
+  function renderPartCard(item, content, options) {
+    options = options || {};
+    var section = content.partsSection || {};
+    var title = item.title || "";
+    var img = item.image ? assetUrl(item.image, options) : "";
+    var buyLabel = section.buyLabel || "到蝦皮購買";
+    var search = (title + " " + (item.category || "")).toLowerCase();
+    var thumb = img
+      ? '<img src="' +
+        escapeAttr(img) +
+        '" alt="' +
+        escapeAttr(title) +
+        '" width="400" height="400" loading="lazy">'
+      : '<div class="part-placeholder" aria-hidden="true">維</div>';
+    return (
+      '<article class="card part-card filter-item" data-category="' +
+      escapeAttr(item.category || "") +
+      '" data-search="' +
+      escapeAttr(search) +
+      '" id="' +
+      escapeAttr(item.id || "") +
+      '">' +
+      thumb +
+      '<div class="part-body">' +
+      '<div class="kicker">' +
+      escapeHtml(item.category || "") +
+      "</div>" +
+      "<h3>" +
+      escapeHtml(title) +
+      "</h3>" +
+      '<p class="approx">' +
+      escapeHtml(item.price || "") +
+      "</p>" +
+      '<a class="btn btn-outline" href="' +
+      escapeAttr(item.url || "#") +
+      '" rel="noopener noreferrer" target="_blank">' +
+      escapeHtml(buyLabel) +
+      "</a>" +
+      "</div></article>"
+    );
+  }
+
+  function renderPartsFilters(content) {
+    var labels = labelsOf(content);
+    var cats = uniqueCategories(visibleCatalog(content.parts || []));
+    var buttons =
+      '<button type="button" data-cat="all" class="is-active" aria-pressed="true">' +
+      escapeHtml(labels.filterAll) +
+      "</button>" +
+      cats
+        .map(function (cat) {
+          return (
+            '<button type="button" data-cat="' +
+            escapeAttr(cat) +
+            '" aria-pressed="false">' +
+            escapeHtml(cat) +
+            "</button>"
+          );
+        })
+        .join("");
+    return (
+      '<div class="parts-toolbar">' +
+      '<div class="filters" role="toolbar" aria-label="依類別篩選零件">\n          ' +
+      buttons +
+      "\n        </div>" +
+      '<label class="filter-search-wrap"><span class="visually-hidden">' +
+      escapeHtml(labels.partsSearch) +
+      '</span><input type="search" class="filter-search" placeholder="' +
+      escapeAttr(labels.partsSearch) +
+      '" autocomplete="off"></label>' +
+      "</div>"
+    );
+  }
+
+  function renderPartsSection(content, options) {
+    var items = visibleCatalog(content.parts || []);
+    if (!items.length) return "";
+    var section = content.partsSection || {};
+    var cards = items
+      .map(function (item) {
+        return renderPartCard(item, content, options);
+      })
+      .join("\n");
+    return (
+      '    <section id="parts">\n' +
+      '      <div class="wrap filter-scope">\n' +
+      "        <h2>" +
+      escapeHtml(labelsOf(content).parts) +
+      "</h2>\n" +
+      '        <p class="lead">' +
+      escapeHtml(section.lead || "") +
+      "</p>\n" +
+      renderPaymentLine(content) +
+      "        " +
+      renderPartsFilters(content) +
+      "\n" +
+      '        <div class="parts-grid">\n' +
+      cards +
+      "\n        </div>\n" +
       "      </div>\n" +
       "    </section>\n"
     );
@@ -843,8 +1142,14 @@
       '          <li><a href="#services">' +
       escapeHtml(labels.services) +
       "</a></li>\n" +
+      '          <li><a href="#new">' +
+      escapeHtml(labels.new) +
+      "</a></li>\n" +
       '          <li><a href="#used">' +
       escapeHtml(labels.used) +
+      "</a></li>\n" +
+      '          <li><a href="#parts">' +
+      escapeHtml(labels.parts) +
       "</a></li>\n" +
       (visibleChannels(content).length
         ? '          <li><a href="#support">' +
@@ -892,8 +1197,14 @@
       '" rel="noopener noreferrer" target="_blank">' +
       escapeHtml(labels.heroShopee) +
       "</a>\n" +
+      '          <a class="btn btn-ghost" href="#new">' +
+      escapeHtml(labels.heroNew) +
+      "</a>\n" +
       '          <a class="btn btn-ghost" href="#used">' +
       escapeHtml(labels.heroUsed) +
+      "</a>\n" +
+      '          <a class="btn btn-ghost" href="#parts">' +
+      escapeHtml(labels.heroParts) +
       "</a>\n" +
       "        </div>\n" +
       '        <div class="meta-row">\n' +
@@ -950,7 +1261,11 @@
       "\n" +
       renderServices(content) +
       "\n" +
+      renderNewSection(content, options) +
+      "\n" +
       renderUsed(content, options) +
+      "\n" +
+      renderPartsSection(content, options) +
       (renderFaq(content) ? "\n" + renderFaq(content) : "\n") +
       '    <section id="contact">\n' +
       '      <div class="wrap contact-grid">\n' +
@@ -1162,6 +1477,7 @@
     phoneDisplay: phoneDisplay,
     phonesPlainText: phonesPlainText,
     uniqueCategories: uniqueCategories,
+    visibleCatalog: visibleCatalog,
     logoChar: logoChar,
     labelsOf: labelsOf,
     paymentNoteOf: paymentNoteOf,
@@ -1174,6 +1490,7 @@
     siteUrl: siteUrl,
     todayStamp: todayStamp,
     renderJsonLd: renderJsonLd,
+    renderCatalogJsonLd: renderCatalogJsonLd,
     renderMachineCard: renderMachineCard,
     renderDocument: renderDocument,
     renderSitemap: renderSitemap,

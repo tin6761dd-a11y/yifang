@@ -14,6 +14,7 @@
 
   var SEALER_TYPES = ["微電腦", "機械式", "碼錶機械式", "全自動", "非益芳", "未分類"];
   var CATEGORIES = ["二手封口機", "二手果糖機", "其他設備"];
+  var PART_CATEGORIES = ["封口機零件", "果糖機零件"];
   var CHANNEL_TYPES = [
     { value: "phone", label: "電話" },
     { value: "facebook", label: "Facebook" },
@@ -344,6 +345,108 @@
       .join("");
   }
 
+
+  function catalogPhotoHtml(src) {
+    if (!src) return '<div class="photos"></div>';
+    return (
+      '<div class="photos"><div class="photo" data-image="0">' +
+      '<img src="' +
+      YifangRender.escapeHtml(imageSrc(src)) +
+      '" alt="">' +
+      '<div class="photo-actions">' +
+      '<button type="button" class="btn btn-tiny btn-danger" data-act="img-del">刪</button>' +
+      "</div></div></div>"
+    );
+  }
+
+  function renderNewMachines() {
+    var items = (state.content && state.content.newMachines) || [];
+    if (!els.newList) return;
+    els.newList.innerHTML = items
+      .map(function (item, i) {
+        return (
+          '<article class="card" data-new="' +
+          i +
+          '">' +
+          '<div class="card-head">' +
+          '<span class="title">' +
+          YifangRender.escapeHtml(item.title || "未命名商品") +
+          "</span>" +
+          '<button type="button" class="btn btn-tiny btn-ghost" data-act="up">上移</button>' +
+          '<button type="button" class="btn btn-tiny btn-ghost" data-act="down">下移</button>' +
+          '<button type="button" class="btn btn-tiny btn-danger" data-act="del">刪除</button>' +
+          "</div>" +
+          '<label>品名 <input data-field="title" type="text" value="' +
+          YifangRender.escapeHtml(item.title || "") +
+          '"></label>' +
+          '<label>售價（例如 NT$17,800） <input data-field="price" type="text" value="' +
+          YifangRender.escapeHtml(item.price || "") +
+          '"></label>' +
+          '<label>蝦皮商品連結 <input data-field="url" type="url" value="' +
+          YifangRender.escapeHtml(item.url || "") +
+          '"></label>' +
+          '<label>標籤（選填，例如：展示機 9.99成新．保固一年） <input data-field="badge" type="text" value="' +
+          YifangRender.escapeHtml(item.badge || "") +
+          '"></label>' +
+          '<label class="check"><input data-field="hidden" type="checkbox"' +
+          (item.hidden ? " checked" : "") +
+          "> 隱藏，不在官網顯示</label>" +
+          '<p class="hint">照片</p>' +
+          catalogPhotoHtml(item.image) +
+          '<label class="file-btn btn btn-secondary">上傳或更換照片<input type="file" accept="image/*" data-act="img-add"></label>' +
+          "</article>"
+        );
+      })
+      .join("");
+  }
+
+  function renderPartsAdmin() {
+    var items = (state.content && state.content.parts) || [];
+    if (!els.partsList) return;
+    els.partsList.innerHTML = items
+      .map(function (item, i) {
+        var customCat = item.category && PART_CATEGORIES.indexOf(item.category) === -1;
+        return (
+          '<article class="card" data-part="' +
+          i +
+          '">' +
+          '<div class="card-head">' +
+          '<span class="title">' +
+          YifangRender.escapeHtml(item.title || "未命名零件") +
+          "</span>" +
+          '<button type="button" class="btn btn-tiny btn-ghost" data-act="up">上移</button>' +
+          '<button type="button" class="btn btn-tiny btn-ghost" data-act="down">下移</button>' +
+          '<button type="button" class="btn btn-tiny btn-danger" data-act="del">刪除</button>' +
+          "</div>" +
+          '<label>品名 <input data-field="title" type="text" value="' +
+          YifangRender.escapeHtml(item.title || "") +
+          '"></label>' +
+          '<label>售價（例如 NT$400） <input data-field="price" type="text" value="' +
+          YifangRender.escapeHtml(item.price || "") +
+          '"></label>' +
+          '<label>蝦皮商品連結 <input data-field="url" type="url" value="' +
+          YifangRender.escapeHtml(item.url || "") +
+          '"></label>' +
+          '<label>分類 <select data-field="category">' +
+          optionList(PART_CATEGORIES, item.category, false, true) +
+          "</select></label>" +
+          '<label class="custom-cat"' +
+          (customCat ? "" : " hidden") +
+          '>自訂分類 <input data-field="categoryCustom" type="text" value="' +
+          YifangRender.escapeHtml(customCat ? item.category : "") +
+          '"></label>' +
+          '<label class="check"><input data-field="hidden" type="checkbox"' +
+          (item.hidden ? " checked" : "") +
+          "> 隱藏，不在官網顯示</label>" +
+          '<p class="hint">照片</p>' +
+          catalogPhotoHtml(item.image) +
+          '<label class="file-btn btn btn-secondary">上傳或更換照片<input type="file" accept="image/*" data-act="img-add"></label>' +
+          "</article>"
+        );
+      })
+      .join("");
+  }
+
   function renderFaq() {
     var faq = state.content.faq || [];
     els.faqList.innerHTML = faq
@@ -585,6 +688,8 @@
     $("store-note").value = store.usedMachineNote || "";
     $("contact-lead").value = contact.lead || "";
     $("used-lead").value = used.lead || "";
+    $("new-lead").value = (c.newSection && c.newSection.lead) || "";
+    $("parts-lead").value = (c.partsSection && c.partsSection.lead) || "";
     $("services-lead").value = (c.services && c.services.lead) || "";
     $("site-title").value = site.title || "";
     $("site-desc").value = site.description || "";
@@ -598,14 +703,19 @@
     var labels = c.labels || {};
     $("label-about").value = labels.about || "關於我們";
     $("label-services").value = labels.services || (c.services && c.services.title) || "服務項目";
+    $("label-new").value = labels.new || (c.newSection && c.newSection.title) || "全新封口機";
     $("label-used").value = labels.used || used.title || "中古機專區";
+    $("label-parts").value = labels.parts || (c.partsSection && c.partsSection.title) || "零件專區";
     $("label-support").value = labels.support || "客服諮詢";
     $("label-contact").value = labels.contact || contact.title || "聯絡我們";
     $("label-faq").value = labels.faq || "常見問題";
     $("label-hero-shopee").value = labels.heroShopee || "蝦皮賣場";
+    $("label-hero-new").value = labels.heroNew || labels.new || "全新封口機";
     $("label-hero-used").value = labels.heroUsed || "中古機專區";
+    $("label-hero-parts").value = labels.heroParts || labels.parts || "零件專區";
     $("label-contact-shopee").value = labels.contactShopee || "打開蝦皮賣場";
     $("label-filter-all").value = labels.filterAll || "全部";
+    $("label-parts-search").value = labels.partsSearch || (c.partsSection && c.partsSection.searchPlaceholder) || "搜尋零件名稱";
     $("label-float").value = labels.floatToggle || labels.support || "客服諮詢";
     $("label-buy").value = used.buyLabel || labels.buy || "到蝦皮購買";
     $("label-call").value = used.callLabel || labels.call || "電話詢問";
@@ -723,17 +833,65 @@
     var labels = Object.assign({}, prev.labels);
     labels.about = $("label-about").value.trim() || "關於我們";
     labels.services = $("label-services").value.trim() || "服務項目";
+    labels.new = $("label-new").value.trim() || "全新封口機";
     labels.used = $("label-used").value.trim() || "中古機專區";
+    labels.parts = $("label-parts").value.trim() || "零件專區";
     labels.support = $("label-support").value.trim() || "客服諮詢";
     labels.contact = $("label-contact").value.trim() || "聯絡我們";
     labels.faq = $("label-faq").value.trim() || "常見問題";
     labels.heroShopee = $("label-hero-shopee").value.trim() || "蝦皮賣場";
+    labels.heroNew = $("label-hero-new").value.trim() || "全新封口機";
     labels.heroUsed = $("label-hero-used").value.trim() || "中古機專區";
+    labels.heroParts = $("label-hero-parts").value.trim() || "零件專區";
     labels.contactShopee = $("label-contact-shopee").value.trim() || "打開蝦皮賣場";
     labels.filterAll = $("label-filter-all").value.trim() || "全部";
+    labels.partsSearch = $("label-parts-search").value.trim() || "搜尋零件名稱";
     labels.floatToggle = $("label-float").value.trim() || labels.support || "客服諮詢";
     services.title = labels.services;
     usedSection.title = labels.used;
+
+    var newSection = Object.assign({}, prev.newSection);
+    newSection.lead = $("new-lead").value.trim();
+    newSection.buyLabel = $("label-buy").value.trim() || "到蝦皮購買";
+    newSection.callLabel = $("label-call").value.trim() || "電話詢問";
+    newSection.title = labels.new;
+
+    var partsSection = Object.assign({}, prev.partsSection);
+    partsSection.lead = $("parts-lead").value.trim();
+    partsSection.buyLabel = $("label-buy").value.trim() || "到蝦皮購買";
+    partsSection.searchPlaceholder = labels.partsSearch;
+    partsSection.title = labels.parts;
+
+    var newMachines = Array.prototype.map.call(els.newList.querySelectorAll("[data-new]"), function (card, i) {
+      var existing = (prev.newMachines || [])[Number(card.getAttribute("data-new"))] || (prev.newMachines || [])[i] || {};
+      return {
+        id: existing.id,
+        title: card.querySelector('[data-field="title"]').value.trim(),
+        price: card.querySelector('[data-field="price"]').value.trim(),
+        url: card.querySelector('[data-field="url"]').value.trim(),
+        badge: card.querySelector('[data-field="badge"]').value.trim(),
+        hidden: card.querySelector('[data-field="hidden"]').checked,
+        image: existing.image || ""
+      };
+    });
+
+    var parts = Array.prototype.map.call(els.partsList.querySelectorAll("[data-part]"), function (card, i) {
+      var existing = (prev.parts || [])[Number(card.getAttribute("data-part"))] || (prev.parts || [])[i] || {};
+      var categorySel = card.querySelector('[data-field="category"]').value;
+      var category =
+        categorySel === "__custom__"
+          ? card.querySelector('[data-field="categoryCustom"]').value.trim()
+          : categorySel;
+      return {
+        id: existing.id,
+        title: card.querySelector('[data-field="title"]').value.trim(),
+        price: card.querySelector('[data-field="price"]').value.trim(),
+        url: card.querySelector('[data-field="url"]').value.trim(),
+        category: category,
+        hidden: card.querySelector('[data-field="hidden"]').checked,
+        image: existing.image || ""
+      };
+    });
 
     var announcement = Object.assign({}, prev.announcement);
     announcement.enabled = $("announce-enabled").checked;
@@ -758,8 +916,12 @@
       channels: channels,
       services: services,
       usedSection: usedSection,
+      newSection: newSection,
+      partsSection: partsSection,
       contact: contact,
       groups: groups,
+      newMachines: newMachines,
+      parts: parts,
       faq: faq
     };
   }
@@ -784,6 +946,8 @@
     renderChannels();
     renderServices();
     renderGroups();
+    renderNewMachines();
+    renderPartsAdmin();
     renderFaq();
   }
 
@@ -868,10 +1032,19 @@
     }
   }
 
-  function pathStillUsed(path, groups) {
-    return (groups || []).some(function (g) {
+  function pathStillUsed(path, content) {
+    content = content || state.content || {};
+    var groups = Array.isArray(content) ? content : content.groups;
+    if ((groups || []).some(function (g) {
       return (g.images || []).indexOf(path) !== -1;
-    });
+    })) return true;
+    if ((content.newMachines || []).some(function (item) {
+      return item && item.image === path;
+    })) return true;
+    if ((content.parts || []).some(function (item) {
+      return item && item.image === path;
+    })) return true;
+    return false;
   }
 
   async function addPhotos(groupIndex, fileList) {
@@ -925,6 +1098,8 @@
       state.content = JSON.parse(jsonText);
       if (!Array.isArray(state.content.groups)) state.content.groups = [];
       if (!Array.isArray(state.content.faq)) state.content.faq = [];
+      if (!Array.isArray(state.content.newMachines)) state.content.newMachines = [];
+      if (!Array.isArray(state.content.parts)) state.content.parts = [];
       fillAll();
       els.loadStatus.textContent = "已載入，改完後按「儲存並發布」";
     } catch (err) {
@@ -1022,6 +1197,13 @@
       setBanner("error", "每一組機器都需要填寫名稱和參考售價。");
       return;
     }
+    var catalogMissing = (state.content.newMachines || []).concat(state.content.parts || []).some(function (item) {
+      return item && item.hidden !== true && (!item.title || !item.price);
+    });
+    if (catalogMissing) {
+      setBanner("error", "全新封口機和零件如果要顯示在官網，都需要填寫品名和售價。");
+      return;
+    }
     var filledPhones = ((state.content.store && state.content.store.phones) || []).filter(function (item) {
       return item && String(item.number || "").trim();
     });
@@ -1074,7 +1256,7 @@
         console.warn("logo icons not regenerated", iconErr);
       }
       var deletes = state.pendingDeletes.filter(function (path) {
-        return !pathStillUsed(path, state.content.groups);
+        return !pathStillUsed(path, state.content);
       });
       var sha = await commitFiles(files, deletes, "更新官網內容", state.loadedCommitSha);
       state.loadedCommitSha = sha;
@@ -1236,6 +1418,93 @@
     renderFaq();
   }
 
+
+  function uniqueCatalogId(prefix, existing) {
+    var base = (prefix || "item-") + Date.now().toString(36);
+    var ids = {};
+    (existing || []).forEach(function (item) {
+      if (item && item.id) ids[item.id] = true;
+    });
+    var id = base;
+    var n = 1;
+    while (ids[id]) {
+      n += 1;
+      id = base + "-" + n;
+    }
+    return id;
+  }
+
+  async function setCatalogImage(kind, index, file, dir, maxSize) {
+    syncFormsToState();
+    var list = state.content[kind] || [];
+    var item = list[index];
+    if (!item || !file) return;
+    var resized = await resizeImage(file, maxSize || 800, 0.85);
+    var path = dir + fileNameSafe(item.id || kind) + "-" + Date.now().toString(36) + ".jpg";
+    if (item.image) markImageDeleted(item.image);
+    var url = URL.createObjectURL(resized.blob);
+    state.pendingBlobs[path] = { bytes: resized.bytes, url: url };
+    item.image = path;
+    if (kind === "newMachines") renderNewMachines();
+    else renderPartsAdmin();
+  }
+
+  function onCatalogClick(kind, attr, event) {
+    var btn = event.target.closest("button");
+    if (!btn) return;
+    var act = btn.getAttribute("data-act");
+    var card = event.target.closest("[" + attr + "]");
+    if (!card) return;
+    var index = Number(card.getAttribute(attr));
+    syncFormsToState();
+    var list = state.content[kind] || [];
+    var item = list[index];
+    if (act === "del") {
+      var label = (item && item.title) || "這筆商品";
+      if (!confirm("確定要刪除「" + label + "」嗎？")) return;
+      if (item && item.image) markImageDeleted(item.image);
+      list.splice(index, 1);
+    } else if (act === "up") {
+      state.content[kind] = moveItem(list, index, -1);
+    } else if (act === "down") {
+      state.content[kind] = moveItem(list, index, 1);
+    } else if (act === "img-del") {
+      if (item && item.image) {
+        markImageDeleted(item.image);
+        item.image = "";
+      }
+    } else {
+      return;
+    }
+    if (kind === "newMachines") renderNewMachines();
+    else renderPartsAdmin();
+  }
+
+  function onCatalogChange(kind, event) {
+    var el = event.target;
+    if (el.matches('[data-field="category"]')) {
+      var wrap = el.closest("article").querySelector(".custom-cat");
+      if (wrap) wrap.hidden = el.value !== "__custom__";
+    }
+    if (el.matches('[data-field="title"]')) {
+      var title = el.closest("article").querySelector(".card-head .title");
+      if (title) title.textContent = el.value.trim() || (kind === "parts" ? "未命名零件" : "未命名商品");
+    }
+  }
+
+  function onCatalogFile(kind, attr, dir, maxSize, event) {
+    var input = event.target;
+    if (!input.matches('[data-act="img-add"]')) return;
+    var card = input.closest("[" + attr + "]");
+    if (!card) return;
+    var index = Number(card.getAttribute(attr));
+    var file = input.files && input.files[0];
+    setCatalogImage(kind, index, file, dir, maxSize).catch(function (err) {
+      setBanner("error", err.message || "照片上傳失敗，請換一張再試。");
+    });
+    input.value = "";
+  }
+
   function bind() {
     els.loginView = $("login-view");
     els.editorView = $("editor-view");
@@ -1249,6 +1518,8 @@
     els.channelsList = $("channels-list");
     els.servicesList = $("services-list");
     els.groupsList = $("groups-list");
+    els.newList = $("new-list");
+    els.partsList = $("parts-list");
     els.faqList = $("faq-list");
     els.saveBtn = $("save-btn");
     els.preview = $("preview-overlay");
@@ -1297,6 +1568,49 @@
       var last = cards[cards.length - 1];
       if (last) last.scrollIntoView({ behavior: "smooth", block: "start" });
     });
+    $("add-new").addEventListener("click", function () {
+      syncFormsToState();
+      state.content.newMachines = state.content.newMachines || [];
+      state.content.newMachines.push({
+        id: uniqueCatalogId("new-", state.content.newMachines),
+        title: "",
+        price: "NT$",
+        url: "",
+        badge: "",
+        hidden: false,
+        image: ""
+      });
+      renderNewMachines();
+      var cards = els.newList.querySelectorAll("[data-new]");
+      var last = cards[cards.length - 1];
+      if (last) last.scrollIntoView({ behavior: "smooth", block: "start" });
+    });
+    $("add-part").addEventListener("click", function () {
+      syncFormsToState();
+      state.content.parts = state.content.parts || [];
+      state.content.parts.push({
+        id: uniqueCatalogId("part-", state.content.parts),
+        title: "",
+        price: "NT$",
+        url: "",
+        category: "封口機零件",
+        hidden: false,
+        image: ""
+      });
+      renderPartsAdmin();
+      var cards = els.partsList.querySelectorAll("[data-part]");
+      var last = cards[cards.length - 1];
+      if (last) last.scrollIntoView({ behavior: "smooth", block: "start" });
+    });
+    els.newList.addEventListener("click", function (e) { onCatalogClick("newMachines", "data-new", e); });
+    els.newList.addEventListener("input", function (e) { onCatalogChange("newMachines", e); });
+    els.newList.addEventListener("change", function (e) { onCatalogFile("newMachines", "data-new", "images/new/", 800, e); });
+    els.partsList.addEventListener("click", function (e) { onCatalogClick("parts", "data-part", e); });
+    els.partsList.addEventListener("change", function (e) {
+      onCatalogChange("parts", e);
+      onCatalogFile("parts", "data-part", "images/parts/", 400, e);
+    });
+    els.partsList.addEventListener("input", function (e) { onCatalogChange("parts", e); });
     $("add-faq").addEventListener("click", function () {
       syncFormsToState();
       state.content.faq = state.content.faq || [];
@@ -1338,6 +1652,8 @@
       state.content = JSON.parse(JSON.stringify(content));
       if (!Array.isArray(state.content.groups)) state.content.groups = [];
       if (!Array.isArray(state.content.faq)) state.content.faq = [];
+      if (!Array.isArray(state.content.newMachines)) state.content.newMachines = [];
+      if (!Array.isArray(state.content.parts)) state.content.parts = [];
       if (!Array.isArray(state.content.channels)) state.content.channels = defaultChannels(state.content.store);
       state.loadedCommitSha = "local-test";
       showEditor();

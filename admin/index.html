@@ -144,7 +144,9 @@
         <label class="wide">關於我們（第二段） <textarea id="store-about-body" rows="3"></textarea></label>
         <label class="wide">中古機注意事項 <textarea id="store-note" rows="3"></textarea></label>
         <label class="wide">聯絡我們引言 <textarea id="contact-lead" rows="2"></textarea></label>
+        <label class="wide">全新封口機引言 <textarea id="new-lead" rows="2"></textarea></label>
         <label class="wide">中古機專區引言 <textarea id="used-lead" rows="2"></textarea></label>
+        <label class="wide">零件專區引言 <textarea id="parts-lead" rows="2"></textarea></label>
       </div>
       <details class="advanced">
         <summary>進階：地圖與搜尋資料</summary>
@@ -164,14 +166,19 @@
       <div class="grid">
         <label>關於我們 <input id="label-about" type="text"></label>
         <label>服務項目 <input id="label-services" type="text"></label>
+        <label>全新封口機 <input id="label-new" type="text"></label>
         <label>中古機專區 <input id="label-used" type="text"></label>
+        <label>零件專區 <input id="label-parts" type="text"></label>
         <label>客服諮詢 <input id="label-support" type="text"></label>
         <label>聯絡我們 <input id="label-contact" type="text"></label>
         <label>常見問題 <input id="label-faq" type="text"></label>
         <label>首頁按鈕：蝦皮賣場 <input id="label-hero-shopee" type="text"></label>
+        <label>首頁按鈕（全新封口機） <input id="label-hero-new" type="text"></label>
         <label>首頁按鈕（中古機專區） <input id="label-hero-used" type="text"></label>
+        <label>首頁按鈕（零件專區） <input id="label-hero-parts" type="text"></label>
         <label>聯絡區按鈕：打開蝦皮賣場 <input id="label-contact-shopee" type="text"></label>
         <label>中古機篩選「全部」 <input id="label-filter-all" type="text"></label>
+        <label>零件搜尋框提示文字 <input id="label-parts-search" type="text"></label>
         <label>右下角客服按鈕 <input id="label-float" type="text"></label>
         <label>中古機「到蝦皮購買」 <input id="label-buy" type="text"></label>
         <label>中古機「電話詢問」 <input id="label-call" type="text"></label>
@@ -180,7 +187,7 @@
 
     <section id="sec-announce" class="panel">
       <h2>公告與付款方式</h2>
-      <p class="hint">頂部公告條可以開關。付款說明會顯示在中古機專區和聯絡我們。</p>
+      <p class="hint">頂部公告條可以開關。付款說明會顯示在全新封口機、中古機專區、零件專區和聯絡我們。</p>
       <div class="grid">
         <label class="check wide"><input type="checkbox" id="announce-enabled"> 顯示頂部公告條</label>
         <label class="wide">頂部公告文字 <input id="announce-text" type="text" placeholder="付款方式：僅接受匯款與現金（付現）"></label>
@@ -202,11 +209,25 @@
       <button type="button" class="btn btn-secondary" id="add-service">新增一項服務</button>
     </section>
 
+    <section id="sec-new" class="panel">
+      <h2>全新封口機</h2>
+      <p class="hint">這裡的每一筆都是單一一台商品，會連到對應的蝦皮頁面。展示機可在「標籤」填例如「展示機 9.99成新．保固一年」。勾選「隱藏」後就不會出現在官網。</p>
+      <div id="new-list" class="stack"></div>
+      <button type="button" class="btn btn-secondary" id="add-new">新增一台全新機</button>
+    </section>
+
     <section id="sec-used" class="panel">
       <h2>中古機分組（封口機、果糖機等）</h2>
       <p class="hint">機型一樣、售價差不多的可以放在同一組，只寫大概價格。機器賣掉了也不必立刻改網站。名稱請沿用「微電腦」「機械式」「碼錶機械式」等專有名詞，不要自行改寫。</p>
       <div id="groups-list" class="stack"></div>
       <button type="button" class="btn btn-secondary" id="add-group">新增一組機型</button>
+    </section>
+
+    <section id="sec-parts" class="panel">
+      <h2>零件專區</h2>
+      <p class="hint">零件可依「封口機零件」或「果糖機零件」分類，也能自己改分類名稱。勾選「隱藏」後就不會出現在官網。</p>
+      <div id="parts-list" class="stack"></div>
+      <button type="button" class="btn btn-secondary" id="add-part">新增一個零件</button>
     </section>
 
     <section id="sec-faq" class="panel">

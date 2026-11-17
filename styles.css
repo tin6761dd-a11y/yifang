@@ -226,3 +226,65 @@ footer{padding-bottom:5.5rem}
 @media (max-width:640px){
   .float-toggle{font-size:.95rem;padding:.8rem 1rem}
 }
+
+.visually-hidden{
+  position:absolute;width:1px;height:1px;padding:0;margin:-1px;
+  overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0
+}
+
+/* new machines + parts */
+.badge{
+  display:inline-block;
+  background:#fff7ed;color:#9a3412;border:1px solid #fdba74;
+  border-radius:999px;padding:.18rem .65rem;
+  font-size:.78rem;font-weight:800;line-height:1.4
+}
+.badge-wrap{
+  position:absolute;left:.7rem;top:.7rem;z-index:2;max-width:calc(100% - 1.4rem)
+}
+.gallery .badge{box-shadow:0 4px 12px rgba(15,23,42,.18)}
+.machine-body .badge{width:fit-content}
+
+.actions .channel-line{border-color:#059669;color:#047857}
+.actions .channel-line:hover{background:#ecfdf3}
+
+.parts-toolbar{
+  display:flex;flex-wrap:wrap;gap:.8rem 1rem;
+  align-items:center;margin:0 0 1.2rem
+}
+.parts-toolbar .filters{margin:0;flex:1 1 auto}
+.filter-search-wrap{flex:1 1 220px;min-width:min(100%,220px)}
+.filter-search{
+  width:100%;font:inherit;color:var(--text);
+  border:1px solid var(--blue-line);border-radius:999px;
+  padding:.45rem .95rem;background:#fff
+}
+.filter-search:focus{outline:3px solid var(--blue-line);border-color:var(--blue)}
+
+.parts-grid{
+  display:grid;gap:.8rem;
+  grid-template-columns:1fr
+}
+@media(min-width:620px){.parts-grid{grid-template-columns:repeat(2,1fr)}}
+@media(min-width:980px){.parts-grid{grid-template-columns:repeat(3,1fr)}}
+.part-card{
+  display:flex;gap:.85rem;align-items:stretch;
+  padding:.7rem .8rem;margin:0
+}
+.part-card[hidden]{display:none!important}
+.part-card img,.part-placeholder{
+  width:88px;height:88px;flex:none;border-radius:10px;
+  object-fit:cover;background:#e2e8f0
+}
+.part-placeholder{
+  display:grid;place-items:center;
+  background:var(--blue);color:#fff;font-weight:800;font-size:1.4rem
+}
+.part-body{display:flex;flex-direction:column;gap:.2rem;min-width:0;flex:1}
+.part-card h3{margin:0;font-size:.95rem;line-height:1.35}
+.part-card .approx{font-size:1.08rem;margin:.1rem 0 .25rem}
+.part-card .btn{align-self:flex-start;padding:.4rem .8rem;font-size:.88rem;margin-top:auto}
+
+@media (max-width:640px){
+  .hero .actions .btn{font-size:.9rem;padding:.6rem .9rem}
+}

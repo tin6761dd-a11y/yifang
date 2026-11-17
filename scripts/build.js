@@ -84,9 +84,14 @@ function main() {
   }
 
   const names = (content.groups || []).map((g) => g.name + " " + g.price);
+  const news = (content.newMachines || []).filter((i) => i && i.hidden !== true);
+  const parts = (content.parts || []).filter((i) => i && i.hidden !== true);
   console.log("Built official site from content.json");
+  console.log("  new machines: " + news.length);
+  news.forEach((n) => console.log("  - " + n.title + " " + n.price));
   console.log("  groups: " + names.length);
   names.forEach((n) => console.log("  - " + n));
+  console.log("  parts: " + parts.length);
   console.log("  lastmod: " + lastmod);
   console.log("  wrote index.html, sitemap.xml, robots.txt, 404.html and dist/");
 }

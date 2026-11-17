@@ -75,7 +75,12 @@
     "heroUsed": "中古機專區",
     "contactShopee": "打開蝦皮賣場",
     "filterAll": "全部",
-    "floatToggle": "客服諮詢"
+    "floatToggle": "客服諮詢",
+    "new": "全新封口機",
+    "parts": "零件專區",
+    "heroNew": "全新封口機",
+    "heroParts": "零件專區",
+    "partsSearch": "搜尋零件名稱"
   },
   "announcement": {
     "enabled": true,
@@ -293,5 +298,570 @@
       ]
     }
   ],
-  "faq": []
+  "faq": [],
+  "newSection": {
+    "title": "全新封口機",
+    "lead": "以下為蝦皮賣場現貨全新封口機與展示機，價格與庫存以賣場為準。歡迎來電或加 LINE 詢問。",
+    "buyLabel": "到蝦皮購買",
+    "callLabel": "電話詢問"
+  },
+  "partsSection": {
+    "title": "零件專區",
+    "lead": "以下為蝦皮賣場現貨零件，可用分類或關鍵字尋找。售完商品不列出，價格與庫存以賣場為準。",
+    "buyLabel": "到蝦皮購買",
+    "searchPlaceholder": "搜尋零件名稱"
+  },
+  "newMachines": [
+    {
+      "id": "new-54609287493",
+      "title": "益芳飲料封口機 YF-98S 全新機",
+      "price": "NT$17,800",
+      "url": "https://shopee.tw/益芳飲料封口機-YF-98S-全新機-i.10362769.54609287493",
+      "image": "images/new/54609287493.jpg",
+      "badge": "",
+      "hidden": false
+    },
+    {
+      "id": "new-24384698180",
+      "title": "益芳封口機 全新機 台灣製造 ET-899-1",
+      "price": "NT$18,150",
+      "url": "https://shopee.tw/益芳封口機-全新機-台灣製造-ET-899-1-i.10362769.24384698180",
+      "image": "images/new/24384698180.jpg",
+      "badge": "",
+      "hidden": false
+    },
+    {
+      "id": "new-24084700085",
+      "title": "益芳封口機 全新機 台灣製造 ET-95SN",
+      "price": "NT$16,580",
+      "url": "https://shopee.tw/益芳封口機-全新機-台灣製造-ET-95SN-i.10362769.24084700085",
+      "image": "images/new/24084700085.jpg",
+      "badge": "",
+      "hidden": false
+    },
+    {
+      "id": "new-193687910",
+      "title": "益芳飲料封口機 YF-989 全新機",
+      "price": "NT$18,400",
+      "url": "https://shopee.tw/益芳飲料封口機-YF-989-全新機-i.10362769.193687910",
+      "image": "images/new/193687910.jpg",
+      "badge": "",
+      "hidden": false
+    },
+    {
+      "id": "new-19736174916",
+      "title": "益芳封口機 全新機 台灣製造 ET-899S白鐵款",
+      "price": "NT$19,300",
+      "url": "https://shopee.tw/益芳封口機-全新機-台灣製造-ET-899S白鐵款-i.10362769.19736174916",
+      "image": "images/new/19736174916.jpg",
+      "badge": "",
+      "hidden": false
+    },
+    {
+      "id": "new-12139084114",
+      "title": "益芳飲料封口機-ET-89M (胖胖杯)",
+      "price": "NT$27,000",
+      "url": "https://shopee.tw/益芳飲料封口機-ET-89M-(胖胖杯)-i.10362769.12139084114",
+      "image": "images/new/12139084114.jpg",
+      "badge": "",
+      "hidden": false
+    },
+    {
+      "id": "new-11067402297",
+      "title": "益芳封口機 飲料封口機ET-95MN (胖胖杯)",
+      "price": "NT$25,500",
+      "url": "https://shopee.tw/益芳封口機-飲料封口機ET-95MN-(胖胖杯)-i.10362769.11067402297",
+      "image": "images/new/11067402297.jpg",
+      "badge": "",
+      "hidden": false
+    },
+    {
+      "id": "new-208947228",
+      "title": "益芳封口機ET-39m方型盒手動封口機-可開發票",
+      "price": "NT$45,000",
+      "url": "https://shopee.tw/益芳封口機ET-39m方型盒手動封口機-可開發票-i.10362769.208947228",
+      "image": "images/new/208947228.jpg",
+      "badge": "",
+      "hidden": false
+    },
+    {
+      "id": "new-55162349324",
+      "title": "【限量特賣】益芳封口機 ET-95SN 展示機 9.99成新 享保固一年",
+      "price": "NT$15,800",
+      "url": "https://shopee.tw/【限量特賣】益芳封口機-ET-95SN-展示機-9.99成新-享保固一年-i.10362769.55162349324",
+      "image": "images/new/55162349324.jpg",
+      "badge": "展示機 9.99成新．保固一年",
+      "hidden": false
+    },
+    {
+      "id": "new-51212344335",
+      "title": "【限量特賣】益芳封口機 ET-899-1 展示機 9.99成新 享保固一年",
+      "price": "NT$17,500",
+      "url": "https://shopee.tw/【限量特賣】益芳封口機-ET-899-1-展示機-9.99成新-享保固一年-i.10362769.51212344335",
+      "image": "images/new/51212344335.jpg",
+      "badge": "展示機 9.99成新．保固一年",
+      "hidden": false
+    }
+  ],
+  "parts": [
+    {
+      "id": "part-5061866732",
+      "title": "益芳封口機 進杯開關 自動微動開關 原廠",
+      "price": "NT$400",
+      "url": "https://shopee.tw/product/10362769/5061866732",
+      "image": "images/parts/5061866732.jpg",
+      "category": "封口機零件",
+      "hidden": false
+    },
+    {
+      "id": "part-41908136136",
+      "title": "原廠-益芳封口機 果糖機電源線",
+      "price": "NT$300",
+      "url": "https://shopee.tw/product/10362769/41908136136",
+      "image": "images/parts/41908136136.jpg",
+      "category": "果糖機零件",
+      "hidden": false
+    },
+    {
+      "id": "part-11039328247",
+      "title": "原廠-益芳封口機 套圈 95轉90使用",
+      "price": "NT$300",
+      "url": "https://shopee.tw/product/10362769/11039328247",
+      "image": "images/parts/11039328247.jpg",
+      "category": "封口機零件",
+      "hidden": false
+    },
+    {
+      "id": "part-7161864032",
+      "title": "益芳封口機 微動開關 (進)",
+      "price": "NT$300",
+      "url": "https://shopee.tw/product/10362769/7161864032",
+      "image": "images/parts/7161864032.jpg",
+      "category": "封口機零件",
+      "hidden": false
+    },
+    {
+      "id": "part-6561261454",
+      "title": "現貨-益芳封口機 封口機彈簧ㄧ組四條",
+      "price": "NT$240",
+      "url": "https://shopee.tw/product/10362769/6561261454",
+      "image": "images/parts/6561261454.jpg",
+      "category": "封口機零件",
+      "hidden": false
+    },
+    {
+      "id": "part-5163287236",
+      "title": "益芳飲料封口機收料捲桶組",
+      "price": "NT$600",
+      "url": "https://shopee.tw/product/10362769/5163287236",
+      "image": "images/parts/5163287236.jpg",
+      "category": "封口機零件",
+      "hidden": false
+    },
+    {
+      "id": "part-3961949963",
+      "title": "益芳封口機 自動電眼 封口機零件",
+      "price": "NT$1,050",
+      "url": "https://shopee.tw/product/10362769/3961949963",
+      "image": "images/parts/3961949963.jpg",
+      "category": "封口機零件",
+      "hidden": false
+    },
+    {
+      "id": "part-5263279297",
+      "title": "現貨-益芳封口機ET-899機械型開關零件",
+      "price": "NT$100",
+      "url": "https://shopee.tw/product/10362769/5263279297",
+      "image": "images/parts/5263279297.jpg",
+      "category": "封口機零件",
+      "hidden": false
+    },
+    {
+      "id": "part-43258117046",
+      "title": "原廠-益芳封口機 套圈105轉95使用",
+      "price": "NT$900",
+      "url": "https://shopee.tw/product/10362769/43258117046",
+      "image": "images/parts/43258117046.jpg",
+      "category": "封口機零件",
+      "hidden": false
+    },
+    {
+      "id": "part-5361431997",
+      "title": "現貨-益芳封口機 (矽利康條 95/90) 膠條",
+      "price": "NT$100",
+      "url": "https://shopee.tw/product/10362769/5361431997",
+      "image": "images/parts/5361431997.jpg",
+      "category": "封口機零件",
+      "hidden": false
+    },
+    {
+      "id": "part-4761857917",
+      "title": "益芳封口機 微動開關 (出)",
+      "price": "NT$320",
+      "url": "https://shopee.tw/product/10362769/4761857917",
+      "image": "images/parts/4761857917.jpg",
+      "category": "封口機零件",
+      "hidden": false
+    },
+    {
+      "id": "part-8652410716",
+      "title": "現貨-益芳封口機零件 下模頂杯彈簧",
+      "price": "NT$120",
+      "url": "https://shopee.tw/product/10362769/8652410716",
+      "image": "images/parts/8652410716.jpg",
+      "category": "封口機零件",
+      "hidden": false
+    },
+    {
+      "id": "part-3263444174",
+      "title": "益芳封口機收料馬達 正廠零件",
+      "price": "NT$1,000",
+      "url": "https://shopee.tw/product/10362769/3263444174",
+      "image": "images/parts/3263444174.jpg",
+      "category": "封口機零件",
+      "hidden": false
+    },
+    {
+      "id": "part-4761877368",
+      "title": "益芳封口機 飲料機 感溫線",
+      "price": "NT$300",
+      "url": "https://shopee.tw/product/10362769/4761877368",
+      "image": "images/parts/4761877368.jpg",
+      "category": "封口機零件",
+      "hidden": false
+    },
+    {
+      "id": "part-48900354880",
+      "title": "原廠-益芳封口機零件 安全門微動開關",
+      "price": "NT$200",
+      "url": "https://shopee.tw/product/10362769/48900354880",
+      "image": "images/parts/48900354880.jpg",
+      "category": "封口機零件",
+      "hidden": false
+    },
+    {
+      "id": "part-7863798992",
+      "title": "益芳飲料封口機小排線",
+      "price": "NT$300",
+      "url": "https://shopee.tw/product/10362769/7863798992",
+      "image": "images/parts/7863798992.jpg",
+      "category": "封口機零件",
+      "hidden": false
+    },
+    {
+      "id": "part-5963788661",
+      "title": "益芳飲料封口機大排線",
+      "price": "NT$300",
+      "url": "https://shopee.tw/product/10362769/5963788661",
+      "image": "images/parts/5963788661.jpg",
+      "category": "封口機零件",
+      "hidden": false
+    },
+    {
+      "id": "part-40177793071",
+      "title": "原廠-益芳封口機零件 打洞測針 無螺絲款 有螺絲款",
+      "price": "NT$150",
+      "url": "https://shopee.tw/product/10362769/40177793071",
+      "image": "images/parts/40177793071.jpg",
+      "category": "封口機零件",
+      "hidden": false
+    },
+    {
+      "id": "part-51200787639",
+      "title": "原廠-益芳封口機零件 安全檔門 烤漆 不鏽鋼",
+      "price": "NT$200",
+      "url": "https://shopee.tw/product/10362769/51200787639",
+      "image": "images/parts/51200787639.jpg",
+      "category": "封口機零件",
+      "hidden": false
+    },
+    {
+      "id": "part-11901928480",
+      "title": "現貨-益芳飲料封口機ET-899機械型開關零件",
+      "price": "NT$100",
+      "url": "https://shopee.tw/product/10362769/11901928480",
+      "image": "images/parts/11901928480.jpg",
+      "category": "封口機零件",
+      "hidden": false
+    },
+    {
+      "id": "part-27838575107",
+      "title": "原廠-益芳封口機 套圈119轉105使用",
+      "price": "NT$900",
+      "url": "https://shopee.tw/product/10362769/27838575107",
+      "image": "images/parts/27838575107.jpg",
+      "category": "封口機零件",
+      "hidden": false
+    },
+    {
+      "id": "part-10956154467",
+      "title": "現貨-益芳封口機 原廠零件 頂杯架 頂杯L板",
+      "price": "NT$230",
+      "url": "https://shopee.tw/product/10362769/10956154467",
+      "image": "images/parts/10956154467.jpg",
+      "category": "封口機零件",
+      "hidden": false
+    },
+    {
+      "id": "part-5164122214",
+      "title": "益芳飲料封口機電源線110V",
+      "price": "NT$300",
+      "url": "https://shopee.tw/product/10362769/5164122214",
+      "image": "images/parts/5164122214.jpg",
+      "category": "封口機零件",
+      "hidden": false
+    },
+    {
+      "id": "part-7761268571",
+      "title": "現貨-益芳封口機 電熱彈簧 一組四條",
+      "price": "NT$320",
+      "url": "https://shopee.tw/product/10362769/7761268571",
+      "image": "images/parts/7761268571.jpg",
+      "category": "封口機零件",
+      "hidden": false
+    },
+    {
+      "id": "part-3265167712",
+      "title": "益芳飲料封口機變速箱(下模用)",
+      "price": "NT$1,150",
+      "url": "https://shopee.tw/product/10362769/3265167712",
+      "image": "images/parts/3265167712.jpg",
+      "category": "封口機零件",
+      "hidden": false
+    },
+    {
+      "id": "part-51903426481",
+      "title": "飲料封口機收料捲桶組",
+      "price": "NT$500",
+      "url": "https://shopee.tw/product/10362769/51903426481",
+      "image": "images/parts/51903426481.jpg",
+      "category": "封口機零件",
+      "hidden": false
+    },
+    {
+      "id": "part-5866662558",
+      "title": "現貨-益芳飲料封口機ET-899機械型開關零件",
+      "price": "NT$100",
+      "url": "https://shopee.tw/product/10362769/5866662558",
+      "image": "images/parts/5866662558.jpg",
+      "category": "封口機零件",
+      "hidden": false
+    },
+    {
+      "id": "part-3262017900",
+      "title": "益芳封口機 收料電眼 原廠貨",
+      "price": "NT$900",
+      "url": "https://shopee.tw/product/10362769/3262017900",
+      "image": "images/parts/3262017900.jpg",
+      "category": "封口機零件",
+      "hidden": false
+    },
+    {
+      "id": "part-3362681633",
+      "title": "現貨-益芳封口機原廠 下模軌道 塑膠軌道",
+      "price": "NT$360",
+      "url": "https://shopee.tw/product/10362769/3362681633",
+      "image": "images/parts/3362681633.jpg",
+      "category": "封口機零件",
+      "hidden": false
+    },
+    {
+      "id": "part-5161375184",
+      "title": "現貨-益芳-2021最新款全新品 封口機側板原廠零件",
+      "price": "NT$550",
+      "url": "https://shopee.tw/product/10362769/5161375184",
+      "image": "images/parts/5161375184.jpg",
+      "category": "封口機零件",
+      "hidden": false
+    },
+    {
+      "id": "part-7061400981",
+      "title": "現貨-益芳封口機 小齒輪24T 原廠零件",
+      "price": "NT$200",
+      "url": "https://shopee.tw/product/10362769/7061400981",
+      "image": "images/parts/7061400981.jpg",
+      "category": "封口機零件",
+      "hidden": false
+    },
+    {
+      "id": "part-5362102528",
+      "title": "益芳封口機 變速箱(上模用) 原廠件",
+      "price": "NT$1,500",
+      "url": "https://shopee.tw/product/10362769/5362102528",
+      "image": "images/parts/5362102528.jpg",
+      "category": "封口機零件",
+      "hidden": false
+    },
+    {
+      "id": "part-5961401688",
+      "title": "現貨-益芳封口機大齒輪 36T 原廠零件",
+      "price": "NT$300",
+      "url": "https://shopee.tw/product/10362769/5961401688",
+      "image": "images/parts/5961401688.jpg",
+      "category": "封口機零件",
+      "hidden": false
+    },
+    {
+      "id": "part-7966645224",
+      "title": "現貨-益芳飲料封口機ET-899機械型開關零件",
+      "price": "NT$100",
+      "url": "https://shopee.tw/product/10362769/7966645224",
+      "image": "images/parts/7966645224.jpg",
+      "category": "封口機零件",
+      "hidden": false
+    },
+    {
+      "id": "part-9980426692",
+      "title": "益芳原廠零件封口機-下模具95mm 90mm",
+      "price": "NT$1,050",
+      "url": "https://shopee.tw/product/10362769/9980426692",
+      "image": "images/parts/9980426692.jpg",
+      "category": "封口機零件",
+      "hidden": false
+    },
+    {
+      "id": "part-44458108573",
+      "title": "原廠-益芳封口機 套圈113轉105使用",
+      "price": "NT$900",
+      "url": "https://shopee.tw/product/10362769/44458108573",
+      "image": "images/parts/44458108573.jpg",
+      "category": "封口機零件",
+      "hidden": false
+    },
+    {
+      "id": "part-6962100549",
+      "title": "益芳封口機 飲料機 上模馬達",
+      "price": "NT$1,800",
+      "url": "https://shopee.tw/product/10362769/6962100549",
+      "image": "images/parts/6962100549.jpg",
+      "category": "封口機零件",
+      "hidden": false
+    },
+    {
+      "id": "part-10402387611",
+      "title": "現貨-益芳 封口機零件 三角板一組",
+      "price": "NT$300",
+      "url": "https://shopee.tw/product/10362769/10402387611",
+      "image": "images/parts/10402387611.jpg",
+      "category": "封口機零件",
+      "hidden": false
+    },
+    {
+      "id": "part-14043584738",
+      "title": "益芳封口機 原廠零件 - 上模具刀片 95mm",
+      "price": "NT$1,050",
+      "url": "https://shopee.tw/product/10362769/14043584738",
+      "image": "images/parts/14043584738.jpg",
+      "category": "封口機零件",
+      "hidden": false
+    },
+    {
+      "id": "part-10502158315",
+      "title": "現貨-益芳N95專用型飲料封口機主機版 IC版",
+      "price": "NT$4,000",
+      "url": "https://shopee.tw/product/10362769/10502158315",
+      "image": "images/parts/10502158315.jpg",
+      "category": "封口機零件",
+      "hidden": false
+    },
+    {
+      "id": "part-7763291313",
+      "title": "現貨-益芳99專用型飲料封口機主機版 IC版",
+      "price": "NT$4,000",
+      "url": "https://shopee.tw/product/10362769/7763291313",
+      "image": "images/parts/7763291313.jpg",
+      "category": "封口機零件",
+      "hidden": false
+    },
+    {
+      "id": "part-5988155487",
+      "title": "現貨-益芳N59飲料封口機主機版 IC版",
+      "price": "NT$4,000",
+      "url": "https://shopee.tw/product/10362769/5988155487",
+      "image": "images/parts/5988155487.jpg",
+      "category": "封口機零件",
+      "hidden": false
+    },
+    {
+      "id": "part-5163305564",
+      "title": "現貨-益芳989專用型飲料封口機主機版 IC版",
+      "price": "NT$4,000",
+      "url": "https://shopee.tw/product/10362769/5163305564",
+      "image": "images/parts/5163305564.jpg",
+      "category": "封口機零件",
+      "hidden": false
+    },
+    {
+      "id": "part-6062225738",
+      "title": "益芳封口機下模馬達 正廠零件",
+      "price": "NT$1,400",
+      "url": "https://shopee.tw/product/10362769/6062225738",
+      "image": "images/parts/6062225738.jpg",
+      "category": "封口機零件",
+      "hidden": false
+    },
+    {
+      "id": "part-10175763509",
+      "title": "現貨-益芳封口機 果糖機塞頭 原廠零件",
+      "price": "NT$60",
+      "url": "https://shopee.tw/product/10362769/10175763509",
+      "image": "images/parts/10175763509.jpg",
+      "category": "果糖機零件",
+      "hidden": false
+    },
+    {
+      "id": "part-18857919526",
+      "title": "益芳封口機 原廠零件 果糖機 過濾彈簧 內桶彈簧",
+      "price": "NT$60",
+      "url": "https://shopee.tw/product/10362769/18857919526",
+      "image": "images/parts/18857919526.jpg",
+      "category": "果糖機零件",
+      "hidden": false
+    },
+    {
+      "id": "part-28188563719",
+      "title": "原廠-益芳封口機 果糖機PU管",
+      "price": "NT$120",
+      "url": "https://shopee.tw/product/10362769/28188563719",
+      "image": "images/parts/28188563719.jpg",
+      "category": "果糖機零件",
+      "hidden": false
+    },
+    {
+      "id": "part-16983824033",
+      "title": "防蟲.防塵塑膠套 益芳果糖機都通用 原廠零件",
+      "price": "NT$50",
+      "url": "https://shopee.tw/product/10362769/16983824033",
+      "image": "images/parts/16983824033.jpg",
+      "category": "果糖機零件",
+      "hidden": false
+    },
+    {
+      "id": "part-20466826783",
+      "title": "益芳果糖機 原廠零件 果糖機彈簧",
+      "price": "NT$50",
+      "url": "https://shopee.tw/product/10362769/20466826783",
+      "image": "images/parts/20466826783.jpg",
+      "category": "果糖機零件",
+      "hidden": false
+    },
+    {
+      "id": "part-4661422939",
+      "title": "現貨-益芳果糖機ET-9EN/ET-9E 原廠皮帶!10*130XL",
+      "price": "NT$400",
+      "url": "https://shopee.tw/product/10362769/4661422939",
+      "image": "images/parts/4661422939.jpg",
+      "category": "果糖機零件",
+      "hidden": false
+    },
+    {
+      "id": "part-4188237053",
+      "title": "益芳果糖機 ET-9EN ET-9E 軸心/齒輪 原廠零件",
+      "price": "NT$600",
+      "url": "https://shopee.tw/product/10362769/4188237053",
+      "image": "images/parts/4188237053.jpg",
+      "category": "果糖機零件",
+      "hidden": false
+    }
+  ]
 }

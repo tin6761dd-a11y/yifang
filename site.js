@@ -7,20 +7,39 @@
     var root = document.body || document;
     if (!root || root.getAttribute("data-yf-bound") === "1") return;
     root.setAttribute("data-yf-bound", "1");
+
+    function scopeOf(el) {
+      return (el && el.closest && el.closest(".filter-scope")) || root;
+    }
+    function apply(scope, cat, btn) {
+      scope = scope || root;
+      var buttons = scope.querySelectorAll(".filters button");
+      var cards = scope.querySelectorAll(".filter-item");
+      var qEl = scope.querySelector(".filter-search");
+      var q = qEl ? String(qEl.value || "").trim().toLowerCase() : "";
+      if (cat == null) {
+        var active = scope.querySelector('.filters button[aria-pressed="true"]');
+        cat = (active && active.getAttribute("data-cat")) || "all";
+      }
+      buttons.forEach(function (b) {
+        var on = btn ? b === btn : b.getAttribute("data-cat") === cat;
+        b.setAttribute("aria-pressed", on ? "true" : "false");
+        b.classList.toggle("is-active", on);
+        if (on) cat = b.getAttribute("data-cat") || cat;
+      });
+      cards.forEach(function (card) {
+        var matchCat = cat === "all" || card.getAttribute("data-category") === cat;
+        var hay = (card.getAttribute("data-search") || card.textContent || "").toLowerCase();
+        card.hidden = !(matchCat && (!q || hay.indexOf(q) !== -1));
+      });
+    }
+
     root.addEventListener("click", function (e) {
       var t = e.target;
       if (!t || !t.closest) return;
       var filterBtn = t.closest(".filters button");
       if (filterBtn) {
-        var cat = filterBtn.getAttribute("data-cat");
-        document.querySelectorAll(".filters button").forEach(function (b) {
-          var on = b === filterBtn;
-          b.setAttribute("aria-pressed", on ? "true" : "false");
-          b.classList.toggle("is-active", on);
-        });
-        document.querySelectorAll(".machine").forEach(function (card) {
-          card.hidden = !(cat === "all" || card.getAttribute("data-category") === cat);
-        });
+        apply(scopeOf(filterBtn), filterBtn.getAttribute("data-cat"), filterBtn);
         return;
       }
       var thumb = t.closest(".thumbs button");
@@ -58,6 +77,10 @@
         if (panel) panel.hidden = true;
       }
     });
+    root.addEventListener("input", function (e) {
+      var t = e.target;
+      if (t && t.classList && t.classList.contains("filter-search")) apply(scopeOf(t));
+    });
   }
 
   function hydrateFromContent(data) {
@@ -75,7 +98,7 @@
 
   function start() {
     const baked = document.documentElement.getAttribute("data-baked") === "1";
-    const hasCards = document.querySelector(".machine");
+    const hasCards = document.querySelector(".machine, .part-card, .new-machine");
     if (baked && hasCards) {
       enhance();
       return;
