@@ -603,7 +603,7 @@
     $("label-contact").value = labels.contact || contact.title || "聯絡我們";
     $("label-faq").value = labels.faq || "常見問題";
     $("label-hero-shopee").value = labels.heroShopee || "蝦皮賣場";
-    $("label-hero-used").value = labels.heroUsed || "看中古機專區";
+    $("label-hero-used").value = labels.heroUsed || "中古機專區";
     $("label-contact-shopee").value = labels.contactShopee || "打開蝦皮賣場";
     $("label-filter-all").value = labels.filterAll || "全部";
     $("label-float").value = labels.floatToggle || labels.support || "客服諮詢";
@@ -728,7 +728,7 @@
     labels.contact = $("label-contact").value.trim() || "聯絡我們";
     labels.faq = $("label-faq").value.trim() || "常見問題";
     labels.heroShopee = $("label-hero-shopee").value.trim() || "蝦皮賣場";
-    labels.heroUsed = $("label-hero-used").value.trim() || "看中古機專區";
+    labels.heroUsed = $("label-hero-used").value.trim() || "中古機專區";
     labels.contactShopee = $("label-contact-shopee").value.trim() || "打開蝦皮賣場";
     labels.filterAll = $("label-filter-all").value.trim() || "全部";
     labels.floatToggle = $("label-float").value.trim() || labels.support || "客服諮詢";

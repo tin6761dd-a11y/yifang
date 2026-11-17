@@ -191,7 +191,7 @@
       faq: labels.faq || "常見問題",
       support: labels.support || "客服諮詢",
       heroShopee: labels.heroShopee || "蝦皮賣場",
-      heroUsed: labels.heroUsed || "看中古機專區",
+      heroUsed: labels.heroUsed || "中古機專區",
       contactShopee: labels.contactShopee || "打開蝦皮賣場",
       filterAll: labels.filterAll || "全部",
       floatToggle: labels.floatToggle || labels.support || "客服諮詢"
