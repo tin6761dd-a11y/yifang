@@ -187,6 +187,7 @@ footer .wrap{display:flex;flex-wrap:wrap;gap:1rem;justify-content:space-between}
   gap:.55rem;
 }
 .float-toggle{
+  position:relative;
   min-width:56px;min-height:56px;
   padding:.85rem 1.15rem;
   border:0;border-radius:999px;
@@ -195,6 +196,20 @@ footer .wrap{display:flex;flex-wrap:wrap;gap:1rem;justify-content:space-between}
   box-shadow:0 10px 24px rgba(15,42,107,.28);
   cursor:pointer;
 }
+.float-unread{
+  position:absolute;top:-.2rem;right:-.15rem;
+  min-width:1.15rem;height:1.15rem;padding:0 .28rem;
+  border-radius:999px;background:#dc2626;color:#fff;
+  font-size:.7rem;font-weight:800;line-height:1.15rem;
+  text-align:center;box-shadow:0 0 0 2px #fff;
+  pointer-events:none;
+}
+.float-unread[hidden]{display:none!important}
+.float-link.float-chat-open{
+  background:var(--blue);color:#fff;border:0;width:100%;
+  cursor:pointer;font:inherit;text-align:left;font-weight:800;
+}
+.float-link.float-chat-open:hover{background:var(--blue-dark);color:#fff}
 .float-toggle:hover,.float-contact.is-open .float-toggle{background:var(--blue-dark)}
 .float-panel{
   background:#fff;
@@ -304,23 +319,19 @@ footer{padding-bottom:5.5rem}
 @media (max-width:1100px){.nav ul{gap:.2rem .6rem}.nav ul a{font-size:.85rem}}
 @media (max-width:960px){.nav ul{display:none}}
 
-/* Keep the existing contact FAB above the Tawk.to bubble and attention prompts */
-.has-tawk .float-contact{
-  bottom:max(10.5rem, calc(env(safe-area-inset-bottom) + 10rem));
-}
-.has-tawk footer{padding-bottom:13rem}
-@media (max-width:640px){
-  .has-tawk .float-contact{
-    bottom:max(11.5rem, calc(env(safe-area-inset-bottom) + 11rem));
-  }
+/* Tawk default bubble is hidden; keep the FAB in the normal corner.
+   Hide the FAB while the chat window is open so it does not cover the input. */
+body.tawk-maximized .float-contact{
+  visibility:hidden;
+  pointer-events:none;
 }
 
-/* Quoted product card pinned above the Tawk bubble */
+/* Quoted product card sits above the FAB, or to the left of the open Tawk window */
 .inquire-quote{
   position:fixed;
   z-index:2147483000;
   right:max(1rem, env(safe-area-inset-right));
-  bottom:max(11.5rem, calc(env(safe-area-inset-bottom) + 11rem));
+  bottom:max(5.5rem, calc(env(safe-area-inset-bottom) + 5.25rem));
   width:min(320px, calc(100vw - 2rem));
   display:flex;
   gap:.7rem;
@@ -353,15 +364,15 @@ footer{padding-bottom:5.5rem}
 }
 .inquire-quote-close:hover{background:#e2e8f0;color:#0f172a}
 .has-inquire-quote .float-contact{
-  bottom:max(18.5rem, calc(env(safe-area-inset-bottom) + 18rem));
+  bottom:max(12.5rem, calc(env(safe-area-inset-bottom) + 12.25rem));
 }
 @media (max-width:640px){
   .inquire-quote{
-    bottom:max(11.75rem, calc(env(safe-area-inset-bottom) + 11.25rem));
+    bottom:max(5.75rem, calc(env(safe-area-inset-bottom) + 5.5rem));
     width:min(300px, calc(100vw - 1.4rem));
   }
   .has-inquire-quote .float-contact{
-    bottom:max(19rem, calc(env(safe-area-inset-bottom) + 18.5rem));
+    bottom:max(13rem, calc(env(safe-area-inset-bottom) + 12.75rem));
   }
 }
 

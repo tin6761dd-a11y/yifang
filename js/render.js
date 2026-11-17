@@ -23,7 +23,7 @@
     return escapeHtml(value);
   }
 
-  var ASSET_VERSION = "202611171910";
+  var ASSET_VERSION = "202611172300";
 
   function withCacheBust(href) {
     href = String(href || "");
@@ -38,7 +38,7 @@
       provider: String(chat.provider || "tawk").trim() || "tawk",
       propertyId: String(chat.propertyId || "").trim(),
       widgetId: String(chat.widgetId || "").trim(),
-      label: String(chat.label || "").trim() || "線上客服"
+      label: String(chat.label || "").trim() || "💬 線上文字客服（免費）"
     };
   }
 
@@ -105,6 +105,12 @@
     return (
       "  <script>\n" +
       "    var Tawk_API=Tawk_API||{}, Tawk_LoadStart=new Date();\n" +
+      "    (function(a){\n" +
+      "      function hide(){try{if(a.hideWidget)a.hideWidget();}catch(e){}}\n" +
+      "      var _load=a.onLoad,_min=a.onChatMinimized;\n" +
+      "      a.onLoad=function(){if(typeof _load==='function')_load();hide();};\n" +
+      "      a.onChatMinimized=function(){if(typeof _min==='function')_min();hide();};\n" +
+      "    })(Tawk_API);\n" +
       "    (function(){\n" +
       '      var s1=document.createElement("script"),s0=document.getElementsByTagName("script")[0];\n' +
       "      s1.async=true;\n" +
@@ -182,20 +188,139 @@
     document.body.classList.toggle("tawk-maximized", maximized);
   }
 
-  function bindTawkQuotePosition() {
-    if (bindTawkQuotePosition.bound || typeof window === "undefined") return;
+  function hookTawk(name, fn) {
+    if (typeof window === "undefined") return;
     window.Tawk_API = window.Tawk_API || {};
-    function wrap(name) {
-      var prev = window.Tawk_API[name];
-      window.Tawk_API[name] = function () {
-        if (typeof prev === "function") prev.apply(this, arguments);
-        if (typeof setTimeout === "function") setTimeout(syncQuotePosition, 60);
-        else syncQuotePosition();
-      };
+    var prev = window.Tawk_API[name];
+    window.Tawk_API[name] = function () {
+      if (typeof prev === "function") prev.apply(this, arguments);
+      fn.apply(this, arguments);
+    };
+  }
+
+  function isTawkMaximized() {
+    try {
+      return !!(
+        window.Tawk_API &&
+        typeof window.Tawk_API.isChatMaximized === "function" &&
+        window.Tawk_API.isChatMaximized()
+      );
+    } catch (err) {
+      return false;
     }
-    wrap("onChatMaximized");
-    wrap("onChatMinimized");
-    bindTawkQuotePosition.bound = true;
+  }
+
+  function closeFloatPanel() {
+    if (typeof document === "undefined") return;
+    var wrap = document.querySelector(".float-contact");
+    if (!wrap) return;
+    wrap.classList.remove("is-open");
+    var toggle = wrap.querySelector(".float-toggle");
+    var panel = wrap.querySelector(".float-panel");
+    if (toggle) toggle.setAttribute("aria-expanded", "false");
+    if (panel) panel.hidden = true;
+  }
+
+  function setUnreadBadge(count) {
+    if (typeof document === "undefined") return;
+    count = Number(count) || 0;
+    var wrap = document.querySelector(".float-contact");
+    if (!wrap) return;
+    var btn = wrap.querySelector(".float-toggle");
+    if (!btn) return;
+    var badge = btn.querySelector(".float-unread");
+    if (!badge) {
+      badge = document.createElement("span");
+      badge.className = "float-unread";
+      btn.appendChild(badge);
+    }
+    badge.hidden = count <= 0;
+    badge.textContent = count > 99 ? "99+" : String(count);
+    if (count > 0) {
+      badge.setAttribute("aria-label", "有 " + count + " 則未讀訊息");
+      badge.removeAttribute("aria-hidden");
+    } else {
+      badge.setAttribute("aria-hidden", "true");
+      badge.removeAttribute("aria-label");
+    }
+    wrap.classList.toggle("has-unread", count > 0);
+  }
+
+  function hideTawkLauncher(api) {
+    api = api || (typeof window !== "undefined" ? window.Tawk_API : null);
+    try {
+      if (api && typeof api.hideWidget === "function") api.hideWidget();
+    } catch (err) {}
+    if (typeof document !== "undefined" && document.body) {
+      document.body.classList.remove("tawk-maximized");
+    }
+  }
+
+  function openTawkChat(api) {
+    if (typeof window === "undefined") return;
+    closeFloatPanel();
+    window.Tawk_API = window.Tawk_API || {};
+    function go(a) {
+      try {
+        if (a && typeof a.showWidget === "function") a.showWidget();
+      } catch (err) {}
+      try {
+        if (a && typeof a.maximize === "function") a.maximize();
+      } catch (err2) {}
+      if (typeof document !== "undefined" && document.body) {
+        document.body.classList.add("tawk-maximized");
+      }
+      if (typeof setTimeout === "function") {
+        setTimeout(syncQuotePosition, 80);
+        setTimeout(syncQuotePosition, 600);
+      } else syncQuotePosition();
+    }
+    api = api || window.Tawk_API;
+    if (typeof api.maximize === "function") go(api);
+    else whenTawkReady(go);
+  }
+
+  function initTawkLauncher() {
+    if (typeof window === "undefined" || initTawkLauncher.bound) return;
+    initTawkLauncher.bound = true;
+    window.Tawk_API = window.Tawk_API || {};
+    hookTawk("onLoad", function () {
+      if (!isTawkMaximized()) hideTawkLauncher(window.Tawk_API);
+      try {
+        if (typeof window.Tawk_API.getUnreadCount === "function") {
+          setUnreadBadge(window.Tawk_API.getUnreadCount());
+        }
+      } catch (err) {}
+    });
+    hookTawk("onChatMinimized", function () {
+      hideTawkLauncher(window.Tawk_API);
+      syncQuotePosition();
+    });
+    hookTawk("onChatHidden", function () {
+      if (typeof document !== "undefined" && document.body) {
+        document.body.classList.remove("tawk-maximized");
+      }
+      syncQuotePosition();
+    });
+    hookTawk("onChatMaximized", function () {
+      closeFloatPanel();
+      setUnreadBadge(0);
+      syncQuotePosition();
+    });
+    hookTawk("onChatMessageAgent", function () {
+      openTawkChat(window.Tawk_API);
+    });
+    hookTawk("onUnreadCountChanged", function (count) {
+      setUnreadBadge(count);
+      if (Number(count) > 0 && !isTawkMaximized()) openTawkChat(window.Tawk_API);
+    });
+    if (typeof window.Tawk_API.maximize === "function") {
+      if (!isTawkMaximized()) hideTawkLauncher(window.Tawk_API);
+    }
+  }
+
+  function bindTawkQuotePosition() {
+    initTawkLauncher();
   }
 
   function hideInquireQuote() {
@@ -204,7 +329,7 @@
     if (wrap) wrap.hidden = true;
     if (document.body) {
       document.body.classList.remove("has-inquire-quote");
-      document.body.classList.remove("tawk-maximized");
+      syncQuotePosition();
     }
   }
 
@@ -285,9 +410,7 @@
         api.addEvent("product-inquiry", meta, function () {});
       }
     } catch (err2) {}
-    try {
-      if (typeof api.maximize === "function") api.maximize();
-    } catch (err3) {}
+    openTawkChat(api);
     function prefill() {
       try {
         if (typeof api.setChatInputMessage === "function") {
@@ -302,9 +425,10 @@
   function openProductInquiry(btn) {
     if (!btn || typeof window === "undefined") return;
     var info = productInfoFromButton(btn);
+    closeFloatPanel();
+    initTawkLauncher();
     showInquireQuote(info);
     whenTawkReady(function (api) {
-      bindTawkQuotePosition();
       sendProductToTawk(api, info);
       if (typeof setTimeout === "function") {
         setTimeout(syncQuotePosition, 80);
@@ -638,19 +762,26 @@
 
   function renderSupportSection(content) {
     var channels = visibleChannels(content);
-    if (!channels.length) return "";
+    var hasChat = chatEnabled(content);
+    if (!channels.length && !hasChat) return "";
     var labels = labelsOf(content);
     var links = renderChannelLinks(content, "btn btn-outline");
+    var chatBtn = hasChat
+      ? '<button type="button" class="btn btn-blue open-site-chat">' +
+        escapeHtml(chatOf(content).label) +
+        "</button>"
+      : "";
+    var actions = [chatBtn, links].filter(Boolean).join("\n            ");
     return (
       '    <section id="support">\n' +
       '      <div class="wrap">\n' +
       "        <h2>" +
       escapeHtml(labels.support) +
       "</h2>\n" +
-      '        <p class="lead">有封口機、果糖機或中古機的問題，歡迎直接透過以下方式詢問。</p>\n' +
+      '        <p class="lead">有封口機、果糖機或中古機的問題，歡迎直接透過以下方式詢問。線上文字客服免費，不用擔心會被收費。</p>\n' +
       '        <div class="actions support-actions">\n' +
       "            " +
-      links +
+      actions +
       "\n" +
       "        </div>\n" +
       "      </div>\n" +
@@ -660,8 +791,14 @@
 
   function renderFloatContact(content) {
     var channels = visibleChannels(content);
-    if (!channels.length) return "";
+    var hasChat = chatEnabled(content);
+    if (!channels.length && !hasChat) return "";
     var labels = labelsOf(content);
+    var chatBtn = hasChat
+      ? '      <button type="button" class="float-link float-chat-open open-site-chat">' +
+        escapeHtml(chatOf(content).label) +
+        "</button>\n"
+      : "";
     var items = channels
       .map(function (ch) {
         return (
@@ -683,11 +820,11 @@
       '  <div class="float-contact">\n' +
       '    <button type="button" class="float-toggle" aria-expanded="false" aria-controls="float-panel">' +
       escapeHtml(labels.floatToggle) +
+      '<span class="float-unread" hidden aria-hidden="true">0</span>' +
       "</button>\n" +
       '    <div id="float-panel" class="float-panel" hidden>\n' +
-      "      " +
-      items +
-      "\n" +
+      chatBtn +
+      (items ? "      " + items + "\n" : "") +
       "    </div>\n" +
       "  </div>\n"
     );
@@ -784,9 +921,19 @@
         openProductInquiry(inquire);
         return;
       }
+      var openChatBtn = t.closest(".open-site-chat");
+      if (openChatBtn && scope.contains(openChatBtn)) {
+        e.preventDefault();
+        openTawkChat();
+        return;
+      }
       var toggle = t.closest(".float-toggle");
       if (toggle && scope.contains(toggle)) {
         var wrap = toggle.closest(".float-contact");
+        if (wrap && wrap.classList.contains("has-unread")) {
+          openTawkChat();
+          return;
+        }
         setFloatOpen(!(wrap && wrap.classList.contains("is-open")));
         return;
       }
@@ -816,7 +963,8 @@
       "function apply(scope,cat,btn){scope=scope||s;var btns=scope.querySelectorAll('.filters button'),cards=scope.querySelectorAll('.filter-item'),qEl=scope.querySelector('.filter-search'),q=qEl?(qEl.value||'').trim().toLowerCase():'',i;if(cat==null){var a=scope.querySelector('.filters button.is-active');cat=a?a.getAttribute('data-cat'):'all';}for(i=0;i<btns.length;i++){var on=btn?btns[i]===btn:btns[i].getAttribute('data-cat')===cat;btns[i].setAttribute('aria-pressed',on?'true':'false');btns[i].classList.toggle('is-active',on);if(on)cat=btns[i].getAttribute('data-cat')||cat;}for(i=0;i<cards.length;i++){var ok=cat==='all'||cards[i].getAttribute('data-category')===cat;var hay=(cards[i].getAttribute('data-search')||cards[i].textContent||'').toLowerCase();cards[i].hidden=!(ok&&(!q||hay.indexOf(q)!==-1));}}\n" +
       "function inquire(btn){if(window.YifangRender&&typeof window.YifangRender.openProductInquiry==='function'){window.YifangRender.openProductInquiry(btn);}}\n" +
       "function setOpen(open){var w=s.querySelector('.float-contact');if(!w)return;var t=w.querySelector('.float-toggle'),p=w.querySelector('.float-panel');w.classList.toggle('is-open',open);if(t)t.setAttribute('aria-expanded',open?'true':'false');if(p)p.hidden=!open;}\n" +
-      "s.addEventListener('click',function(e){var t=e.target;if(!t||!t.closest)return;var fb=t.closest('.filters button');if(fb){apply(scopeOf(fb),fb.getAttribute('data-cat'),fb);return;}var th=t.closest('.thumbs button');if(th){var g=th.closest('.gallery');if(!g)return;var main=g.querySelector('.main-photo');if(main&&th.getAttribute('data-src')){main.src=th.getAttribute('data-src');if(th.getAttribute('data-alt'))main.alt=th.getAttribute('data-alt');}g.querySelectorAll('.thumbs button').forEach(function(x){x.setAttribute('aria-current',x===th?'true':'false');});return;}var iq=t.closest('.inquire-product');if(iq){e.preventDefault();inquire(iq);return;}var tg=t.closest('.float-toggle');if(tg){var w=tg.closest('.float-contact');setOpen(!(w&&w.classList.contains('is-open')));return;}if(!t.closest('.float-contact'))setOpen(false);});\n" +
+      "function openChat(){setOpen(false);if(window.YifangRender&&typeof window.YifangRender.openTawkChat==='function'){window.YifangRender.openTawkChat();return;}var a=window.Tawk_API;if(!a)return;try{if(a.showWidget)a.showWidget();}catch(err){}try{if(a.maximize)a.maximize();}catch(err2){}}\n" +
+      "s.addEventListener('click',function(e){var t=e.target;if(!t||!t.closest)return;var fb=t.closest('.filters button');if(fb){apply(scopeOf(fb),fb.getAttribute('data-cat'),fb);return;}var th=t.closest('.thumbs button');if(th){var g=th.closest('.gallery');if(!g)return;var main=g.querySelector('.main-photo');if(main&&th.getAttribute('data-src')){main.src=th.getAttribute('data-src');if(th.getAttribute('data-alt'))main.alt=th.getAttribute('data-alt');}g.querySelectorAll('.thumbs button').forEach(function(x){x.setAttribute('aria-current',x===th?'true':'false');});return;}var iq=t.closest('.inquire-product');if(iq){e.preventDefault();inquire(iq);return;}var oc=t.closest('.open-site-chat');if(oc){e.preventDefault();openChat();return;}var tg=t.closest('.float-toggle');if(tg){var w=tg.closest('.float-contact');if(w&&w.classList.contains('has-unread')){openChat();return;}setOpen(!(w&&w.classList.contains('is-open')));return;}if(!t.closest('.float-contact'))setOpen(false);});\n" +
       "s.addEventListener('input',function(e){var t=e.target;if(t&&t.classList&&t.classList.contains('filter-search'))apply(scopeOf(t));});\n" +
       "r.addEventListener('keydown',function(e){if(e.key==='Escape')setOpen(false);});})();</script>\n"
     );
@@ -1766,6 +1914,8 @@
     return html;
   }
 
+  if (typeof window !== "undefined") initTawkLauncher();
+
   return {
     escapeHtml: escapeHtml,
     assetUrl: assetUrl,
@@ -1789,6 +1939,7 @@
     chatOf: chatOf,
     chatEnabled: chatEnabled,
     openProductInquiry: openProductInquiry,
+    openTawkChat: openTawkChat,
     siteUrl: siteUrl,
     todayStamp: todayStamp,
     renderJsonLd: renderJsonLd,

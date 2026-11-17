@@ -713,7 +713,7 @@
     var chat = c.chat || {};
     $("chat-property-id").value = chat.propertyId || "";
     $("chat-widget-id").value = chat.widgetId || "";
-    $("chat-label").value = chat.label || "線上客服";
+    $("chat-label").value = chat.label || "💬 線上文字客服（免費）";
     var announcement = c.announcement || {};
     $("announce-enabled").checked = announcement.enabled !== false;
     $("announce-text").value = announcement.text || c.paymentNote || "付款方式：僅接受匯款與現金（付現）";
@@ -897,11 +897,11 @@
       };
     });
 
-    var chat = Object.assign({ provider: "tawk", propertyId: "", widgetId: "", label: "線上客服" }, prev.chat || {});
+    var chat = Object.assign({ provider: "tawk", propertyId: "", widgetId: "", label: "💬 線上文字客服（免費）" }, prev.chat || {});
     chat.provider = "tawk";
     chat.propertyId = $("chat-property-id").value.trim();
     chat.widgetId = $("chat-widget-id").value.trim();
-    chat.label = $("chat-label").value.trim() || "線上客服";
+    chat.label = $("chat-label").value.trim() || "💬 線上文字客服（免費）";
 
     return {
       site: site,

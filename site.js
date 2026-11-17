@@ -64,10 +64,27 @@
         }
         return;
       }
+      var openChatBtn = t.closest(".open-site-chat");
+      if (openChatBtn) {
+        e.preventDefault();
+        if (window.YifangRender && typeof window.YifangRender.openTawkChat === "function") {
+          window.YifangRender.openTawkChat();
+        } else if (window.Tawk_API) {
+          try { if (window.Tawk_API.showWidget) window.Tawk_API.showWidget(); } catch (err) {}
+          try { if (window.Tawk_API.maximize) window.Tawk_API.maximize(); } catch (err2) {}
+        }
+        return;
+      }
       var toggle = t.closest(".float-toggle");
       if (toggle) {
         var wrap = toggle.closest(".float-contact");
         if (!wrap) return;
+        if (wrap.classList.contains("has-unread")) {
+          if (window.YifangRender && typeof window.YifangRender.openTawkChat === "function") {
+            window.YifangRender.openTawkChat();
+          }
+          return;
+        }
         var open = !wrap.classList.contains("is-open");
         wrap.classList.toggle("is-open", open);
         toggle.setAttribute("aria-expanded", open ? "true" : "false");
