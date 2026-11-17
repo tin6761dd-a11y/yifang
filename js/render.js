@@ -23,7 +23,7 @@
     return escapeHtml(value);
   }
 
-  var ASSET_VERSION = "202611172305";
+  var ASSET_VERSION = "202611172310";
 
   function withCacheBust(href) {
     href = String(href || "");
@@ -280,11 +280,12 @@
   function maybeOpenForUnread(count) {
     count = Number(count);
     if (isNaN(count)) count = currentUnreadCount();
-    setUnreadBadge(count);
-    if (count <= 0 || isTawkMaximized()) return;
-    // Do not pop the window for a first-time greeting. Auto-open only when
-    // the visitor already started a chat, so agent replies are not missed.
-    if (initTawkLauncher.userOpened || chatIsOngoing()) openTawkChat(window.Tawk_API);
+    var canSurface = !!(initTawkLauncher.userOpened || chatIsOngoing());
+    // A Tawk welcome greeting can increment unread for a brand-new visitor.
+    // Only show the badge / auto-open after a real conversation has started.
+    setUnreadBadge(canSurface ? count : 0);
+    if (!canSurface || count <= 0 || isTawkMaximized()) return;
+    openTawkChat(window.Tawk_API);
   }
 
   function enforceHiddenLauncher() {
@@ -329,10 +330,11 @@
     window.Tawk_API = window.Tawk_API || {};
     hookTawk("onLoad", function () {
       var unread = currentUnreadCount();
-      setUnreadBadge(unread);
       if (unread > 0 && chatIsOngoing()) {
+        setUnreadBadge(unread);
         openTawkChat(window.Tawk_API);
       } else {
+        setUnreadBadge(0);
         hideTawkLauncher(window.Tawk_API);
         if (typeof setTimeout === "function") {
           setTimeout(enforceHiddenLauncher, 400);
