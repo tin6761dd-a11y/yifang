@@ -85,12 +85,12 @@
       },
       {
         "title": "醬包機",
-        "description": "醬包機維修與相關設備諮詢。"
+        "description": "醬包機相關設備諮詢。"
       },
       {
         "title": "維修與保養",
-        "description": "NT$800 起，限中彰投。歡迎先來電預約。",
-        "priceFrom": "NT$800 起"
+        "description": "NT$500 起，限中彰投。歡迎先來電預約。",
+        "priceFrom": "NT$500 起"
       }
     ]
   },
@@ -226,9 +226,7 @@
       "sealerType": "",
       "price": "約 NT$7,000–9,000",
       "description": "益芳二手果糖機，含 16鍵、24鍵與 YF-8E 24鍵。機況良好，整台已大整理過，功能正常，依現場剩餘機種為主。下單前請先確認容器規格是否適用。",
-      "notes": [
-        "其中一筆標題為「益芳二手24鍵果糖機」，說明卻寫「益芳中古16鍵果糖機」，規格請來電確認。"
-      ],
+      "notes": [],
       "images": [
         "images/fructose-16-24-1.jpg",
         "images/fructose-16-24-2.jpg",
