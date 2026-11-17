@@ -153,3 +153,76 @@ footer .wrap{display:flex;flex-wrap:wrap;gap:1rem;justify-content:space-between}
 .faq-list{display:grid;gap:1rem}
 .faq-list .card h3{margin:0 0 .35rem}
 .faq-list .card p{margin:0;color:var(--muted)}
+
+
+/* hide filtered machine cards even when .machine sets display:flex */
+.machine[hidden]{display:none!important}
+
+.mark[data-len="2"]{font-size:.72rem;letter-spacing:-.06em}
+
+/* announcement bar */
+.announce{
+  background:#fff7ed;
+  border-bottom:1px solid #fdba74;
+  color:#9a3412;
+  font-weight:800;
+  text-align:center;
+  padding:.55rem 0;
+  font-size:.98rem;
+}
+.payment-note{margin-top:-.6rem}
+
+.support-actions{margin-top:.4rem}
+.support-actions .btn{min-height:44px}
+
+/* floating contact */
+.float-contact{
+  position:fixed;
+  right:max(1rem, env(safe-area-inset-right));
+  bottom:max(1rem, env(safe-area-inset-bottom));
+  z-index:50;
+  display:flex;
+  flex-direction:column;
+  align-items:flex-end;
+  gap:.55rem;
+}
+.float-toggle{
+  min-width:56px;min-height:56px;
+  padding:.85rem 1.15rem;
+  border:0;border-radius:999px;
+  background:var(--blue);color:#fff;
+  font:inherit;font-weight:800;font-size:1rem;
+  box-shadow:0 10px 24px rgba(15,42,107,.28);
+  cursor:pointer;
+}
+.float-toggle:hover,.float-contact.is-open .float-toggle{background:var(--blue-dark)}
+.float-panel{
+  background:#fff;
+  border:1px solid var(--blue-line);
+  border-radius:16px;
+  box-shadow:var(--shadow);
+  min-width:min(260px, calc(100vw - 2.5rem));
+  padding:.45rem;
+  display:flex;
+  flex-direction:column;
+  gap:.3rem;
+}
+.float-panel[hidden]{display:none!important}
+.float-link{
+  display:flex;align-items:center;
+  min-height:44px;
+  padding:.55rem .8rem;
+  border-radius:12px;
+  text-decoration:none;
+  color:var(--blue-ink);
+  font-weight:700;
+  background:var(--blue-soft);
+}
+.float-link:hover{background:#dbeafe}
+.float-link.channel-facebook{background:#eff6ff;color:#1d4ed8}
+.float-link.channel-line{background:#ecfdf3;color:#047857}
+
+footer{padding-bottom:5.5rem}
+@media (max-width:640px){
+  .float-toggle{font-size:.95rem;padding:.8rem 1rem}
+}

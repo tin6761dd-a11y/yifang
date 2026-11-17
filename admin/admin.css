@@ -136,3 +136,10 @@ input:focus, textarea:focus, select:focus{outline:3px solid var(--blue-line);bor
 .field-label{font-weight:700;font-size:.9rem;color:var(--blue-ink)}
 .field-block .hint{margin:0}
 .phone-card .grid{margin-top:.2rem}
+
+.logo-field{display:flex;flex-direction:column;gap:.3rem;font-weight:700;font-size:.9rem;color:var(--blue-ink)}
+.logo-row{display:flex;align-items:center;gap:.7rem}
+.logo-row input{max-width:8rem;text-align:center;font-size:1.2rem;font-weight:800}
+.logo-preview{width:40px;height:40px}
+.channel-card .grid{align-items:end}
+.toggle-row{display:flex;align-items:center;gap:.45rem;font-weight:700}

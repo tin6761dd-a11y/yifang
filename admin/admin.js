@@ -14,6 +14,12 @@
 
   var SEALER_TYPES = ["微電腦", "機械式", "碼錶機械式", "全自動", "非益芳", "未分類"];
   var CATEGORIES = ["二手封口機", "二手果糖機", "其他設備"];
+  var CHANNEL_TYPES = [
+    { value: "phone", label: "電話" },
+    { value: "facebook", label: "Facebook" },
+    { value: "line", label: "LINE" },
+    { value: "other", label: "其他連結" }
+  ];
 
   var state = {
     token: "",
@@ -420,7 +426,145 @@
       .join("");
   }
 
-  function fillStoreForm() {
+
+  function normalizeLogoChar(value) {
+    var raw = String(value == null ? "" : value).trim();
+    var chars = typeof Array.from === "function" ? Array.from(raw) : raw.split("");
+    chars = chars.slice(0, 2);
+    return chars.join("") || "維";
+  }
+
+  function updateLogoPreview() {
+    var input = $("store-logo-char");
+    var preview = $("logo-preview");
+    if (!preview) return;
+    var ch = normalizeLogoChar(input ? input.value : "維");
+    preview.textContent = ch;
+    preview.setAttribute("data-len", String(ch.length));
+  }
+
+  function defaultChannels(store) {
+    var list = [];
+    ((store && store.phones) || []).forEach(function (item) {
+      if (!item || !item.number) return;
+      list.push({
+        type: "phone",
+        label: item.label || "電話",
+        value: item.number,
+        enabled: true
+      });
+    });
+    list.push({
+      type: "facebook",
+      label: "Facebook",
+      value: "https://www.facebook.com/wf.tin827888",
+      enabled: true
+    });
+    list.push({ type: "line", label: "LINE ID：wf.827888", value: "https://line.me/ti/p/~wf.827888", enabled: true });
+    return list;
+  }
+
+  function logoFontFamily() {
+    return '"Noto Sans TC","Noto Sans CJK TC","PingFang TC","Microsoft JhengHei",sans-serif';
+  }
+
+  function drawLogoIcon(size, char) {
+    var canvas = document.createElement("canvas");
+    canvas.width = size;
+    canvas.height = size;
+    var ctx = canvas.getContext("2d");
+    ctx.fillStyle = "#1d4ed8";
+    ctx.fillRect(0, 0, size, size);
+    var glyphs = normalizeLogoChar(char);
+    var fontSize = glyphs.length > 1 ? Math.round(size * 0.36) : Math.round(size * 0.52);
+    ctx.fillStyle = "#ffffff";
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+    ctx.font = '800 ' + fontSize + "px " + logoFontFamily();
+    ctx.fillText(glyphs, size / 2, size / 2 + size * 0.02);
+    return canvas;
+  }
+
+  function canvasToBytes(canvas) {
+    return new Promise(function (resolve, reject) {
+      canvas.toBlob(function (blob) {
+        if (!blob) {
+          reject(new Error("無法產生圖示"));
+          return;
+        }
+        blob.arrayBuffer().then(function (buf) {
+          resolve(new Uint8Array(buf));
+        }, reject);
+      }, "image/png");
+    });
+  }
+
+  async function generateLogoIcons(char) {
+    try {
+      if (document.fonts && document.fonts.load) {
+        await document.fonts.load('800 120px "Noto Sans TC"');
+        if (document.fonts.ready) await document.fonts.ready;
+      }
+    } catch (err) {}
+    var favicon = await canvasToBytes(drawLogoIcon(32, char));
+    var touch = await canvasToBytes(drawLogoIcon(180, char));
+    return [
+      { path: "favicon.png", contentBase64: bytesToBase64(favicon) },
+      { path: "apple-touch-icon.png", contentBase64: bytesToBase64(touch) }
+    ];
+  }
+
+  function renderChannels() {
+    var list = (state.content && state.content.channels) || [];
+    els.channelsList.innerHTML = list
+      .map(function (item, i) {
+        item = item || {};
+        var type = String(item.type || "other").toLowerCase();
+        var options = CHANNEL_TYPES.map(function (opt) {
+          return (
+            '<option value="' +
+            opt.value +
+            '"' +
+            (opt.value === type ? " selected" : "") +
+            ">" +
+            opt.label +
+            "</option>"
+          );
+        }).join("");
+        var checked = item.enabled !== false ? " checked" : "";
+        return (
+          '<article class="card channel-card" data-channel="' +
+          i +
+          '">' +
+          '<div class="card-head">' +
+          '<span class="title">管道 ' +
+          (i + 1) +
+          "</span>" +
+          '<button type="button" class="btn btn-tiny btn-ghost" data-act="ch-up">上移</button>' +
+          '<button type="button" class="btn btn-tiny btn-ghost" data-act="ch-down">下移</button>' +
+          '<button type="button" class="btn btn-tiny btn-danger" data-act="ch-del">刪除</button>' +
+          "</div>" +
+          '<div class="grid">' +
+          "<label>類型 <select data-field=\"type\">" +
+          options +
+          "</select></label>" +
+          '<label>名稱 <input data-field="label" type="text" value="' +
+          YifangRender.escapeHtml(item.label || "") +
+          '"></label>' +
+          '<label class="wide">電話、網址或 LINE ID <input data-field="value" type="text" value="' +
+          YifangRender.escapeHtml(item.value || item.url || "") +
+          '" placeholder="電話號碼、https 連結或 LINE ID"></label>' +
+          '<label class="toggle-row wide"><input data-field="enabled" type="checkbox"' +
+          checked +
+          "> 顯示在官網上</label>" +
+          "</div>" +
+          "</article>"
+        );
+      })
+      .join("");
+  }
+
+    function fillStoreForm() {
     var c = state.content;
     var store = c.store || {};
     var site = c.site || {};
@@ -447,6 +591,31 @@
     $("store-street").value = store.streetAddress || "";
     $("store-locality").value = store.addressLocality || "";
     $("store-region").value = store.addressRegion || "";
+    $("store-logo-char").value = (window.YifangRender && YifangRender.logoChar)
+      ? YifangRender.logoChar(store)
+      : (store.logoChar || store.mark || "維");
+    updateLogoPreview();
+    var labels = c.labels || {};
+    $("label-about").value = labels.about || "關於我們";
+    $("label-services").value = labels.services || (c.services && c.services.title) || "服務項目";
+    $("label-used").value = labels.used || used.title || "中古機專區";
+    $("label-support").value = labels.support || "客服諮詢";
+    $("label-contact").value = labels.contact || contact.title || "聯絡我們";
+    $("label-faq").value = labels.faq || "常見問題";
+    $("label-hero-shopee").value = labels.heroShopee || "蝦皮賣場";
+    $("label-hero-used").value = labels.heroUsed || "看中古機專區";
+    $("label-contact-shopee").value = labels.contactShopee || "打開蝦皮賣場";
+    $("label-filter-all").value = labels.filterAll || "全部";
+    $("label-float").value = labels.floatToggle || labels.support || "客服諮詢";
+    $("label-buy").value = used.buyLabel || labels.buy || "到蝦皮購買";
+    $("label-call").value = used.callLabel || labels.call || "電話詢問";
+    var announcement = c.announcement || {};
+    $("announce-enabled").checked = announcement.enabled !== false;
+    $("announce-text").value = announcement.text || c.paymentNote || "付款方式：僅接受匯款與現金（付現）";
+    $("payment-note").value = c.paymentNote || announcement.text || "付款方式：僅接受匯款與現金（付現）";
+    if (!Array.isArray(c.channels) || !c.channels.length) {
+      c.channels = defaultChannels(store);
+    }
   }
 
   function collectContent() {
@@ -480,6 +649,8 @@
     store.streetAddress = $("store-street").value.trim();
     store.addressLocality = $("store-locality").value.trim();
     store.addressRegion = $("store-region").value.trim();
+    store.logoChar = normalizeLogoChar($("store-logo-char").value);
+    store.mark = store.logoChar;
     site.title = $("site-title").value.trim();
     site.description = $("site-desc").value.trim();
     // Never drop the Google Search Console verification tag.
@@ -502,6 +673,8 @@
     var usedSection = Object.assign({}, prev.usedSection);
     usedSection.lead = $("used-lead").value.trim();
     usedSection.note = store.usedMachineNote;
+    usedSection.buyLabel = $("label-buy").value.trim() || "到蝦皮購買";
+    usedSection.callLabel = $("label-call").value.trim() || "電話詢問";
 
     var groups = Array.prototype.map.call(els.groupsList.querySelectorAll("[data-group]"), function (card, i) {
       var existing = (prev.groups || [])[Number(card.getAttribute("data-group"))] || (prev.groups || [])[i] || {};
@@ -545,10 +718,44 @@
 
     var contact = Object.assign({}, prev.contact);
     contact.lead = $("contact-lead").value.trim();
+    contact.title = $("label-contact").value.trim() || "聯絡我們";
+
+    var labels = Object.assign({}, prev.labels);
+    labels.about = $("label-about").value.trim() || "關於我們";
+    labels.services = $("label-services").value.trim() || "服務項目";
+    labels.used = $("label-used").value.trim() || "中古機專區";
+    labels.support = $("label-support").value.trim() || "客服諮詢";
+    labels.contact = $("label-contact").value.trim() || "聯絡我們";
+    labels.faq = $("label-faq").value.trim() || "常見問題";
+    labels.heroShopee = $("label-hero-shopee").value.trim() || "蝦皮賣場";
+    labels.heroUsed = $("label-hero-used").value.trim() || "看中古機專區";
+    labels.contactShopee = $("label-contact-shopee").value.trim() || "打開蝦皮賣場";
+    labels.filterAll = $("label-filter-all").value.trim() || "全部";
+    labels.floatToggle = $("label-float").value.trim() || labels.support || "客服諮詢";
+    services.title = labels.services;
+    usedSection.title = labels.used;
+
+    var announcement = Object.assign({}, prev.announcement);
+    announcement.enabled = $("announce-enabled").checked;
+    announcement.text = $("announce-text").value.trim();
+    var paymentNote = $("payment-note").value.trim();
+
+    var channels = Array.prototype.map.call(els.channelsList.querySelectorAll("[data-channel]"), function (card) {
+      return {
+        type: card.querySelector('[data-field="type"]').value,
+        label: card.querySelector('[data-field="label"]').value.trim(),
+        value: card.querySelector('[data-field="value"]').value.trim(),
+        enabled: card.querySelector('[data-field="enabled"]').checked
+      };
+    });
 
     return {
       site: site,
       store: store,
+      labels: labels,
+      announcement: announcement,
+      paymentNote: paymentNote,
+      channels: channels,
       services: services,
       usedSection: usedSection,
       contact: contact,
@@ -574,6 +781,7 @@
 
   function refreshLists() {
     renderPhones();
+    renderChannels();
     renderServices();
     renderGroups();
     renderFaq();
@@ -857,6 +1065,14 @@
           contentBase64: bytesToBase64(state.pendingBlobs[path].bytes)
         });
       });
+      try {
+        var iconFiles = await generateLogoIcons(state.content.store && state.content.store.logoChar);
+        iconFiles.forEach(function (file) {
+          files.push(file);
+        });
+      } catch (iconErr) {
+        console.warn("logo icons not regenerated", iconErr);
+      }
       var deletes = state.pendingDeletes.filter(function (path) {
         return !pathStillUsed(path, state.content.groups);
       });
@@ -992,6 +1208,24 @@
     renderPhones();
   }
 
+  function onChannelsClick(event) {
+    var btn = event.target.closest("button");
+    if (!btn) return;
+    var card = event.target.closest("[data-channel]");
+    if (!card) return;
+    var index = Number(card.getAttribute("data-channel"));
+    var act = btn.getAttribute("data-act");
+    syncFormsToState();
+    var channels = state.content.channels || [];
+    if (act === "ch-del") {
+      channels.splice(index, 1);
+    }
+    if (act === "ch-up") channels = moveItem(channels, index, -1);
+    if (act === "ch-down") channels = moveItem(channels, index, 1);
+    state.content.channels = channels;
+    renderChannels();
+  }
+
   function onFaqClick(event) {
     var btn = event.target.closest("button");
     if (!btn || btn.getAttribute("data-act") !== "faq-del") return;
@@ -1012,6 +1246,7 @@
     els.editorError = $("editor-error");
     els.editorOk = $("editor-ok");
     els.phonesList = $("phones-list");
+    els.channelsList = $("channels-list");
     els.servicesList = $("services-list");
     els.groupsList = $("groups-list");
     els.faqList = $("faq-list");
@@ -1031,6 +1266,14 @@
       renderPhones();
     });
     els.phonesList.addEventListener("click", onPhonesClick);
+    $("add-channel").addEventListener("click", function () {
+      syncFormsToState();
+      state.content.channels = state.content.channels || [];
+      state.content.channels.push({ type: "line", label: "LINE", value: "", enabled: false });
+      renderChannels();
+    });
+    els.channelsList.addEventListener("click", onChannelsClick);
+    $("store-logo-char").addEventListener("input", updateLogoPreview);
     $("add-service").addEventListener("click", function () {
       syncFormsToState();
       state.content.services.items.push({ title: "", description: "" });
@@ -1081,6 +1324,27 @@
       showLogin("");
     }
   }
+
+  window.YifangAdmin = {
+    collectContent: collectContent,
+    fillAll: fillAll,
+    syncFormsToState: syncFormsToState,
+    generateLogoIcons: generateLogoIcons,
+    normalizeLogoChar: normalizeLogoChar,
+    getContent: function () {
+      return state.content;
+    },
+    loadLocalContent: function (content) {
+      state.content = JSON.parse(JSON.stringify(content));
+      if (!Array.isArray(state.content.groups)) state.content.groups = [];
+      if (!Array.isArray(state.content.faq)) state.content.faq = [];
+      if (!Array.isArray(state.content.channels)) state.content.channels = defaultChannels(state.content.store);
+      state.loadedCommitSha = "local-test";
+      showEditor();
+      fillAll();
+      if (els.loadStatus) els.loadStatus.textContent = "本地測試模式";
+    }
+  };
 
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", start);
   else start();

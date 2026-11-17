@@ -9,7 +9,7 @@
   },
   "store": {
     "name": "維封封口機維護中心",
-    "mark": "益",
+    "mark": "維",
     "slogan": "台中合法專業「益芳封口機授權代理經銷商」",
     "heroText": "台中霧峰在地經營，專營封口機、果糖機、封口膜、私版封口膜印刷、維修、大保養、小保養與中古機買賣。中古機僅售台中、彰化、南投；口徑與型號以現貨為主，下單前請先聯絡。",
     "aboutLead": "本公司是台中合法專業「益芳封口機授權代理經銷商」，門市位於台中市霧峰區林森路827號，服務中部手搖飲與餐飲業者的封口、給糖與相關設備需求。",
@@ -61,8 +61,53 @@
     "years": 10,
     "usedMachineNote": "價格為參考，依機況與口徑而定；二手機流動快，實際庫存請來電 客服 04-23398679、手機 0911-773723 或看蝦皮賣場；中古機僅售中彰投。",
     "usedMachineArea": "中古機僅售台中、彰化、南投",
-    "footerNote": "台中合法專業「益芳封口機授權代理經銷商」"
+    "footerNote": "台中合法專業「益芳封口機授權代理經銷商」",
+    "logoChar": "維"
   },
+  "labels": {
+    "about": "關於我們",
+    "services": "服務項目",
+    "used": "中古機專區",
+    "contact": "聯絡我們",
+    "faq": "常見問題",
+    "support": "客服諮詢",
+    "heroShopee": "蝦皮賣場",
+    "heroUsed": "看中古機專區",
+    "contactShopee": "打開蝦皮賣場",
+    "filterAll": "全部",
+    "floatToggle": "客服諮詢"
+  },
+  "announcement": {
+    "enabled": true,
+    "text": "付款方式：僅接受匯款與現金（付現）"
+  },
+  "paymentNote": "付款方式：僅接受匯款與現金（付現）",
+  "channels": [
+    {
+      "type": "phone",
+      "label": "客服電話",
+      "value": "04-23398679",
+      "enabled": true
+    },
+    {
+      "type": "phone",
+      "label": "手機",
+      "value": "0911-773723",
+      "enabled": true
+    },
+    {
+      "type": "facebook",
+      "label": "Facebook",
+      "value": "https://www.facebook.com/wf.tin827888",
+      "enabled": true
+    },
+    {
+      "type": "line",
+      "label": "LINE ID：wf.827888",
+      "value": "https://line.me/ti/p/~wf.827888",
+      "enabled": true
+    }
+  ],
   "services": {
     "title": "服務項目",
     "lead": "設備買賣、維修與耗材一次諮詢。維修與保養NT$800 起，限中彰投。",

@@ -15,6 +15,9 @@
   <link rel="apple-touch-icon" href="apple-touch-icon.png">
   <link rel="icon" href="apple-touch-icon.png" type="image/png">
   <link rel="stylesheet" href="admin.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@800&display=swap" rel="stylesheet">
 </head>
 <body>
   <div id="login-view" class="screen" hidden>
@@ -102,6 +105,9 @@
 
     <nav class="jump" aria-label="編輯區塊">
       <a href="#sec-store">店家資料</a>
+      <a href="#sec-labels">選單與按鈕</a>
+      <a href="#sec-announce">公告與付款</a>
+      <a href="#sec-channels">客服諮詢</a>
       <a href="#sec-services">服務項目</a>
       <a href="#sec-used">中古機</a>
       <a href="#sec-faq">常見問題</a>
@@ -111,6 +117,14 @@
       <h2>店家資料</h2>
       <div class="grid">
         <label>店名 <input id="store-name" type="text"></label>
+        <div class="logo-field">
+          <label for="store-logo-char">左上角小圖示文字</label>
+          <div class="logo-row">
+            <div class="logo-preview brand-mark" id="logo-preview" aria-hidden="true">維</div>
+            <input id="store-logo-char" type="text" maxlength="4" inputmode="text" autocomplete="off" placeholder="維">
+          </div>
+          <p class="hint">請填 1～2 個字，例如「維」。儲存時會同時更新分頁小圖示（favicon）。</p>
+        </div>
         <label>標語 <input id="store-slogan" type="text"></label>
         <label>地址 <input id="store-address" type="text"></label>
         <div class="wide field-block">
@@ -142,6 +156,43 @@
           <label>縣市 <input id="store-region" type="text"></label>
         </div>
       </details>
+    </section>
+
+    <section id="sec-labels" class="panel">
+      <h2>選單與按鈕文字</h2>
+      <p class="hint">這些文字會出現在官網上部選單、首頁按鈕和各區塊標題。改這裡就不用改程式。</p>
+      <div class="grid">
+        <label>關於我們 <input id="label-about" type="text"></label>
+        <label>服務項目 <input id="label-services" type="text"></label>
+        <label>中古機專區 <input id="label-used" type="text"></label>
+        <label>客服諮詢 <input id="label-support" type="text"></label>
+        <label>聯絡我們 <input id="label-contact" type="text"></label>
+        <label>常見問題 <input id="label-faq" type="text"></label>
+        <label>首頁按鈕：蝦皮賣場 <input id="label-hero-shopee" type="text"></label>
+        <label>首頁按鈕：看中古機專區 <input id="label-hero-used" type="text"></label>
+        <label>聯絡區按鈕：打開蝦皮賣場 <input id="label-contact-shopee" type="text"></label>
+        <label>中古機篩選「全部」 <input id="label-filter-all" type="text"></label>
+        <label>右下角客服按鈕 <input id="label-float" type="text"></label>
+        <label>中古機「到蝦皮購買」 <input id="label-buy" type="text"></label>
+        <label>中古機「電話詢問」 <input id="label-call" type="text"></label>
+      </div>
+    </section>
+
+    <section id="sec-announce" class="panel">
+      <h2>公告與付款方式</h2>
+      <p class="hint">頂部公告條可以開關。付款說明會顯示在中古機專區和聯絡我們。</p>
+      <div class="grid">
+        <label class="check wide"><input type="checkbox" id="announce-enabled"> 顯示頂部公告條</label>
+        <label class="wide">頂部公告文字 <input id="announce-text" type="text" placeholder="付款方式：僅接受匯款與現金（付現）"></label>
+        <label class="wide">付款方式說明 <input id="payment-note" type="text" placeholder="付款方式：僅接受匯款與現金（付現）"></label>
+      </div>
+    </section>
+
+    <section id="sec-channels" class="panel">
+      <h2>客服諮詢管道</h2>
+      <p class="hint">會出現在「客服諮詢」區塊和右下角浮動按鈕。LINE 若還沒有連結或 ID，請先留空或關閉顯示，之後有了再填。</p>
+      <div id="channels-list" class="stack"></div>
+      <button type="button" class="btn btn-secondary" id="add-channel">新增一個管道</button>
     </section>
 
     <section id="sec-services" class="panel">

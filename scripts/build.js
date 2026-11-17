@@ -4,6 +4,13 @@
 const fs = require("fs");
 const path = require("path");
 const render = require("../js/render.js");
+const { execFileSync } = require("child_process");
+
+function generateIcons() {
+  const script = path.join(__dirname, "generate-icons.py");
+  execFileSync("python3", [script, ROOT], { stdio: "inherit" });
+}
+
 
 const ROOT = path.join(__dirname, "..");
 const DIST = path.join(ROOT, "dist");
@@ -50,6 +57,7 @@ function writeBoth(rel, contents) {
 }
 
 function main() {
+  generateIcons();
   const contentPath = path.join(ROOT, "content.json");
   const content = JSON.parse(fs.readFileSync(contentPath, "utf8"));
   const lastmod = render.todayStamp("Asia/Taipei");

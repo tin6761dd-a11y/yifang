@@ -170,6 +170,310 @@
     return list;
   }
 
+
+  function logoChar(store) {
+    var raw = String((store && (store.logoChar || store.mark)) || "維").trim();
+    var chars = typeof Array.from === "function" ? Array.from(raw) : raw.split("");
+    chars = chars.slice(0, 2);
+    return chars.join("") || "維";
+  }
+
+  function labelsOf(content) {
+    var labels = (content && content.labels) || {};
+    var services = (content && content.services) || {};
+    var used = (content && content.usedSection) || {};
+    var contact = (content && content.contact) || {};
+    return {
+      about: labels.about || "關於我們",
+      services: labels.services || services.title || "服務項目",
+      used: labels.used || used.title || "中古機專區",
+      contact: labels.contact || contact.title || "聯絡我們",
+      faq: labels.faq || "常見問題",
+      support: labels.support || "客服諮詢",
+      heroShopee: labels.heroShopee || "蝦皮賣場",
+      heroUsed: labels.heroUsed || "看中古機專區",
+      contactShopee: labels.contactShopee || "打開蝦皮賣場",
+      filterAll: labels.filterAll || "全部",
+      floatToggle: labels.floatToggle || labels.support || "客服諮詢"
+    };
+  }
+
+  function paymentNoteOf(content) {
+    if (!content) return "";
+    if (content.paymentNote != null && String(content.paymentNote).trim()) {
+      return String(content.paymentNote).trim();
+    }
+    if (content.announcement && String(content.announcement.text || "").trim()) {
+      return String(content.announcement.text).trim();
+    }
+    return "";
+  }
+
+  function announcementOf(content) {
+    var a = (content && content.announcement) || {};
+    var enabled = a.enabled !== false;
+    var text = String(a.text != null && String(a.text).trim() ? a.text : paymentNoteOf(content) || "").trim();
+    return { enabled: enabled && !!text, text: text };
+  }
+
+  function normalizeChannels(content) {
+    var list = (content && content.channels) || [];
+    if (!Array.isArray(list)) return [];
+    return list.map(function (ch) {
+      ch = ch || {};
+      return {
+        type: String(ch.type || "other").toLowerCase(),
+        label: String(ch.label || "").trim(),
+        value: String(ch.value || ch.url || "").trim(),
+        enabled: ch.enabled !== false
+      };
+    });
+  }
+
+  function channelHref(ch) {
+    if (!ch) return "";
+    var type = String(ch.type || "").toLowerCase();
+    var value = String(ch.value || ch.url || "").trim();
+    if (!value) return "";
+    if (type === "phone" || type === "tel") return toTelHref(value);
+    if (type === "facebook") {
+      return value.replace(/^https?:\/\/m\.facebook\.com/i, "https://www.facebook.com");
+    }
+    if (type === "line") {
+      if (/^https?:\/\//i.test(value) || /^line:\/\//i.test(value)) return value;
+      var id = value.replace(/^@/, "");
+      return "https://line.me/ti/p/~" + encodeURIComponent(id);
+    }
+    if (type === "email" || type === "mailto") {
+      return value.indexOf("mailto:") === 0 ? value : "mailto:" + value;
+    }
+    if (/^(https?:|tel:|mailto:)/i.test(value)) return value;
+    return value;
+  }
+
+  function visibleChannels(content) {
+    return normalizeChannels(content).filter(function (ch) {
+      return ch.enabled && !!channelHref(ch);
+    });
+  }
+
+  function lineIdFromValue(value) {
+    var raw = String(value || "").trim();
+    if (!raw) return "";
+    var match = raw.match(/line\.me\/ti\/p\/~?([^/?#]+)/i);
+    if (match) {
+      try {
+        return decodeURIComponent(match[1]);
+      } catch (err) {
+        return match[1];
+      }
+    }
+    return raw.replace(/^@/, "");
+  }
+
+  function channelDisplay(ch) {
+    if (!ch) return "";
+    var type = String(ch.type || "").toLowerCase();
+    var value = String(ch.value || ch.url || "").trim();
+    if (ch.label && value && (type === "phone" || type === "tel")) {
+      return ch.label + " " + value;
+    }
+    if (type === "line") {
+      if (ch.label && /LINE\s*ID/i.test(ch.label)) return ch.label;
+      var id = lineIdFromValue(value);
+      return id ? "LINE ID：" + id : ch.label || "LINE";
+    }
+    return ch.label || value;
+  }
+
+  function renderAnnouncement(content) {
+    var a = announcementOf(content);
+    if (!a.enabled) return "";
+    return (
+      '  <div class="announce" role="status">\n' +
+      '    <div class="wrap">' +
+      escapeHtml(a.text) +
+      "</div>\n" +
+      "  </div>\n"
+    );
+  }
+
+  function renderPaymentLine(content, className) {
+    var note = paymentNoteOf(content);
+    if (!note) return "";
+    var cls = className || "note payment-note";
+    return '        <p class="' + escapeAttr(cls) + '">' + escapeHtml(note) + "</p>\n";
+  }
+
+  function renderChannelLinks(content, className) {
+    var cls = className || "btn btn-outline";
+    return visibleChannels(content)
+      .map(function (ch) {
+        var extra = " channel-" + escapeAttr(ch.type);
+        return (
+          '<a class="' +
+          escapeAttr(cls) +
+          extra +
+          '" href="' +
+          escapeAttr(channelHref(ch)) +
+          '"' +
+          (ch.type === "phone" || ch.type === "tel"
+            ? ""
+            : ' rel="noopener noreferrer" target="_blank"') +
+          ">" +
+          escapeHtml(channelDisplay(ch)) +
+          "</a>"
+        );
+      })
+      .join("\n            ");
+  }
+
+  function renderSupportSection(content) {
+    var channels = visibleChannels(content);
+    if (!channels.length) return "";
+    var labels = labelsOf(content);
+    var links = renderChannelLinks(content, "btn btn-outline");
+    return (
+      '    <section id="support">\n' +
+      '      <div class="wrap">\n' +
+      "        <h2>" +
+      escapeHtml(labels.support) +
+      "</h2>\n" +
+      '        <p class="lead">有封口機、果糖機或中古機的問題，歡迎直接透過以下方式詢問。</p>\n' +
+      '        <div class="actions support-actions">\n' +
+      "            " +
+      links +
+      "\n" +
+      "        </div>\n" +
+      "      </div>\n" +
+      "    </section>\n"
+    );
+  }
+
+  function renderFloatContact(content) {
+    var channels = visibleChannels(content);
+    if (!channels.length) return "";
+    var labels = labelsOf(content);
+    var items = channels
+      .map(function (ch) {
+        return (
+          '<a class="float-link channel-' +
+          escapeAttr(ch.type) +
+          '" href="' +
+          escapeAttr(channelHref(ch)) +
+          '"' +
+          (ch.type === "phone" || ch.type === "tel"
+            ? ""
+            : ' rel="noopener noreferrer" target="_blank"') +
+          ">" +
+          escapeHtml(channelDisplay(ch)) +
+          "</a>"
+        );
+      })
+      .join("\n      ");
+    return (
+      '  <div class="float-contact">\n' +
+      '    <button type="button" class="float-toggle" aria-expanded="false" aria-controls="float-panel">' +
+      escapeHtml(labels.floatToggle) +
+      "</button>\n" +
+      '    <div id="float-panel" class="float-panel" hidden>\n' +
+      "      " +
+      items +
+      "\n" +
+      "    </div>\n" +
+      "  </div>\n"
+    );
+  }
+
+  function applyCategoryFilter(root, cat, btn) {
+    root = root || (typeof document !== "undefined" ? document : null);
+    if (!root || !root.querySelectorAll) return;
+    var scope = root.body || root;
+    var buttons = (scope.querySelectorAll ? scope : root).querySelectorAll(".filters button");
+    var cards = (scope.querySelectorAll ? scope : root).querySelectorAll(".machine");
+    for (var i = 0; i < buttons.length; i++) {
+      var on = btn ? buttons[i] === btn : buttons[i].getAttribute("data-cat") === cat;
+      buttons[i].setAttribute("aria-pressed", on ? "true" : "false");
+      if (on) buttons[i].classList.add("is-active");
+      else buttons[i].classList.remove("is-active");
+    }
+    for (var j = 0; j < cards.length; j++) {
+      var show = cat === "all" || cards[j].getAttribute("data-category") === cat;
+      cards[j].hidden = !show;
+    }
+  }
+
+  function bindInteractions(root) {
+    if (typeof document === "undefined") return;
+    root = root || document;
+    var scope = root.body ? root.body : root;
+    if (!scope || !scope.addEventListener) return;
+    if (scope.getAttribute && scope.getAttribute("data-yf-bound") === "1") return;
+    if (scope.setAttribute) scope.setAttribute("data-yf-bound", "1");
+
+    function setFloatOpen(open) {
+      var wrap = scope.querySelector(".float-contact");
+      if (!wrap) return;
+      var toggle = wrap.querySelector(".float-toggle");
+      var panel = wrap.querySelector(".float-panel");
+      if (open) wrap.classList.add("is-open");
+      else wrap.classList.remove("is-open");
+      if (toggle) toggle.setAttribute("aria-expanded", open ? "true" : "false");
+      if (panel) panel.hidden = !open;
+    }
+
+    scope.addEventListener("click", function (e) {
+      var t = e.target;
+      if (!t || !t.closest) return;
+      var filterBtn = t.closest(".filters button");
+      if (filterBtn && scope.contains(filterBtn)) {
+        applyCategoryFilter(scope, filterBtn.getAttribute("data-cat"), filterBtn);
+        return;
+      }
+      var thumb = t.closest(".thumbs button");
+      if (thumb && scope.contains(thumb)) {
+        var g = thumb.closest(".gallery");
+        if (!g) return;
+        var main = g.querySelector(".main-photo");
+        var src = thumb.getAttribute("data-src");
+        if (src && main) {
+          main.src = src;
+          if (thumb.getAttribute("data-alt")) main.alt = thumb.getAttribute("data-alt");
+        }
+        var thumbs = g.querySelectorAll(".thumbs button");
+        for (var i = 0; i < thumbs.length; i++) {
+          thumbs[i].setAttribute("aria-current", thumbs[i] === thumb ? "true" : "false");
+        }
+        return;
+      }
+      var toggle = t.closest(".float-toggle");
+      if (toggle && scope.contains(toggle)) {
+        var wrap = toggle.closest(".float-contact");
+        setFloatOpen(!(wrap && wrap.classList.contains("is-open")));
+        return;
+      }
+      if (!t.closest(".float-contact")) setFloatOpen(false);
+    });
+
+    var doc = scope.ownerDocument || (scope.nodeType === 9 ? scope : document);
+    if (doc && doc.addEventListener) {
+      doc.addEventListener("keydown", function (e) {
+        if (e.key === "Escape") setFloatOpen(false);
+      });
+    }
+  }
+
+  function interactionScript() {
+    return (
+      "  <script>(function(){var r=document,s=r.body;if(!s||s.getAttribute('data-yf-bound')==='1')return;s.setAttribute('data-yf-bound','1');\n" +
+      "function apply(cat,btn){var btns=s.querySelectorAll('.filters button'),cards=s.querySelectorAll('.machine'),i;for(i=0;i<btns.length;i++){var on=btn?btns[i]===btn:btns[i].getAttribute('data-cat')===cat;btns[i].setAttribute('aria-pressed',on?'true':'false');btns[i].classList.toggle('is-active',on);}for(i=0;i<cards.length;i++){cards[i].hidden=!(cat==='all'||cards[i].getAttribute('data-category')===cat);}}\n" +
+      "function setOpen(open){var w=s.querySelector('.float-contact');if(!w)return;var t=w.querySelector('.float-toggle'),p=w.querySelector('.float-panel');w.classList.toggle('is-open',open);if(t)t.setAttribute('aria-expanded',open?'true':'false');if(p)p.hidden=!open;}\n" +
+      "s.addEventListener('click',function(e){var t=e.target;if(!t||!t.closest)return;var fb=t.closest('.filters button');if(fb){apply(fb.getAttribute('data-cat'),fb);return;}var th=t.closest('.thumbs button');if(th){var g=th.closest('.gallery');if(!g)return;var main=g.querySelector('.main-photo');if(main&&th.getAttribute('data-src')){main.src=th.getAttribute('data-src');if(th.getAttribute('data-alt'))main.alt=th.getAttribute('data-alt');}g.querySelectorAll('.thumbs button').forEach(function(x){x.setAttribute('aria-current',x===th?'true':'false');});return;}var tg=t.closest('.float-toggle');if(tg){var w=tg.closest('.float-contact');setOpen(!(w&&w.classList.contains('is-open')));return;}if(!t.closest('.float-contact'))setOpen(false);});\n" +
+      "r.addEventListener('keydown',function(e){if(e.key==='Escape')setOpen(false);});})();</script>\\n"
+    );
+  }
+
+
   function siteUrl(content) {
     var base = (content.site && content.site.baseUrl) || "";
     if (!base.endsWith("/")) base += "/";
@@ -207,7 +511,15 @@
         addressCountry: store.addressCountry || "TW"
       },
       openingHoursSpecification: hours,
-      sameAs: store.shopeeUrl ? [store.shopeeUrl] : [],
+      sameAs: (function () {
+        var list = [];
+        if (store.shopeeUrl) list.push(store.shopeeUrl);
+        visibleChannels(content).forEach(function (ch) {
+          var href = channelHref(ch);
+          if (href && /^https?:\/\//i.test(href) && list.indexOf(href) === -1) list.push(href);
+        });
+        return list;
+      })(),
       areaServed: ["台中市", "彰化縣", "南投縣"],
       priceRange: "$$"
     };
@@ -364,8 +676,12 @@
 
   function renderFilters(content) {
     var cats = uniqueCategories(content.groups || []);
+    var labels = labelsOf(content);
+    var allLabel = labels.filterAll;
     var buttons =
-      '<button type="button" data-cat="all" aria-pressed="true">全部</button>' +
+      '<button type="button" data-cat="all" class="is-active" aria-pressed="true">' +
+      escapeHtml(allLabel) +
+      "</button>" +
       cats
         .map(function (cat) {
           return (
@@ -402,7 +718,7 @@
       '    <section id="services">\n' +
       '      <div class="wrap">\n' +
       "        <h2>" +
-      escapeHtml(svc.title || "服務項目") +
+      escapeHtml(labelsOf(content).services) +
       "</h2>\n" +
       '        <p class="lead">' +
       escapeHtml(svc.lead || "") +
@@ -428,14 +744,15 @@
       '    <section id="used">\n' +
       '      <div class="wrap">\n' +
       "        <h2>" +
-      escapeHtml(section.title || "中古機專區") +
+      escapeHtml(labelsOf(content).used) +
       "</h2>\n" +
       '        <p class="lead">' +
       escapeHtml(section.lead || "") +
       "</p>\n" +
       '        <p class="note">' +
-      escapeHtml(section.note || content.store.usedMachineNote || "") +
+      escapeHtml(section.note || (content.store && content.store.usedMachineNote) || "") +
       "</p>\n" +
+      renderPaymentLine(content) +
       "        " +
       renderFilters(content) +
       "\n" +
@@ -469,7 +786,9 @@
     return (
       '    <section id="faq">\n' +
       '      <div class="wrap">\n' +
-      "        <h2>常見問題</h2>\n" +
+      "        <h2>" +
+      escapeHtml(labelsOf(content).faq) +
+      "</h2>\n" +
       '        <div class="faq-list">\n' +
       "          " +
       items +
@@ -499,14 +818,18 @@
       shopeeHost = shopee;
     }
 
+    var labels = labelsOf(content);
+    var mark = logoChar(store);
     return (
       "<body>\n" +
       '  <a class="skip" href="#main">跳到主要內容</a>\n' +
       "  <header>\n" +
       '    <div class="wrap nav">\n' +
       '      <a class="brand" href="./">\n' +
-      '        <span class="mark" aria-hidden="true">' +
-      escapeHtml(store.mark || "益") +
+      '        <span class="mark" aria-hidden="true" data-len="' +
+      String(mark.length) +
+      '">' +
+      escapeHtml(mark) +
       "</span>\n" +
       "        <span>" +
       escapeHtml(store.name || "") +
@@ -514,10 +837,23 @@
       "      </a>\n" +
       '      <nav aria-label="主要">\n' +
       "        <ul>\n" +
-      '          <li><a href="#about">關於我們</a></li>\n' +
-      '          <li><a href="#services">服務項目</a></li>\n' +
-      '          <li><a href="#used">中古機專區</a></li>\n' +
-      '          <li><a href="#contact">聯絡我們</a></li>\n' +
+      '          <li><a href="#about">' +
+      escapeHtml(labels.about) +
+      "</a></li>\n" +
+      '          <li><a href="#services">' +
+      escapeHtml(labels.services) +
+      "</a></li>\n" +
+      '          <li><a href="#used">' +
+      escapeHtml(labels.used) +
+      "</a></li>\n" +
+      (visibleChannels(content).length
+        ? '          <li><a href="#support">' +
+          escapeHtml(labels.support) +
+          "</a></li>\n"
+        : "") +
+      '          <li><a href="#contact">' +
+      escapeHtml(labels.contact) +
+      "</a></li>\n" +
       "        </ul>\n" +
       "      </nav>\n" +
       '      <div class="call-chips">\n        ' +
@@ -529,6 +865,7 @@
       "\n      </div>\n" +
       "    </div>\n" +
       "  </header>\n" +
+      renderAnnouncement(content) +
       "\n" +
       '  <main id="main">\n' +
       '    <section class="hero">\n' +
@@ -552,8 +889,12 @@
       "\n" +
       '          <a class="btn btn-ghost" href="' +
       escapeAttr(shopee) +
-      '" rel="noopener noreferrer" target="_blank">蝦皮賣場</a>\n' +
-      '          <a class="btn btn-ghost" href="#used">看中古機專區</a>\n' +
+      '" rel="noopener noreferrer" target="_blank">' +
+      escapeHtml(labels.heroShopee) +
+      "</a>\n" +
+      '          <a class="btn btn-ghost" href="#used">' +
+      escapeHtml(labels.heroUsed) +
+      "</a>\n" +
       "        </div>\n" +
       '        <div class="meta-row">\n' +
       "          <span>蝦皮評價 " +
@@ -574,7 +915,9 @@
       '    <section id="about">\n' +
       '      <div class="wrap grid-2">\n' +
       "        <div>\n" +
-      "          <h2>關於我們</h2>\n" +
+      "          <h2>" +
+      escapeHtml(labels.about) +
+      "</h2>\n" +
       '          <p class="lead">' +
       escapeHtml(store.aboutLead || "") +
       "</p>\n" +
@@ -613,11 +956,12 @@
       '      <div class="wrap contact-grid">\n' +
       "        <div>\n" +
       "          <h2>" +
-      escapeHtml(contact.title || "聯絡我們") +
+      escapeHtml(labels.contact) +
       "</h2>\n" +
       '          <p class="lead">' +
       escapeHtml(contact.lead || "") +
       "</p>\n" +
+      renderPaymentLine(content) +
       "          <dl>\n" +
       renderPhoneDefinition(store) +
       "            <dt>地址</dt>\n" +
@@ -651,7 +995,9 @@
       "\n" +
       '            <a class="btn btn-outline" href="' +
       escapeAttr(shopee) +
-      '" rel="noopener noreferrer" target="_blank">打開蝦皮賣場</a>\n' +
+      '" rel="noopener noreferrer" target="_blank">' +
+      escapeHtml(labels.contactShopee) +
+      "</a>\n" +
       "          </div>\n" +
       "        </div>\n" +
       "        <div>\n" +
@@ -663,6 +1009,8 @@
       "        </div>\n" +
       "      </div>\n" +
       "    </section>\n" +
+      "\n" +
+      renderSupportSection(content) +
       "  </main>\n" +
       "\n" +
       "  <footer>\n" +
@@ -688,9 +1036,15 @@
       "      </div>\n" +
       "    </div>\n" +
       "  </footer>\n" +
+      renderFloatContact(content) +
       (options && options.preview
-        ? '  <script>(function(){document.querySelectorAll(".filters button").forEach(function(btn){btn.addEventListener("click",function(){var cat=btn.getAttribute("data-cat");document.querySelectorAll(".filters button").forEach(function(b){b.setAttribute("aria-pressed",b===btn?"true":"false")});document.querySelectorAll(".machine").forEach(function(card){card.hidden=!(cat==="all"||card.getAttribute("data-category")===cat)});});});document.querySelectorAll(".gallery").forEach(function(g){var main=g.querySelector(".main-photo");g.querySelectorAll(".thumbs button").forEach(function(btn){btn.addEventListener("click",function(){if(main&&btn.getAttribute("data-src")){main.src=btn.getAttribute("data-src");if(btn.getAttribute("data-alt"))main.alt=btn.getAttribute("data-alt");}g.querySelectorAll(".thumbs button").forEach(function(t){t.setAttribute("aria-current",t===btn?"true":"false")});});});});})();</script>\n'
-        : '  <script src="js/render.js" defer></script>\n  <script src="site.js" defer></script>\n') +
+        ? ""
+        : "  <script src=\"" +
+          escapeAttr(url + "js/render.js") +
+          '" defer></script>\n  <script src="' +
+          escapeAttr(url + "site.js") +
+          '" defer></script>\n') +
+      interactionScript() +
       "</body>\n" +
       "</html>\n"
     );
@@ -808,6 +1162,15 @@
     phoneDisplay: phoneDisplay,
     phonesPlainText: phonesPlainText,
     uniqueCategories: uniqueCategories,
+    logoChar: logoChar,
+    labelsOf: labelsOf,
+    paymentNoteOf: paymentNoteOf,
+    announcementOf: announcementOf,
+    normalizeChannels: normalizeChannels,
+    channelHref: channelHref,
+    visibleChannels: visibleChannels,
+    applyCategoryFilter: applyCategoryFilter,
+    bindInteractions: bindInteractions,
     siteUrl: siteUrl,
     todayStamp: todayStamp,
     renderJsonLd: renderJsonLd,
