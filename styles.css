@@ -307,17 +307,40 @@ footer{padding-bottom:5.5rem}
 /* brand name stays on one line */
 .brand{flex:none;white-space:nowrap}
 .brand span:not(.mark){white-space:nowrap}
-.nav nav{min-width:0}
+.nav nav{flex:1 1 auto;min-width:0}
 @media (max-width:380px){.brand span:not(.mark){font-size:.82rem}}
 
-/* header on one row (desktop) */
-.nav ul{flex-wrap:nowrap;white-space:nowrap;gap:.2rem .85rem}
-.nav ul a{font-size:.92rem}
+/* Header is slightly wider than page content so the brand, menu, and
+   phone chips can share one row on desktop. Menu items never wrap or shrink. */
+header .nav{width:min(1400px, calc(100% - 2rem))}
+.nav ul{flex-wrap:nowrap;white-space:nowrap;gap:.2rem .75rem}
+.nav ul li{flex:none}
+.nav ul a{font-size:.9rem}
 .call-chips{flex-wrap:nowrap;flex:none}
 .call-chip{white-space:nowrap}
-@media (max-width:1280px){.call-chips{flex-direction:column;align-items:stretch;gap:.25rem}.call-chip{font-size:.8rem;padding:.25rem .7rem!important;text-align:center}}
-@media (max-width:1100px){.nav ul{gap:.2rem .6rem}.nav ul a{font-size:.85rem}}
-@media (max-width:960px){.nav ul{display:none}}
+
+/* Stack the phone chips before they would cover the menu. */
+@media (max-width:1279px){
+  .call-chips{flex-direction:column;align-items:stretch;gap:.25rem}
+  .call-chip{font-size:.8rem;padding:.25rem .7rem!important;text-align:center}
+}
+@media (max-width:1180px){
+  .nav ul{gap:.15rem .5rem}
+  .nav ul a{font-size:.85rem}
+}
+
+/* At 961–1023px even stacked chips do not leave enough room.
+   Hide header phones (they stay in the page and the 免費客服諮詢 panel). */
+@media (max-width:1023px){
+  .call-chips{display:none}
+}
+
+/* Below 960px the compact header hides the menu and brings the phones back. */
+@media (max-width:960px){
+  .nav ul{display:none}
+  .call-chips{display:flex;flex-direction:column;align-items:stretch;gap:.25rem}
+  .call-chip{font-size:.8rem;padding:.25rem .7rem!important;text-align:center}
+}
 
 /* Tawk default bubble is hidden; keep the FAB in the normal corner.
    Hide the FAB while the chat window is open so it does not cover the input. */
