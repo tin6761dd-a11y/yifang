@@ -294,3 +294,12 @@ footer{padding-bottom:5.5rem}
 .brand span:not(.mark){white-space:nowrap}
 .nav nav{min-width:0}
 @media (max-width:380px){.brand span:not(.mark){font-size:.82rem}}
+
+/* header on one row (desktop) */
+.nav ul{flex-wrap:nowrap;white-space:nowrap;gap:.2rem .85rem}
+.nav ul a{font-size:.92rem}
+.call-chips{flex-wrap:nowrap;flex:none}
+.call-chip{white-space:nowrap}
+@media (max-width:1280px){.call-chips{flex-direction:column;align-items:stretch;gap:.25rem}.call-chip{font-size:.8rem;padding:.25rem .7rem!important;text-align:center}}
+@media (max-width:1100px){.nav ul{gap:.2rem .6rem}.nav ul a{font-size:.85rem}}
+@media (max-width:960px){.nav ul{display:none}}
