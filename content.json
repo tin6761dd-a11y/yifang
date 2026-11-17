@@ -70,12 +70,12 @@
     "used": "中古機專區",
     "contact": "聯絡我們",
     "faq": "常見問題",
-    "support": "客服諮詢",
+    "support": "免費客服諮詢",
     "heroShopee": "蝦皮賣場",
     "heroUsed": "中古機專區",
     "contactShopee": "打開蝦皮賣場",
     "filterAll": "全部",
-    "floatToggle": "客服諮詢",
+    "floatToggle": "免費客服諮詢",
     "new": "全新封口機",
     "parts": "零件專區",
     "heroNew": "全新封口機",
@@ -117,7 +117,7 @@
     "provider": "tawk",
     "propertyId": "6afc2a48c619f03ccafe8e8e",
     "widgetId": "1k7kgaatq",
-    "label": "線上客服"
+    "label": "免費線上客服"
   },
   "services": {
     "title": "服務項目",
