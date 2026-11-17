@@ -23,7 +23,7 @@
     return escapeHtml(value);
   }
 
-  var ASSET_VERSION = "202611172255";
+  var ASSET_VERSION = "202611172305";
 
   function withCacheBust(href) {
     href = String(href || "");
@@ -360,7 +360,14 @@
       syncQuotePosition();
     });
     hookTawk("onChatMessageAgent", function () {
-      maybeOpenForUnread(currentUnreadCount() || 1);
+      var count = currentUnreadCount();
+      if (count <= 0) {
+        // Welcome/auto messages should not show a fake unread badge.
+        // Only reopen if the visitor already has an active conversation.
+        if (initTawkLauncher.userOpened || chatIsOngoing()) openTawkChat(window.Tawk_API);
+        return;
+      }
+      maybeOpenForUnread(count);
     });
     hookTawk("onUnreadCountChanged", function (count) {
       maybeOpenForUnread(count);
