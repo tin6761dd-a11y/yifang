@@ -100,6 +100,11 @@
       <button type="button" class="btn btn-ghost" id="logout-btn">登出</button>
     </header>
 
+    <div class="chat-inbox-bar">
+      <a class="btn chat-inbox-btn" href="https://dashboard.tawk.to/#/dashboard/6afc2a48c619f03ccafe8e8e" target="_blank" rel="noopener noreferrer">客服聊天室</a>
+      <p class="hint">也可下載 tawk.to App 用手機回覆</p>
+    </div>
+
     <p id="editor-error" class="banner error" hidden></p>
     <p id="editor-ok" class="banner ok" hidden></p>
 
@@ -107,6 +112,7 @@
       <a href="#sec-store">店家資料</a>
       <a href="#sec-labels">選單與按鈕</a>
       <a href="#sec-announce">公告與付款</a>
+      <a href="#sec-chat">線上客服</a>
       <a href="#sec-channels">客服諮詢</a>
       <a href="#sec-services">服務項目</a>
       <a href="#sec-used">中古機</a>
@@ -172,15 +178,12 @@
         <label>客服諮詢 <input id="label-support" type="text"></label>
         <label>聯絡我們 <input id="label-contact" type="text"></label>
         <label>常見問題 <input id="label-faq" type="text"></label>
-        <label>首頁按鈕：蝦皮賣場 <input id="label-hero-shopee" type="text"></label>
         <label>首頁按鈕（全新封口機） <input id="label-hero-new" type="text"></label>
         <label>首頁按鈕（中古機專區） <input id="label-hero-used" type="text"></label>
         <label>首頁按鈕（零件專區） <input id="label-hero-parts" type="text"></label>
-        <label>聯絡區按鈕：打開蝦皮賣場 <input id="label-contact-shopee" type="text"></label>
         <label>中古機篩選「全部」 <input id="label-filter-all" type="text"></label>
         <label>零件搜尋框提示文字 <input id="label-parts-search" type="text"></label>
         <label>右下角客服按鈕 <input id="label-float" type="text"></label>
-        <label>中古機「到蝦皮購買」 <input id="label-buy" type="text"></label>
         <label>中古機「電話詢問」 <input id="label-call" type="text"></label>
       </div>
     </section>
@@ -192,6 +195,16 @@
         <label class="check wide"><input type="checkbox" id="announce-enabled"> 顯示頂部公告條</label>
         <label class="wide">頂部公告文字 <input id="announce-text" type="text" placeholder="付款方式：僅接受匯款與現金（付現）"></label>
         <label class="wide">付款方式說明 <input id="payment-note" type="text" placeholder="付款方式：僅接受匯款與現金（付現）"></label>
+      </div>
+    </section>
+
+    <section id="sec-chat" class="panel">
+      <h2>線上客服（Tawk.to）</h2>
+      <p class="hint">填入 Property ID 與 Widget ID 後，官網會出現線上客服視窗，商品卡也會顯示「詢問這個商品」按鈕。還沒申請前可先留空。回覆顧客請點上方「客服聊天室」，或下載 tawk.to App 用手機回覆。</p>
+      <div class="grid">
+        <label>Property ID <input id="chat-property-id" type="text" placeholder="例如 6afc2a48c619f03ccafe8e8e" autocomplete="off"></label>
+        <label>Widget ID <input id="chat-widget-id" type="text" placeholder="例如 1k7kgaatq" autocomplete="off"></label>
+        <label class="wide">客服按鈕名稱 <input id="chat-label" type="text" placeholder="線上客服"></label>
       </div>
     </section>
 
@@ -211,7 +224,7 @@
 
     <section id="sec-new" class="panel">
       <h2>全新封口機</h2>
-      <p class="hint">這裡的每一筆都是單一一台商品，會連到對應的蝦皮頁面。展示機可在「標籤」填例如「展示機 9.99成新．保固一年」。勾選「隱藏」後就不會出現在官網。</p>
+      <p class="hint">這裡的每一筆都是單一一台商品。展示機可在「標籤」填例如「展示機 9.99成新．保固一年」。勾選「隱藏」後就不會出現在官網。若已設定線上客服，商品卡會出現「詢問這個商品」按鈕。</p>
       <div id="new-list" class="stack"></div>
       <button type="button" class="btn btn-secondary" id="add-new">新增一台全新機</button>
     </section>

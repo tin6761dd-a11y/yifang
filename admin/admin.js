@@ -382,9 +382,6 @@
           '<label>售價（例如 NT$17,800） <input data-field="price" type="text" value="' +
           YifangRender.escapeHtml(item.price || "") +
           '"></label>' +
-          '<label>蝦皮商品連結 <input data-field="url" type="url" value="' +
-          YifangRender.escapeHtml(item.url || "") +
-          '"></label>' +
           '<label>標籤（選填，例如：展示機 9.99成新．保固一年） <input data-field="badge" type="text" value="' +
           YifangRender.escapeHtml(item.badge || "") +
           '"></label>' +
@@ -423,9 +420,6 @@
           '"></label>' +
           '<label>售價（例如 NT$400） <input data-field="price" type="text" value="' +
           YifangRender.escapeHtml(item.price || "") +
-          '"></label>' +
-          '<label>蝦皮商品連結 <input data-field="url" type="url" value="' +
-          YifangRender.escapeHtml(item.url || "") +
           '"></label>' +
           '<label>分類 <select data-field="category">' +
           optionList(PART_CATEGORIES, item.category, false, true) +
@@ -709,16 +703,17 @@
     $("label-support").value = labels.support || "客服諮詢";
     $("label-contact").value = labels.contact || contact.title || "聯絡我們";
     $("label-faq").value = labels.faq || "常見問題";
-    $("label-hero-shopee").value = labels.heroShopee || "蝦皮賣場";
     $("label-hero-new").value = labels.heroNew || labels.new || "全新封口機";
     $("label-hero-used").value = labels.heroUsed || "中古機專區";
     $("label-hero-parts").value = labels.heroParts || labels.parts || "零件專區";
-    $("label-contact-shopee").value = labels.contactShopee || "打開蝦皮賣場";
     $("label-filter-all").value = labels.filterAll || "全部";
     $("label-parts-search").value = labels.partsSearch || (c.partsSection && c.partsSection.searchPlaceholder) || "搜尋零件名稱";
     $("label-float").value = labels.floatToggle || labels.support || "客服諮詢";
-    $("label-buy").value = used.buyLabel || labels.buy || "到蝦皮購買";
     $("label-call").value = used.callLabel || labels.call || "電話詢問";
+    var chat = c.chat || {};
+    $("chat-property-id").value = chat.propertyId || "";
+    $("chat-widget-id").value = chat.widgetId || "";
+    $("chat-label").value = chat.label || "線上客服";
     var announcement = c.announcement || {};
     $("announce-enabled").checked = announcement.enabled !== false;
     $("announce-text").value = announcement.text || c.paymentNote || "付款方式：僅接受匯款與現金（付現）";
@@ -783,7 +778,6 @@
     var usedSection = Object.assign({}, prev.usedSection);
     usedSection.lead = $("used-lead").value.trim();
     usedSection.note = store.usedMachineNote;
-    usedSection.buyLabel = $("label-buy").value.trim() || "到蝦皮購買";
     usedSection.callLabel = $("label-call").value.trim() || "電話詢問";
 
     var groups = Array.prototype.map.call(els.groupsList.querySelectorAll("[data-group]"), function (card, i) {
@@ -839,11 +833,9 @@
     labels.support = $("label-support").value.trim() || "客服諮詢";
     labels.contact = $("label-contact").value.trim() || "聯絡我們";
     labels.faq = $("label-faq").value.trim() || "常見問題";
-    labels.heroShopee = $("label-hero-shopee").value.trim() || "蝦皮賣場";
     labels.heroNew = $("label-hero-new").value.trim() || "全新封口機";
     labels.heroUsed = $("label-hero-used").value.trim() || "中古機專區";
     labels.heroParts = $("label-hero-parts").value.trim() || "零件專區";
-    labels.contactShopee = $("label-contact-shopee").value.trim() || "打開蝦皮賣場";
     labels.filterAll = $("label-filter-all").value.trim() || "全部";
     labels.partsSearch = $("label-parts-search").value.trim() || "搜尋零件名稱";
     labels.floatToggle = $("label-float").value.trim() || labels.support || "客服諮詢";
@@ -852,13 +844,11 @@
 
     var newSection = Object.assign({}, prev.newSection);
     newSection.lead = $("new-lead").value.trim();
-    newSection.buyLabel = $("label-buy").value.trim() || "到蝦皮購買";
     newSection.callLabel = $("label-call").value.trim() || "電話詢問";
     newSection.title = labels.new;
 
     var partsSection = Object.assign({}, prev.partsSection);
     partsSection.lead = $("parts-lead").value.trim();
-    partsSection.buyLabel = $("label-buy").value.trim() || "到蝦皮購買";
     partsSection.searchPlaceholder = labels.partsSearch;
     partsSection.title = labels.parts;
 
@@ -868,7 +858,7 @@
         id: existing.id,
         title: card.querySelector('[data-field="title"]').value.trim(),
         price: card.querySelector('[data-field="price"]').value.trim(),
-        url: card.querySelector('[data-field="url"]').value.trim(),
+        url: existing.url || "",
         badge: card.querySelector('[data-field="badge"]').value.trim(),
         hidden: card.querySelector('[data-field="hidden"]').checked,
         image: existing.image || ""
@@ -886,7 +876,7 @@
         id: existing.id,
         title: card.querySelector('[data-field="title"]').value.trim(),
         price: card.querySelector('[data-field="price"]').value.trim(),
-        url: card.querySelector('[data-field="url"]').value.trim(),
+        url: existing.url || "",
         category: category,
         hidden: card.querySelector('[data-field="hidden"]').checked,
         image: existing.image || ""
@@ -907,6 +897,12 @@
       };
     });
 
+    var chat = Object.assign({ provider: "tawk", propertyId: "", widgetId: "", label: "線上客服" }, prev.chat || {});
+    chat.provider = "tawk";
+    chat.propertyId = $("chat-property-id").value.trim();
+    chat.widgetId = $("chat-widget-id").value.trim();
+    chat.label = $("chat-label").value.trim() || "線上客服";
+
     return {
       site: site,
       store: store,
@@ -914,6 +910,7 @@
       announcement: announcement,
       paymentNote: paymentNote,
       channels: channels,
+      chat: chat,
       services: services,
       usedSection: usedSection,
       newSection: newSection,

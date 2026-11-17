@@ -56,6 +56,14 @@
         });
         return;
       }
+      var inquire = t.closest(".inquire-product");
+      if (inquire) {
+        e.preventDefault();
+        if (window.YifangRender && typeof window.YifangRender.openProductInquiry === "function") {
+          window.YifangRender.openProductInquiry(inquire);
+        }
+        return;
+      }
       var toggle = t.closest(".float-toggle");
       if (toggle) {
         var wrap = toggle.closest(".float-contact");

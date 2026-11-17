@@ -23,6 +23,127 @@
     return escapeHtml(value);
   }
 
+  var ASSET_VERSION = "202611171845";
+
+  function withCacheBust(href) {
+    href = String(href || "");
+    if (!href) return href;
+    if (/[?&]v=/.test(href)) return href;
+    return href + (href.indexOf("?") >= 0 ? "&" : "?") + "v=" + ASSET_VERSION;
+  }
+
+  function chatOf(content) {
+    var chat = (content && content.chat) || {};
+    return {
+      provider: String(chat.provider || "tawk").trim() || "tawk",
+      propertyId: String(chat.propertyId || "").trim(),
+      widgetId: String(chat.widgetId || "").trim(),
+      label: String(chat.label || "").trim() || "線上客服"
+    };
+  }
+
+  function chatEnabled(content) {
+    var chat = chatOf(content);
+    return chat.provider === "tawk" && !!chat.propertyId;
+  }
+
+  function tawkEmbedSrc(content) {
+    var chat = chatOf(content);
+    if (!chat.propertyId) return "";
+    var widgetId = chat.widgetId || "default";
+    return "https://embed.tawk.to/" + encodeURIComponent(chat.propertyId) + "/" + encodeURIComponent(widgetId);
+  }
+
+  function renderInquireButton(content, info) {
+    if (!chatEnabled(content)) return "";
+    info = info || {};
+    return (
+      '<button type="button" class="btn btn-blue inquire-product" data-name="' +
+      escapeAttr(info.name || "") +
+      '" data-model="' +
+      escapeAttr(info.model || "") +
+      '" data-price="' +
+      escapeAttr(info.price || "") +
+      '" data-section="' +
+      escapeAttr(info.section || "") +
+      '">詢問這個商品</button>'
+    );
+  }
+
+  function renderTawkScript(content) {
+    var src = tawkEmbedSrc(content);
+    if (!src) return "";
+    return (
+      "  <script>\n" +
+      "    var Tawk_API=Tawk_API||{}, Tawk_LoadStart=new Date();\n" +
+      "    (function(){\n" +
+      '      var s1=document.createElement("script"),s0=document.getElementsByTagName("script")[0];\n' +
+      "      s1.async=true;\n" +
+      "      s1.src=" +
+      JSON.stringify(src) +
+      ";\n" +
+      '      s1.charset="UTF-8";\n' +
+      '      s1.setAttribute("crossorigin","*");\n' +
+      "      if(s0&&s0.parentNode)s0.parentNode.insertBefore(s1,s0);\n" +
+      "      else (document.head||document.documentElement).appendChild(s1);\n" +
+      "    })();\n" +
+      "  </script>\n"
+    );
+  }
+
+  function openProductInquiry(btn) {
+    if (!btn || typeof window === "undefined") return;
+    var attrs = {
+      name: btn.getAttribute("data-name") || "",
+      model: btn.getAttribute("data-model") || "",
+      price: btn.getAttribute("data-price") || "",
+      section: btn.getAttribute("data-section") || ""
+    };
+    function apply(api) {
+      if (!api) return;
+      try {
+        if (typeof api.setAttributes === "function") {
+          api.setAttributes(
+            {
+              name: attrs.name,
+              model: attrs.model,
+              price: attrs.price,
+              section: attrs.section
+            },
+            function () {}
+          );
+        }
+      } catch (err) {}
+      try {
+        if (typeof api.addEvent === "function") {
+          api.addEvent(
+            "詢問商品",
+            {
+              name: attrs.name,
+              model: attrs.model,
+              price: attrs.price,
+              section: attrs.section
+            },
+            function () {}
+          );
+        }
+      } catch (err2) {}
+      try {
+        if (typeof api.maximize === "function") api.maximize();
+      } catch (err3) {}
+    }
+    window.Tawk_API = window.Tawk_API || {};
+    if (typeof window.Tawk_API.maximize === "function") {
+      apply(window.Tawk_API);
+      return;
+    }
+    var prev = window.Tawk_API.onLoad;
+    window.Tawk_API.onLoad = function () {
+      if (typeof prev === "function") prev();
+      apply(window.Tawk_API);
+    };
+  }
+
   function normalizePhones(store) {
     store = store || {};
     var list = [];
@@ -488,6 +609,12 @@
         }
         return;
       }
+      var inquire = t.closest(".inquire-product");
+      if (inquire && scope.contains(inquire)) {
+        e.preventDefault();
+        openProductInquiry(inquire);
+        return;
+      }
       var toggle = t.closest(".float-toggle");
       if (toggle && scope.contains(toggle)) {
         var wrap = toggle.closest(".float-contact");
@@ -518,10 +645,10 @@
       "  <script>(function(){var r=document,s=r.body;if(!s||s.getAttribute('data-yf-bound')==='1')return;s.setAttribute('data-yf-bound','1');\n" +
       "function scopeOf(el){return (el&&el.closest&&el.closest('.filter-scope'))||s;}\n" +
       "function apply(scope,cat,btn){scope=scope||s;var btns=scope.querySelectorAll('.filters button'),cards=scope.querySelectorAll('.filter-item'),qEl=scope.querySelector('.filter-search'),q=qEl?(qEl.value||'').trim().toLowerCase():'',i;if(cat==null){var a=scope.querySelector('.filters button.is-active');cat=a?a.getAttribute('data-cat'):'all';}for(i=0;i<btns.length;i++){var on=btn?btns[i]===btn:btns[i].getAttribute('data-cat')===cat;btns[i].setAttribute('aria-pressed',on?'true':'false');btns[i].classList.toggle('is-active',on);if(on)cat=btns[i].getAttribute('data-cat')||cat;}for(i=0;i<cards.length;i++){var ok=cat==='all'||cards[i].getAttribute('data-category')===cat;var hay=(cards[i].getAttribute('data-search')||cards[i].textContent||'').toLowerCase();cards[i].hidden=!(ok&&(!q||hay.indexOf(q)!==-1));}}\n" +
-      "function setOpen(open){var w=s.querySelector('.float-contact');if(!w)return;var t=w.querySelector('.float-toggle'),p=w.querySelector('.float-panel');w.classList.toggle('is-open',open);if(t)t.setAttribute('aria-expanded',open?'true':'false');if(p)p.hidden=!open;}\n" +
-      "s.addEventListener('click',function(e){var t=e.target;if(!t||!t.closest)return;var fb=t.closest('.filters button');if(fb){apply(scopeOf(fb),fb.getAttribute('data-cat'),fb);return;}var th=t.closest('.thumbs button');if(th){var g=th.closest('.gallery');if(!g)return;var main=g.querySelector('.main-photo');if(main&&th.getAttribute('data-src')){main.src=th.getAttribute('data-src');if(th.getAttribute('data-alt'))main.alt=th.getAttribute('data-alt');}g.querySelectorAll('.thumbs button').forEach(function(x){x.setAttribute('aria-current',x===th?'true':'false');});return;}var tg=t.closest('.float-toggle');if(tg){var w=tg.closest('.float-contact');setOpen(!(w&&w.classList.contains('is-open')));return;}if(!t.closest('.float-contact'))setOpen(false);});\n" +
+      "function inquire(btn){if(!btn)return;var a={name:btn.getAttribute('data-name')||'',model:btn.getAttribute('data-model')||'',price:btn.getAttribute('data-price')||'',section:btn.getAttribute('data-section')||''};function go(api){if(!api)return;try{if(typeof api.setAttributes==='function')api.setAttributes({name:a.name,model:a.model,price:a.price,section:a.section},function(){});}catch(err){}try{if(typeof api.addEvent==='function')api.addEvent('\u8a62\u554f\u5546\u54c1',{name:a.name,model:a.model,price:a.price,section:a.section},function(){});}catch(err){}try{if(typeof api.maximize==='function')api.maximize();}catch(err){}}window.Tawk_API=window.Tawk_API||{};if(typeof window.Tawk_API.maximize==='function'){go(window.Tawk_API);return;}var prev=window.Tawk_API.onLoad;window.Tawk_API.onLoad=function(){if(typeof prev==='function')prev();go(window.Tawk_API);};}\nfunction setOpen(open){var w=s.querySelector('.float-contact');if(!w)return;var t=w.querySelector('.float-toggle'),p=w.querySelector('.float-panel');w.classList.toggle('is-open',open);if(t)t.setAttribute('aria-expanded',open?'true':'false');if(p)p.hidden=!open;}\n" +
+      "s.addEventListener('click',function(e){var t=e.target;if(!t||!t.closest)return;var fb=t.closest('.filters button');if(fb){apply(scopeOf(fb),fb.getAttribute('data-cat'),fb);return;}var th=t.closest('.thumbs button');if(th){var g=th.closest('.gallery');if(!g)return;var main=g.querySelector('.main-photo');if(main&&th.getAttribute('data-src')){main.src=th.getAttribute('data-src');if(th.getAttribute('data-alt'))main.alt=th.getAttribute('data-alt');}g.querySelectorAll('.thumbs button').forEach(function(x){x.setAttribute('aria-current',x===th?'true':'false');});return;}var iq=t.closest('.inquire-product');if(iq){e.preventDefault();inquire(iq);return;}var tg=t.closest('.float-toggle');if(tg){var w=tg.closest('.float-contact');setOpen(!(w&&w.classList.contains('is-open')));return;}if(!t.closest('.float-contact'))setOpen(false);});\n" +
       "s.addEventListener('input',function(e){var t=e.target;if(t&&t.classList&&t.classList.contains('filter-search'))apply(scopeOf(t));});\n" +
-      "r.addEventListener('keydown',function(e){if(e.key==='Escape')setOpen(false);});})();</script>\\n"
+      "r.addEventListener('keydown',function(e){if(e.key==='Escape')setOpen(false);});})();</script>\n"
     );
   }
 
@@ -597,16 +724,17 @@
     var items = visibleCatalog(content.newMachines || []);
     if (!items.length) return "";
     var list = items.map(function (item, i) {
+      var itemUrl = url + (item.id ? "#" + item.id : "");
       var product = {
         "@type": "Product",
         name: item.title || "",
-        url: item.url || url,
+        url: itemUrl,
         offers: {
           "@type": "Offer",
           priceCurrency: "TWD",
           price: parseTwdPrice(item.price),
           availability: "https://schema.org/InStock",
-          url: item.url || url
+          url: itemUrl
         }
       };
       if (item.image) product.image = url + String(item.image).replace(/^\//, "");
@@ -689,7 +817,7 @@
       '  <meta name="twitter:image" content="' + escapeAttr(image) + '">\n' +
       '  <link rel="icon" href="favicon.png" type="image/png">\n' +
       '  <link rel="apple-touch-icon" href="apple-touch-icon.png">\n' +
-      '  <link rel="stylesheet" href="' + escapeAttr((options && options.stylesheet) || "styles.css") + '">\n' +
+      '  <link rel="stylesheet" href="' + escapeAttr(withCacheBust((options && options.stylesheet) || "styles.css")) + '">\n' +
       '  <script type="application/ld+json">' + renderJsonLd(content) + "</script>\n" +
       (function () {
         var extra = renderCatalogJsonLd(content);
@@ -747,9 +875,13 @@
         return '<p class="warn">' + escapeHtml(n) + "</p>";
       })
       .join("\n    ");
-    var buyLabel = section.buyLabel || "到蝦皮購買";
     var callLabel = section.callLabel || "電話詢問";
-    var shopee = store.shopeeUrl || "#";
+    var inquireBtn = renderInquireButton(content, {
+      name: name,
+      model: group.sealerType || "",
+      price: group.price || "",
+      section: labelsOf(content).used
+    });
     var callButtons = renderPhoneButtons(store, {
       className: "btn btn-outline",
       singlePrefix: callLabel,
@@ -779,11 +911,7 @@
       "</p>\n" +
       (notes ? "    " + notes + "\n" : "    \n") +
       '    <div class="actions">\n' +
-      '      <a class="btn btn-blue" href="' +
-      escapeAttr(shopee) +
-      '" rel="noopener noreferrer" target="_blank">' +
-      escapeHtml(buyLabel) +
-      "</a>\n" +
+      (inquireBtn ? "      " + inquireBtn + "\n" : "") +
       (callButtons ? "      " + callButtons + "\n" : "") +
       "    </div>\n" +
       "  </div>\n" +
@@ -900,8 +1028,13 @@
         escapeAttr(title) +
         '" width="800" height="800" loading="lazy"></div>'
       : '<div class="gallery">' + (badgeHtml ? '<div class="badge-wrap">' + badgeHtml + "</div>" : "") + "</div>";
-    var buyLabel = section.buyLabel || "到蝦皮購買";
     var callLabel = section.callLabel || "電話詢問";
+    var inquireBtn = renderInquireButton(content, {
+      name: title,
+      model: item.model || "",
+      price: item.price || "",
+      section: labelsOf(content).new
+    });
     var inquiry = renderInquiryButtons(content, {
       className: "btn btn-outline",
       callLabel: callLabel
@@ -922,11 +1055,7 @@
       escapeHtml(item.price || "") +
       "</p>\n" +
       '    <div class="actions">\n' +
-      '      <a class="btn btn-blue" href="' +
-      escapeAttr(item.url || "#") +
-      '" rel="noopener noreferrer" target="_blank">' +
-      escapeHtml(buyLabel) +
-      "</a>\n" +
+      (inquireBtn ? "      " + inquireBtn + "\n" : "") +
       (inquiry ? "      " + inquiry + "\n" : "") +
       "    </div>\n" +
       "  </div>\n" +
@@ -966,7 +1095,12 @@
     var section = content.partsSection || {};
     var title = item.title || "";
     var img = item.image ? assetUrl(item.image, options) : "";
-    var buyLabel = section.buyLabel || "到蝦皮購買";
+    var inquireBtn = renderInquireButton(content, {
+      name: title,
+      model: item.model || "",
+      price: item.price || "",
+      section: labelsOf(content).parts
+    });
     var search = (title + " " + (item.category || "")).toLowerCase();
     var thumb = img
       ? '<img src="' +
@@ -994,11 +1128,7 @@
       '<p class="approx">' +
       escapeHtml(item.price || "") +
       "</p>" +
-      '<a class="btn btn-outline" href="' +
-      escapeAttr(item.url || "#") +
-      '" rel="noopener noreferrer" target="_blank">' +
-      escapeHtml(buyLabel) +
-      "</a>" +
+      (inquireBtn || "") +
       "</div></article>"
     );
   }
@@ -1120,7 +1250,7 @@
     var labels = labelsOf(content);
     var mark = logoChar(store);
     return (
-      "<body>\n" +
+      "<body" + (chatEnabled(content) ? ' class="has-tawk"' : "") + ">\n" +
       '  <a class="skip" href="#main">跳到主要內容</a>\n' +
       "  <header>\n" +
       '    <div class="wrap nav">\n' +
@@ -1192,11 +1322,6 @@
         join: "\n          "
       }) +
       "\n" +
-      '          <a class="btn btn-ghost" href="' +
-      escapeAttr(shopee) +
-      '" rel="noopener noreferrer" target="_blank">' +
-      escapeHtml(labels.heroShopee) +
-      "</a>\n" +
       '          <a class="btn btn-ghost" href="#new">' +
       escapeHtml(labels.heroNew) +
       "</a>\n" +
@@ -1308,11 +1433,6 @@
         join: "\n            "
       }) +
       "\n" +
-      '            <a class="btn btn-outline" href="' +
-      escapeAttr(shopee) +
-      '" rel="noopener noreferrer" target="_blank">' +
-      escapeHtml(labels.contactShopee) +
-      "</a>\n" +
       "          </div>\n" +
       "        </div>\n" +
       "        <div>\n" +
@@ -1352,12 +1472,13 @@
       "    </div>\n" +
       "  </footer>\n" +
       renderFloatContact(content) +
+      renderTawkScript(content) +
       (options && options.preview
         ? ""
         : "  <script src=\"" +
-          escapeAttr(url + "js/render.js") +
+          escapeAttr(withCacheBust(url + "js/render.js")) +
           '" defer></script>\n  <script src="' +
-          escapeAttr(url + "site.js") +
+          escapeAttr(withCacheBust(url + "site.js")) +
           '" defer></script>\n') +
       interactionScript() +
       "</body>\n" +
@@ -1432,7 +1553,7 @@
       escapeHtml(store.name || "") +
       "</title>\n" +
       '  <meta name="robots" content="noindex">\n' +
-      '  <link rel="stylesheet" href="styles.css">\n' +
+      '  <link rel="stylesheet" href="' + escapeAttr(withCacheBust("styles.css")) + '">\n' +
       '  <link rel="canonical" href="' +
       escapeAttr(url) +
       '">\n' +
@@ -1487,6 +1608,9 @@
     visibleChannels: visibleChannels,
     applyCategoryFilter: applyCategoryFilter,
     bindInteractions: bindInteractions,
+    chatOf: chatOf,
+    chatEnabled: chatEnabled,
+    openProductInquiry: openProductInquiry,
     siteUrl: siteUrl,
     todayStamp: todayStamp,
     renderJsonLd: renderJsonLd,

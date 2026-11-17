@@ -143,3 +143,15 @@ input:focus, textarea:focus, select:focus{outline:3px solid var(--blue-line);bor
 .logo-preview{width:40px;height:40px}
 .channel-card .grid{align-items:end}
 .toggle-row{display:flex;align-items:center;gap:.45rem;font-weight:700}
+
+.chat-inbox-bar{
+  display:flex;align-items:center;flex-wrap:wrap;gap:.65rem 1rem;
+  background:var(--blue-soft);border:1px solid var(--blue-line);
+  border-radius:16px;padding:.85rem 1rem;margin:0 0 1rem
+}
+.chat-inbox-btn{
+  background:var(--blue);color:#fff;border-color:var(--blue);
+  flex:none;white-space:nowrap;padding:.65rem 1.15rem;font-size:1rem
+}
+.chat-inbox-btn:hover{background:var(--blue-dark)}
+.chat-inbox-bar .hint{margin:0;font-weight:600}
