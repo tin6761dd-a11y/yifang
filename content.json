@@ -323,6 +323,45 @@
       ]
     },
     {
+      "id": "group-mwlxecb4",
+      "name": "非益芳二手封口機",
+      "category": "二手封口機",
+      "sealerType": "非益芳",
+      "price": "約 NT$6000",
+      "description": "非益芳中古封口機，是其他品牌封口機，便宜出清。90口徑，以現貨為主。只售台中。",
+      "notes": [],
+      "images": [
+        "images/group-mwlxecb4-mwlxg4uf-0.jpg"
+      ]
+    },
+    {
+      "id": "group-mwlxgeio",
+      "name": "非益芳二手封口機",
+      "category": "二手封口機",
+      "sealerType": "非益芳",
+      "price": "約 NT$7000",
+      "description": "非益芳中古封口機，是其他品牌封口機，便宜出清。90口徑，以現貨為主。只售台中。",
+      "notes": [],
+      "images": [
+        "images/group-mwlxgeio-mwlxhvmm-0.jpg",
+        "images/group-mwlxgeio-mwlxhvmz-1.jpg"
+      ]
+    },
+    {
+      "id": "group-mwlxi1rg",
+      "name": "非益芳二手封口機",
+      "category": "二手封口機",
+      "sealerType": "非益芳",
+      "price": "約 NT$11000",
+      "description": "非益芳中古封口機，是其他品牌封口機，便宜出清。94口徑（特殊帶撕角），以現貨為主。只售台中。",
+      "notes": [],
+      "images": [
+        "images/group-mwlxi1rg-mwlxiud4-1.jpg",
+        "images/group-mwlxi1rg-mwlxiu3y-0.jpg",
+        "images/group-mwlxi1rg-mwlxiudk-2.jpg"
+      ]
+    },
+    {
       "id": "et-58l-178",
       "name": "全自動 ET-58L 178口徑",
       "category": "二手封口機",
@@ -334,20 +373,6 @@
         "images/et-58l-178-1.jpg",
         "images/et-58l-178-2.jpg",
         "images/et-58l-178-3.jpg"
-      ]
-    },
-    {
-      "id": "non-yifang",
-      "name": "非益芳二手封口機",
-      "category": "二手封口機",
-      "sealerType": "非益芳",
-      "price": "約 NT$7,000–11,000",
-      "description": "非益芳中古封口機，是其他品牌封口機，便宜出清。口徑含 90口徑、94口徑（特殊帶撕角），以現貨為主。只售台中。",
-      "notes": [],
-      "images": [
-        "images/non-yifang-1.jpg",
-        "images/non-yifang-2.jpg",
-        "images/non-yifang-3.jpg"
       ]
     },
     {
