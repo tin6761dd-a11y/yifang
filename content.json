@@ -225,7 +225,7 @@
       "category": "二手封口機",
       "sealerType": "碼錶機械式",
       "price": "約 NT$10000",
-      "description": "益芳機械式中古機碼表白鐵款，95&90口徑。機況良好，整台已大整理過，功能正常。實際口徑依現場剩餘機種為主。",
+      "description": "益芳機械式碼表白鐵款，95&90口徑。機況良好，整台已大整理過，功能正常。實際口徑依現場剩餘機種為主。",
       "notes": [],
       "images": [
         "images/group-mwlpala1-mwlpvip0-0.jpg",
@@ -240,7 +240,7 @@
       "category": "二手封口機",
       "sealerType": "碼錶機械式",
       "price": "約 NT$10000",
-      "description": "益芳機械式中古機碼表白鐵款，95&90口徑。機況良好，整台已大整理過，功能正常。實際口徑依現場剩餘機種為主。",
+      "description": "益芳機械式碼表白鐵款，95&90口徑。機況良好，整台已大整理過，功能正常。實際口徑依現場剩餘機種為主。",
       "notes": [],
       "images": [
         "images/group-mwlq0sqf-mwlq2koe-0.jpg",
@@ -255,7 +255,7 @@
       "category": "二手封口機",
       "sealerType": "碼錶機械式",
       "price": "約 NT$10000",
-      "description": "益芳機械式中古機碼錶烤漆款，95&90口徑。機況良好，整台已大整理過，功能正常。實際口徑依現場剩餘機種為主。",
+      "description": "益芳機碼錶烤漆款，95&90口徑。機況良好，整台已大整理過，功能正常。實際口徑依現場剩餘機種為主。",
       "notes": [],
       "images": [
         "images/group-mwlqhskg-mwlqjj78-0.jpg",
@@ -265,17 +265,18 @@
       ]
     },
     {
-      "id": "microcomputer-70-tear",
-      "name": "微電腦封口機 7.0口徑 右下帶撕角",
+      "id": "chubby-105-113",
+      "name": "機械式LED胖胖杯中古機 105口徑",
       "category": "二手封口機",
-      "sealerType": "微電腦",
-      "price": "約 NT$15,000",
-      "description": "益芳微電腦中古機，7.0特殊口徑，右下帶撕角。機況良好，整台已大整理過，功能正常。實際口徑依現場剩餘機種為主。",
+      "sealerType": "機械式",
+      "price": "19000",
+      "description": "益芳機械式白鐵胖胖杯，105口徑可以使用套圈改為95口徑。機況良好，整台已大整理過，功能正常。",
       "notes": [],
       "images": [
-        "images/microcomputer-70-tear-1.jpg",
-        "images/microcomputer-70-tear-2.jpg",
-        "images/microcomputer-70-tear-3.jpg"
+        "images/chubby-105-113-mwlroe3j-0.jpg",
+        "images/chubby-105-113-mwlroe6p-1.jpg",
+        "images/chubby-105-113-mwlroen9-2.jpg",
+        "images/chubby-105-113-mwlroenp-3.jpg"
       ]
     },
     {
@@ -284,7 +285,7 @@
       "category": "二手封口機",
       "sealerType": "機械式",
       "price": "約 NT$15000",
-      "description": "益芳胖胖杯 機械式白鐵中古機，113口徑，113口徑可以使用套圈改為105口徑。機況良好，整台已大整理過，功能正常。",
+      "description": "益芳機械式白鐵胖胖杯，113口徑，113口徑可以使用套圈改為105口徑。機況良好，整台已大整理過，功能正常。",
       "notes": [],
       "images": [
         "images/group-mwlqrfyi-mwlr715n-0.jpg",
@@ -299,7 +300,7 @@
       "category": "二手封口機",
       "sealerType": "機械式",
       "price": "約 NT$15,000",
-      "description": "益芳機械式白鐵中古機，95口徑右下帶撕角。機況良好，整台已大整理過，功能正常。實際口徑依現場剩餘機種為主。",
+      "description": "益芳機械式碼表白鐵款，95口徑右下帶撕角。機況良好，整台已大整理過，功能正常。實際口徑依現場剩餘機種為主。",
       "notes": [],
       "images": [
         "images/mechanical-95-tear-1.jpg",
@@ -308,18 +309,17 @@
       ]
     },
     {
-      "id": "chubby-105-113",
-      "name": "機械式LED胖胖杯中古機 105口徑",
+      "id": "microcomputer-70-tear",
+      "name": "微電腦封口機 7.0口徑 右下帶撕角",
       "category": "二手封口機",
-      "sealerType": "機械式",
-      "price": "19000",
-      "description": "益芳胖胖杯 機械式白鐵中古機，105口徑可以使用套圈改為95口徑。機況良好，整台已大整理過，功能正常。",
+      "sealerType": "微電腦",
+      "price": "約 NT$15,000",
+      "description": "益芳微電腦碼表白鐵款，7.0特殊口徑，右下帶撕角。機況良好，整台已大整理過，功能正常。實際口徑依現場剩餘機種為主。",
       "notes": [],
       "images": [
-        "images/chubby-105-113-mwlroe3j-0.jpg",
-        "images/chubby-105-113-mwlroe6p-1.jpg",
-        "images/chubby-105-113-mwlroen9-2.jpg",
-        "images/chubby-105-113-mwlroenp-3.jpg"
+        "images/microcomputer-70-tear-1.jpg",
+        "images/microcomputer-70-tear-2.jpg",
+        "images/microcomputer-70-tear-3.jpg"
       ]
     },
     {
