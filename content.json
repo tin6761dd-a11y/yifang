@@ -84,9 +84,9 @@
   },
   "announcement": {
     "enabled": true,
-    "text": "付款方式：僅接受匯款與現金（付現）"
+    "text": "付款方式：僅接受匯款與現金"
   },
-  "paymentNote": "付款方式：僅接受匯款與現金（付現）",
+  "paymentNote": "付款方式：僅接受匯款與現金",
   "channels": [
     {
       "type": "phone",
