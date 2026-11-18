@@ -250,6 +250,21 @@
       ]
     },
     {
+      "id": "group-mwlqhskg",
+      "name": "機械式碼表中古機 95/90口徑",
+      "category": "二手封口機",
+      "sealerType": "碼錶機械式",
+      "price": "約 NT$10000",
+      "description": "益芳機械式中古機碼錶烤漆款，95&90口徑。機況良好，整台已大整理過，功能正常。實際口徑依現場剩餘機種為主。",
+      "notes": [],
+      "images": [
+        "images/group-mwlqhskg-mwlqjj78-0.jpg",
+        "images/group-mwlqhskg-mwlqjjnb-1.jpg",
+        "images/group-mwlqhskg-mwlqjkfx-2.jpg",
+        "images/group-mwlqhskg-mwlqjl88-3.jpg"
+      ]
+    },
+    {
       "id": "microcomputer-70-tear",
       "name": "微電腦封口機 7.0口徑 右下帶撕角",
       "category": "二手封口機",
@@ -265,7 +280,7 @@
     },
     {
       "id": "mechanical-95-tear",
-      "name": "機械式封口機 95口徑 右下帶撕角",
+      "name": "機械式碼表封口機 95口徑 右下帶撕角",
       "category": "二手封口機",
       "sealerType": "機械式",
       "price": "約 NT$15,000",
