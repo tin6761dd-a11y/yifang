@@ -159,7 +159,7 @@
   },
   "newSection": {
     "title": "全新封口機",
-    "lead": "以下為現貨全新封口機與展示機，價格與庫存請來電或加 LINE 確認。",
+    "lead": "以下為現貨全新封口機，價格與庫存請來電或加 LINE 確認。",
     "buyLabel": "到蝦皮購買",
     "callLabel": "電話詢問"
   },
@@ -176,16 +176,47 @@
   "groups": [
     {
       "id": "microcomputer-90-95",
-      "name": "微電腦封口機 90/95口徑",
+      "name": "微電腦封口機 95/90口徑",
       "category": "二手封口機",
       "sealerType": "微電腦",
       "price": "約 NT$9,000",
-      "description": "益芳微電腦中古機，含烤漆款與白鐵款，90口徑、95&90口徑。機況良好，整台已大整理過，功能正常。實際口徑依現場剩餘機種為主。",
+      "description": "益芳微電腦中古機烤漆款，95&90口徑。機況良好，整台已大整理過，功能正常。實際口徑依現場剩餘機種為主。",
       "notes": [],
       "images": [
         "images/microcomputer-90-95-1.jpg",
-        "images/microcomputer-90-95-2.jpg",
-        "images/microcomputer-90-95-3.jpg"
+        "images/microcomputer-90-95-mwlobyyy-0.jpg",
+        "images/microcomputer-90-95-mwlobz03-1.jpg",
+        "images/microcomputer-90-95-mwlobz0k-2.jpg"
+      ]
+    },
+    {
+      "id": "group-mwlo8gdi",
+      "name": "微電腦中古機 95/90口徑",
+      "category": "二手封口機",
+      "sealerType": "微電腦",
+      "price": "約 NT$9000",
+      "description": "益芳微電腦中古機白鐵款，95&90口徑。機況良好，整台已大整理過，功能正常。實際口徑依現場剩餘機種為主。",
+      "notes": [],
+      "images": [
+        "images/group-mwlo8gdi-mwlodrw9-0.jpg",
+        "images/group-mwlo8gdi-mwlodrwo-1.jpg",
+        "images/group-mwlo8gdi-mwlodrx8-2.jpg",
+        "images/group-mwlo8gdi-mwlodrxl-3.jpg"
+      ]
+    },
+    {
+      "id": "group-mwloedb7",
+      "name": "微電腦中古機 90口徑",
+      "category": "二手封口機",
+      "sealerType": "",
+      "price": "約 NT$9000",
+      "description": "益芳微電腦中古機烤漆款，90口徑。機況良好，整台已大整理過，功能正常。實際口徑依現場剩餘機種為主。",
+      "notes": [],
+      "images": [
+        "images/group-mwloedb7-mwloft11-0.jpg",
+        "images/group-mwloedb7-mwloftth-1.jpg",
+        "images/group-mwloedb7-mwlofum0-2.jpg",
+        "images/group-mwloedb7-mwlofved-3.jpg"
       ]
     },
     {
@@ -373,24 +404,6 @@
       "badge": "",
       "hidden": false,
       "image": "images/new/208947228.jpg"
-    },
-    {
-      "id": "new-55162349324",
-      "title": "【限量特賣】益芳封口機 ET-95SN 展示機 9.99成新 享保固一年",
-      "price": "NT$15,800",
-      "url": "https://shopee.tw/【限量特賣】益芳封口機-ET-95SN-展示機-9.99成新-享保固一年-i.10362769.55162349324",
-      "badge": "展示機 9.99成新．保固一年",
-      "hidden": false,
-      "image": "images/new/55162349324.jpg"
-    },
-    {
-      "id": "new-51212344335",
-      "title": "【限量特賣】益芳封口機 ET-899-1 展示機 9.99成新 享保固一年",
-      "price": "NT$17,500",
-      "url": "https://shopee.tw/【限量特賣】益芳封口機-ET-899-1-展示機-9.99成新-享保固一年-i.10362769.51212344335",
-      "badge": "展示機 9.99成新．保固一年",
-      "hidden": false,
-      "image": "images/new/51212344335.jpg"
     }
   ],
   "parts": [
