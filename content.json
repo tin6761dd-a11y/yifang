@@ -220,6 +220,36 @@
       ]
     },
     {
+      "id": "group-mwlpala1",
+      "name": "機械式碼表中古機 95/90口徑",
+      "category": "二手封口機",
+      "sealerType": "碼錶機械式",
+      "price": "約 NT$10000",
+      "description": "益芳機械式中古機碼表白鐵款，95&90口徑。機況良好，整台已大整理過，功能正常。實際口徑依現場剩餘機種為主。",
+      "notes": [],
+      "images": [
+        "images/group-mwlpala1-mwlpvip0-0.jpg",
+        "images/group-mwlpala1-mwlpvipg-1.jpg",
+        "images/group-mwlpala1-mwlpviq5-2.jpg",
+        "images/group-mwlpala1-mwlpviqi-3.jpg"
+      ]
+    },
+    {
+      "id": "group-mwlq0sqf",
+      "name": "機械式碼表中古機 95/90口徑",
+      "category": "二手封口機",
+      "sealerType": "碼錶機械式",
+      "price": "約 NT$10000",
+      "description": "益芳機械式中古機碼表白鐵款，95&90口徑。機況良好，整台已大整理過，功能正常。實際口徑依現場剩餘機種為主。",
+      "notes": [],
+      "images": [
+        "images/group-mwlq0sqf-mwlq2koe-0.jpg",
+        "images/group-mwlq0sqf-mwlq2lu4-2.jpg",
+        "images/group-mwlq0sqf-mwlq2lgv-1.jpg",
+        "images/group-mwlq0sqf-mwlq2luu-3.jpg"
+      ]
+    },
+    {
       "id": "microcomputer-70-tear",
       "name": "微電腦封口機 7.0口徑 右下帶撕角",
       "category": "二手封口機",
@@ -231,20 +261,6 @@
         "images/microcomputer-70-tear-1.jpg",
         "images/microcomputer-70-tear-2.jpg",
         "images/microcomputer-70-tear-3.jpg"
-      ]
-    },
-    {
-      "id": "timer-mechanical-90-95",
-      "name": "碼錶機械式封口機 90/95口徑",
-      "category": "二手封口機",
-      "sealerType": "碼錶機械式",
-      "price": "約 NT$10,000",
-      "description": "益芳機械式中古機，含碼錶烤漆款與碼表白鐵款，95&90口徑。機況良好，整台已大整理過，功能正常。實際口徑依現場剩餘機種為主。",
-      "notes": [],
-      "images": [
-        "images/timer-mechanical-90-95-1.jpg",
-        "images/timer-mechanical-90-95-2.jpg",
-        "images/timer-mechanical-90-95-3.jpg"
       ]
     },
     {
@@ -329,21 +345,6 @@
         "images/powder-dispenser-1.jpg",
         "images/powder-dispenser-2.jpg",
         "images/powder-dispenser-3.jpg"
-      ]
-    },
-    {
-      "id": "group-mwlpala1",
-      "name": "機械式碼表中古機 95/90口徑",
-      "category": "二手封口機",
-      "sealerType": "碼錶機械式",
-      "price": "約 NT$10000",
-      "description": "益芳機械式中古機碼表白鐵款，95&90口徑。機況良好，整台已大整理過，功能正常。實際口徑依現場剩餘機種為主。",
-      "notes": [],
-      "images": [
-        "images/group-mwlpala1-mwlpvip0-0.jpg",
-        "images/group-mwlpala1-mwlpvipg-1.jpg",
-        "images/group-mwlpala1-mwlpviq5-2.jpg",
-        "images/group-mwlpala1-mwlpviqi-3.jpg"
       ]
     }
   ],
