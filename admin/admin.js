@@ -56,13 +56,19 @@
     state.token = "";
   }
 
-  function apiErrorMessage(status, bodyText) {
+  function causeText(cause) {
+    if (!cause) return "";
+    if (cause.message) return String(cause.message);
+    return String(cause);
+  }
+
+  function apiErrorMessage(status, bodyText, cause) {
     var msg = "";
     try {
       var parsed = JSON.parse(bodyText);
       msg = parsed.message || "";
     } catch (err) {}
-    if (status === 401) return "登入權杖無效或已過期，請重新登入並建立新的權杖。";
+    if (status === 401) return "金鑰已過期或無效。請重新登入並建立新的權杖。";
     if (status === 403) return "沒有權限寫入這個網站。請確認權杖只選了 yifang，並且 Contents 是 Read and write（讀寫）。";
     if (status === 404) return "找不到官網資料。請確認權杖有選擇 yifang 這個專案，而且是用 tin6761dd-a11y 帳號建立的。";
     if (status === 409 || status === 422) {
@@ -71,18 +77,28 @@
       }
       return "儲存失敗：資料衝突或權限不足。請重新載入後再試一次。" + (msg ? "（" + msg + "）" : "");
     }
-    if (!status) return "網路連線失敗，請檢查網路後再試一次。";
+    if (!status) {
+      var reason = causeText(cause);
+      var corsOrNetwork = /failed to fetch|networkerror|load failed|cors/i.test(reason) ||
+        (cause && cause.name === "TypeError");
+      if (corsOrNetwork) {
+        return "無法連線到 GitHub。這通常是網路中斷，或瀏覽器跨域（CORS）請求被拒絕。請檢查網路後重新整理再試。" +
+          (reason ? "（" + reason + "）" : "");
+      }
+      return "網路連線失敗，請檢查網路後再試一次。" + (reason ? "（" + reason + "）" : "");
+    }
     return "發生錯誤（" + status + "）" + (msg ? "：" + msg : "，請稍後再試。");
   }
 
   async function gh(path, options) {
     options = options || {};
+    // Only send headers GitHub's CORS allow list accepts (Authorization, Accept,
+    // Content-Type, If-None-Match, X-GitHub-Api-Version). Cache-Control / Pragma
+    // trigger a preflight that GitHub rejects, which surfaces as 網路連線失敗.
     var headers = {
       Accept: "application/vnd.github+json",
       Authorization: "Bearer " + state.token,
-      "X-GitHub-Api-Version": CONFIG.apiVersion,
-      "Cache-Control": "no-cache, no-store",
-      Pragma: "no-cache"
+      "X-GitHub-Api-Version": CONFIG.apiVersion
     };
     if (options.body && typeof options.body !== "string") {
       headers["Content-Type"] = "application/json";
@@ -105,7 +121,7 @@
           : undefined
       });
     } catch (err) {
-      var error = new Error(apiErrorMessage(0, ""));
+      var error = new Error(apiErrorMessage(0, "", err));
       error.cause = err;
       throw error;
     }
