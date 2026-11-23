@@ -89,6 +89,8 @@ input:focus, textarea:focus, select:focus{outline:3px solid var(--blue-line);bor
 .banner{border-radius:12px;padding:.8rem 1rem;margin:0 0 1rem}
 .banner.error{background:var(--err-bg);border:1px solid #fecaca;color:var(--err)}
 .banner.ok{background:var(--ok-bg);border:1px solid #99f6e4;color:var(--ok)}
+.banner.status{background:#eff6ff;border:1px solid #bfdbfe;color:#1e40af}
+.card.just-moved{outline:2px solid #1d4ed8;box-shadow:0 0 0 4px rgba(29,78,216,.15)}
 .jump{display:flex;flex-wrap:wrap;gap:.45rem;margin:0 0 1rem}
 .jump a{
   background:#fff;border:1px solid var(--blue-line);color:var(--blue-ink);

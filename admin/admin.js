@@ -80,7 +80,9 @@
     var headers = {
       Accept: "application/vnd.github+json",
       Authorization: "Bearer " + state.token,
-      "X-GitHub-Api-Version": CONFIG.apiVersion
+      "X-GitHub-Api-Version": CONFIG.apiVersion,
+      "Cache-Control": "no-cache, no-store",
+      Pragma: "no-cache"
     };
     if (options.body && typeof options.body !== "string") {
       headers["Content-Type"] = "application/json";
@@ -145,49 +147,84 @@
     return new TextDecoder("utf-8").decode(bytes);
   }
 
-  async function commitFiles(files, deletes, message, expectedCommitSha) {
-    var owner = CONFIG.owner;
-    var repo = CONFIG.repo;
-    var branch = CONFIG.branch;
-    var refPath = "/repos/" + owner + "/" + repo + "/git/refs/heads/" + branch;
-    var ref = await gh(refPath);
-    var latestSha = ref.object && ref.object.sha;
-    if (expectedCommitSha && latestSha && expectedCommitSha !== latestSha) {
-      var conflict = new Error(
-        "儲存失敗：官網資料在您編輯時已被更新。請重新載入頁面後再試一次，以免覆蓋別人的修改。"
-      );
-      conflict.status = 409;
-      throw conflict;
-    }
-    var commit = await gh("/repos/" + owner + "/" + repo + "/git/commits/" + latestSha);
-    var baseTreeSha = commit.tree.sha;
+  function repoPath(suffix) {
+    return "/repos/" + CONFIG.owner + "/" + CONFIG.repo + suffix;
+  }
 
-    var tree = [];
-    for (var i = 0; i < files.length; i++) {
+  async function latestBranchSha() {
+    var ref = await gh(repoPath("/git/refs/heads/" + CONFIG.branch));
+    if (!ref || !ref.object || !ref.object.sha) {
+      throw new Error("無法取得目前官網版本，請稍後再試。");
+    }
+    return ref.object.sha;
+  }
+
+  async function loadTextAtCommit(path, commitSha) {
+    var commit = await gh(repoPath("/git/commits/" + commitSha));
+    var tree = await gh(repoPath("/git/trees/" + commit.tree.sha + "?recursive=1"));
+    var entry = (tree.tree || []).filter(function (item) {
+      return item && item.path === path;
+    })[0];
+    if (!entry || !entry.sha) {
+      throw new Error("找不到 " + path + "，請稍後再試。");
+    }
+    var blob = await gh(repoPath("/git/blobs/" + entry.sha));
+    var raw = blob && blob.content ? String(blob.content).replace(/\s/g, "") : "";
+    return decodeBase64Utf8(raw);
+  }
+
+  async function commitFiles(files, deletes, message) {
+    var prepared = [];
+    var i;
+    for (i = 0; i < files.length; i++) {
       var file = files[i];
-      var blob = await gh("/repos/" + owner + "/" + repo + "/git/blobs", {
+      var blob = await gh(repoPath("/git/blobs"), {
         method: "POST",
         body: { content: file.contentBase64, encoding: "base64" }
       });
-      tree.push({ path: file.path, mode: "100644", type: "blob", sha: blob.sha });
+      prepared.push({ path: file.path, mode: "100644", type: "blob", sha: blob.sha });
     }
     (deletes || []).forEach(function (path) {
-      tree.push({ path: path, mode: "100644", type: "blob", sha: null });
+      prepared.push({ path: path, mode: "100644", type: "blob", sha: null });
     });
 
-    var newTree = await gh("/repos/" + owner + "/" + repo + "/git/trees", {
-      method: "POST",
-      body: { base_tree: baseTreeSha, tree: tree }
-    });
-    var newCommit = await gh("/repos/" + owner + "/" + repo + "/git/commits", {
-      method: "POST",
-      body: { message: message, tree: newTree.sha, parents: [latestSha] }
-    });
-    await gh(refPath, {
-      method: "PATCH",
-      body: { sha: newCommit.sha, force: false }
-    });
-    return newCommit.sha;
+    var refPath = repoPath("/git/refs/heads/" + CONFIG.branch);
+    var attempt = 0;
+    var maxAttempts = 3;
+    var lastError;
+    while (attempt < maxAttempts) {
+      attempt += 1;
+      try {
+        var latestSha = await latestBranchSha();
+        var commit = await gh(repoPath("/git/commits/" + latestSha));
+        var newTree = await gh(repoPath("/git/trees"), {
+          method: "POST",
+          body: { base_tree: commit.tree.sha, tree: prepared }
+        });
+        var newCommit = await gh(repoPath("/git/commits"), {
+          method: "POST",
+          body: { message: message, tree: newTree.sha, parents: [latestSha] }
+        });
+        await gh(refPath, {
+          method: "PATCH",
+          body: { sha: newCommit.sha, force: false }
+        });
+        return newCommit.sha;
+      } catch (err) {
+        lastError = err;
+        var retryable = err && (err.status === 409 || err.status === 422);
+        if (!retryable || attempt >= maxAttempts) throw err;
+        if (els.loadStatus) {
+          els.loadStatus.textContent =
+            "遠端資料有更新，正在重新提交您的修改（第 " + attempt + " 次）…";
+        }
+        setBanner(
+          "status",
+          "遠端資料有更新，正在重新提交您的修改，不會丟掉這次填的內容…"
+        );
+      }
+    }
+    throw lastError;
   }
 
   function showLogin(errorText) {
@@ -209,10 +246,18 @@
   }
 
   function setBanner(kind, text) {
-    els.editorError.hidden = kind !== "error";
-    els.editorOk.hidden = kind !== "ok";
-    if (kind === "error") els.editorError.textContent = text || "";
-    if (kind === "ok") els.editorOk.textContent = text || "";
+    if (els.editorError) {
+      els.editorError.hidden = kind !== "error";
+      if (kind === "error") els.editorError.textContent = text || "";
+    }
+    if (els.editorOk) {
+      els.editorOk.hidden = kind !== "ok";
+      if (kind === "ok") els.editorOk.textContent = text || "";
+    }
+    if (els.editorStatus) {
+      els.editorStatus.hidden = kind !== "status";
+      els.editorStatus.textContent = kind === "status" ? text || "" : "";
+    }
   }
 
   function optionList(values, current, allowEmpty, allowCustom) {
@@ -228,6 +273,233 @@
       html += '<option value="__custom__"' + (!found && current ? " selected" : "") + ">其他（自行填寫）</option>";
     }
     return html;
+  }
+
+  var CLASSIFICATION_OPTIONS = [
+    { value: "new", kind: "new", label: "全新封口機" },
+    { value: "used:二手封口機", kind: "used", label: "中古機｜二手封口機" },
+    { value: "used:二手果糖機", kind: "used", label: "中古機｜二手果糖機" },
+    { value: "used:其他設備", kind: "used", label: "中古機｜其他設備" },
+    { value: "used:__custom__", kind: "used", label: "中古機｜其他（自行填寫）" },
+    { value: "parts:封口機零件", kind: "parts", label: "零件｜封口機零件" },
+    { value: "parts:果糖機零件", kind: "parts", label: "零件｜果糖機零件" },
+    { value: "parts:__custom__", kind: "parts", label: "零件｜其他（自行填寫）" }
+  ];
+
+  function parseClassification(value) {
+    value = String(value || "");
+    if (!value || value === "new") return { kind: "new", category: "" };
+    var idx = value.indexOf(":");
+    if (idx === -1) return { kind: value, category: "" };
+    return { kind: value.slice(0, idx), category: value.slice(idx + 1) };
+  }
+
+  function classificationValue(kind, category) {
+    if (kind === "new") return "new";
+    var presets = kind === "used" ? CATEGORIES : PART_CATEGORIES;
+    if (category && presets.indexOf(category) !== -1) return kind + ":" + category;
+    if (category) return kind + ":__custom__";
+    return kind === "used" ? "used:二手封口機" : "parts:封口機零件";
+  }
+
+  function isCustomClassification(kind, category) {
+    if (kind === "new") return false;
+    var presets = kind === "used" ? CATEGORIES : PART_CATEGORIES;
+    return !!(category && presets.indexOf(category) === -1);
+  }
+
+  function classificationLabel(value) {
+    var found = CLASSIFICATION_OPTIONS.filter(function (opt) {
+      return opt.value === value;
+    })[0];
+    return found ? found.label : value;
+  }
+
+  function classificationPickerHtml(kind, category) {
+    var current = classificationValue(kind, category);
+    var custom = kind !== "new" && (isCustomClassification(kind, category) || parseClassification(current).category === "__custom__");
+    var options = CLASSIFICATION_OPTIONS.map(function (opt) {
+      var sel = opt.value === current ? " selected" : "";
+      return (
+        '<option value="' +
+        YifangRender.escapeHtml(opt.value) +
+        '"' +
+        sel +
+        ">" +
+        YifangRender.escapeHtml(opt.label) +
+        "</option>"
+      );
+    }).join("");
+    return (
+      '<label>分類 <select data-field="classification">' +
+      options +
+      "</select></label>" +
+      '<label class="custom-cat"' +
+      (custom ? "" : " hidden") +
+      '>自訂分類 <input data-field="categoryCustom" type="text" value="' +
+      YifangRender.escapeHtml(isCustomClassification(kind, category) ? category : "") +
+      '"></label>'
+    );
+  }
+
+  function kindListKey(kind) {
+    if (kind === "new") return "newMachines";
+    if (kind === "used") return "groups";
+    return "parts";
+  }
+
+  function kindAttr(kind) {
+    if (kind === "new") return "data-new";
+    if (kind === "used") return "data-group";
+    return "data-part";
+  }
+
+  function firstImage(item) {
+    if (!item) return "";
+    if (item.image) return item.image;
+    if (item.images && item.images.length) return item.images[0];
+    return "";
+  }
+
+  function allImages(item) {
+    if (!item) return [];
+    if (item.images && item.images.length) return item.images.slice();
+    if (item.image) return [item.image];
+    return [];
+  }
+
+  function defaultCategory(kind) {
+    if (kind === "used") return "二手封口機";
+    if (kind === "parts") return "封口機零件";
+    return "";
+  }
+
+  function resolveCategory(kind, requested, item) {
+    if (kind === "new") return "";
+    if (requested && requested !== "__custom__") return requested;
+    if (requested === "__custom__") {
+      var current = item && item.category;
+      var presets = kind === "used" ? CATEGORIES : PART_CATEGORIES;
+      if (current && presets.indexOf(current) === -1) return current;
+      return "";
+    }
+    return (item && item.category) || defaultCategory(kind);
+  }
+
+  function convertItem(item, fromKind, toKind, category) {
+    item = item || {};
+    var title = item.title || item.name || "";
+    var price = item.price || "";
+    var images = allImages(item);
+    if (toKind === "new") {
+      return {
+        id: uniqueCatalogId("new-", state.content.newMachines || []),
+        title: title,
+        price: price,
+        url: item.url || "",
+        badge: item.badge || "",
+        hidden: !!item.hidden,
+        image: images[0] || "",
+        images: images
+      };
+    }
+    if (toKind === "used") {
+      return {
+        id: uniqueGroupId(title, state.content.groups || []),
+        name: title,
+        category: resolveCategory("used", category, item) || defaultCategory("used"),
+        sealerType: item.sealerType || "微電腦",
+        price: price,
+        description: item.description || "",
+        notes: Array.isArray(item.notes) ? item.notes.slice() : [],
+        images: images
+      };
+    }
+    return {
+      id: uniqueCatalogId("part-", state.content.parts || []),
+      title: title,
+      price: price,
+      url: item.url || "",
+      category: resolveCategory("parts", category, item) || defaultCategory("parts"),
+      hidden: !!item.hidden,
+      image: images[0] || "",
+      images: images
+    };
+  }
+
+  function readCategoryFromCard(card, kind, existing) {
+    existing = existing || {};
+    var sel = card.querySelector('[data-field="classification"]') || card.querySelector('[data-field="category"]');
+    if (!sel) return existing.category || "";
+    if (sel.getAttribute("data-field") === "classification") {
+      var parsed = parseClassification(sel.value);
+      if (parsed.kind !== kind) return existing.category || "";
+      if (parsed.category === "__custom__") {
+        var custom = card.querySelector('[data-field="categoryCustom"]');
+        return ((custom && custom.value) || existing.category || "").trim();
+      }
+      return parsed.category;
+    }
+    if (sel.value === "__custom__") {
+      var customLegacy = card.querySelector('[data-field="categoryCustom"]');
+      return ((customLegacy && customLegacy.value) || existing.category || "").trim();
+    }
+    return sel.value;
+  }
+
+  function focusMovedCard(kind) {
+    var attr = kindAttr(kind);
+    var list = kind === "used" ? els.groupsList : kind === "new" ? els.newList : els.partsList;
+    if (!list) return;
+    var cards = list.querySelectorAll("[" + attr + "]");
+    var last = cards[cards.length - 1];
+    if (!last) return;
+    last.scrollIntoView({ behavior: "smooth", block: "start" });
+    last.classList.add("just-moved");
+    setTimeout(function () {
+      last.classList.remove("just-moved");
+    }, 2500);
+  }
+
+  function applyClassificationChange(kind, index, newValue) {
+    var parsed = parseClassification(newValue);
+    if (parsed.kind === kind) return false;
+    syncFormsToState();
+    var sourceKey = kindListKey(kind);
+    var destKey = kindListKey(parsed.kind);
+    var list = state.content[sourceKey] || [];
+    var item = list[index];
+    if (!item) return false;
+    var converted = convertItem(item, kind, parsed.kind, parsed.category);
+    list.splice(index, 1);
+    state.content[sourceKey] = list;
+    state.content[destKey] = state.content[destKey] || [];
+    state.content[destKey].push(converted);
+    refreshLists();
+    focusMovedCard(parsed.kind);
+    var name = converted.title || converted.name || "這筆商品";
+    setBanner(
+      "ok",
+      "已將「" +
+        name +
+        "」改到「" +
+        classificationLabel(newValue) +
+        "」。請再按「儲存並發布」才會出現在官網。"
+    );
+    return true;
+  }
+
+  function onClassificationEvent(kind, event) {
+    var el = event.target;
+    if (!el || !el.matches || !el.matches('[data-field="classification"]')) return;
+    var card = el.closest("[" + kindAttr(kind) + "]");
+    if (!card) return;
+    var parsed = parseClassification(el.value);
+    var wrap = card.querySelector(".custom-cat");
+    if (wrap) wrap.hidden = parsed.kind === "new" || parsed.category !== "__custom__";
+    if (parsed.kind === kind) return;
+    var index = Number(card.getAttribute(kindAttr(kind)));
+    applyClassificationChange(kind, index, el.value);
   }
 
   function imageSrc(path) {
@@ -289,7 +561,6 @@
             );
           })
           .join("");
-        var customCat = g.category && CATEGORIES.indexOf(g.category) === -1;
         var customType = g.sealerType && SEALER_TYPES.indexOf(g.sealerType) === -1;
         return (
           '<article class="card" data-group="' +
@@ -306,14 +577,7 @@
           '<label>名稱 <input data-field="name" type="text" value="' +
           YifangRender.escapeHtml(g.name || "") +
           '"></label>' +
-          '<label>分類 <select data-field="category">' +
-          optionList(CATEGORIES, g.category, false, true) +
-          "</select></label>" +
-          '<label class="custom-cat"' +
-          (customCat ? "" : " hidden") +
-          '>自訂分類 <input data-field="categoryCustom" type="text" value="' +
-          YifangRender.escapeHtml(customCat ? g.category : "") +
-          '"></label>' +
+          classificationPickerHtml("used", g.category) +
           '<label>機型種類 <select data-field="sealerType">' +
           optionList(SEALER_TYPES, g.sealerType, true, true) +
           "</select></label>" +
@@ -379,6 +643,7 @@
           '<label>品名 <input data-field="title" type="text" value="' +
           YifangRender.escapeHtml(item.title || "") +
           '"></label>' +
+          classificationPickerHtml("new", "") +
           '<label>售價（例如 NT$17,800） <input data-field="price" type="text" value="' +
           YifangRender.escapeHtml(item.price || "") +
           '"></label>' +
@@ -402,7 +667,6 @@
     if (!els.partsList) return;
     els.partsList.innerHTML = items
       .map(function (item, i) {
-        var customCat = item.category && PART_CATEGORIES.indexOf(item.category) === -1;
         return (
           '<article class="card" data-part="' +
           i +
@@ -421,14 +685,7 @@
           '<label>售價（例如 NT$400） <input data-field="price" type="text" value="' +
           YifangRender.escapeHtml(item.price || "") +
           '"></label>' +
-          '<label>分類 <select data-field="category">' +
-          optionList(PART_CATEGORIES, item.category, false, true) +
-          "</select></label>" +
-          '<label class="custom-cat"' +
-          (customCat ? "" : " hidden") +
-          '>自訂分類 <input data-field="categoryCustom" type="text" value="' +
-          YifangRender.escapeHtml(customCat ? item.category : "") +
-          '"></label>' +
+          classificationPickerHtml("parts", item.category) +
           '<label class="check"><input data-field="hidden" type="checkbox"' +
           (item.hidden ? " checked" : "") +
           "> 隱藏，不在官網顯示</label>" +
@@ -779,11 +1036,7 @@
 
     var groups = Array.prototype.map.call(els.groupsList.querySelectorAll("[data-group]"), function (card, i) {
       var existing = (prev.groups || [])[Number(card.getAttribute("data-group"))] || (prev.groups || [])[i] || {};
-      var categorySel = card.querySelector('[data-field="category"]').value;
-      var category =
-        categorySel === "__custom__"
-          ? card.querySelector('[data-field="categoryCustom"]').value.trim()
-          : categorySel;
+      var category = readCategoryFromCard(card, "used", existing);
       var typeSel = card.querySelector('[data-field="sealerType"]').value;
       var sealerType =
         typeSel === "__custom__"
@@ -851,7 +1104,7 @@
 
     var newMachines = Array.prototype.map.call(els.newList.querySelectorAll("[data-new]"), function (card, i) {
       var existing = (prev.newMachines || [])[Number(card.getAttribute("data-new"))] || (prev.newMachines || [])[i] || {};
-      return {
+      var collectedNew = {
         id: existing.id,
         title: card.querySelector('[data-field="title"]').value.trim(),
         price: card.querySelector('[data-field="price"]').value.trim(),
@@ -860,24 +1113,23 @@
         hidden: card.querySelector('[data-field="hidden"]').checked,
         image: existing.image || ""
       };
+      if (existing.images && existing.images.length) collectedNew.images = existing.images.slice();
+      return collectedNew;
     });
 
     var parts = Array.prototype.map.call(els.partsList.querySelectorAll("[data-part]"), function (card, i) {
       var existing = (prev.parts || [])[Number(card.getAttribute("data-part"))] || (prev.parts || [])[i] || {};
-      var categorySel = card.querySelector('[data-field="category"]').value;
-      var category =
-        categorySel === "__custom__"
-          ? card.querySelector('[data-field="categoryCustom"]').value.trim()
-          : categorySel;
-      return {
+      var collectedPart = {
         id: existing.id,
         title: card.querySelector('[data-field="title"]').value.trim(),
         price: card.querySelector('[data-field="price"]').value.trim(),
         url: existing.url || "",
-        category: category,
+        category: readCategoryFromCard(card, "parts", existing),
         hidden: card.querySelector('[data-field="hidden"]').checked,
         image: existing.image || ""
       };
+      if (existing.images && existing.images.length) collectedPart.images = existing.images.slice();
+      return collectedPart;
     });
 
     var announcement = Object.assign({}, prev.announcement);
@@ -1032,12 +1284,13 @@
     if ((groups || []).some(function (g) {
       return (g.images || []).indexOf(path) !== -1;
     })) return true;
-    if ((content.newMachines || []).some(function (item) {
-      return item && item.image === path;
-    })) return true;
-    if ((content.parts || []).some(function (item) {
-      return item && item.image === path;
-    })) return true;
+    function itemUsesPath(item) {
+      if (!item) return false;
+      if (item.image === path) return true;
+      return (item.images || []).indexOf(path) !== -1;
+    }
+    if ((content.newMachines || []).some(itemUsesPath)) return true;
+    if ((content.parts || []).some(itemUsesPath)) return true;
     return false;
   }
 
@@ -1075,20 +1328,9 @@
     els.loadStatus.textContent = "正在載入官網內容…";
     setBanner("", "");
     try {
-      var ref = await gh("/repos/" + CONFIG.owner + "/" + CONFIG.repo + "/git/refs/heads/" + CONFIG.branch);
-      state.loadedCommitSha = ref.object.sha;
-      var file = await gh(
-        "/repos/" +
-          CONFIG.owner +
-          "/" +
-          CONFIG.repo +
-          "/contents/" +
-          CONFIG.contentPath +
-          "?ref=" +
-          encodeURIComponent(CONFIG.branch)
-      );
-      // Do not put the token in this request URL (only the branch name).
-      var jsonText = decodeBase64Utf8(file.content);
+      state.loadedCommitSha = await latestBranchSha();
+      // Load the blob at this exact commit so the editor never gets a cached/stale content.json.
+      var jsonText = await loadTextAtCommit(CONFIG.contentPath, state.loadedCommitSha);
       state.content = JSON.parse(jsonText);
       if (!Array.isArray(state.content.groups)) state.content.groups = [];
       if (!Array.isArray(state.content.faq)) state.content.faq = [];
@@ -1209,9 +1451,14 @@
     state.content.store.phone = filledPhones[0].number;
 
     state.saving = true;
-    els.saveBtn.disabled = true;
-    els.saveBtn.textContent = "正在儲存…";
-    setBanner("", "");
+    if (els.saveBtn) {
+      els.saveBtn.disabled = true;
+      els.saveBtn.setAttribute("aria-busy", "true");
+      els.saveBtn.textContent = "正在儲存…";
+    }
+    if (els.previewBtn) els.previewBtn.disabled = true;
+    if (els.loadStatus) els.loadStatus.textContent = "正在儲存到 GitHub，請稍候，不要關閉頁面…";
+    setBanner("status", "正在儲存到 GitHub，請稍候…");
     try {
       var files = [
         {
@@ -1252,7 +1499,7 @@
       var deletes = state.pendingDeletes.filter(function (path) {
         return !pathStillUsed(path, state.content);
       });
-      var sha = await commitFiles(files, deletes, "更新官網內容", state.loadedCommitSha);
+      var sha = await commitFiles(files, deletes, "更新官網內容");
       state.loadedCommitSha = sha;
       Object.keys(state.pendingBlobs).forEach(function (path) {
         try {
@@ -1261,14 +1508,21 @@
       });
       state.pendingBlobs = Object.create(null);
       state.pendingDeletes = [];
-      setBanner("ok", "已儲存，約 1–2 分鐘後官網更新");
-      els.loadStatus.textContent = "已儲存，約 1–2 分鐘後官網更新";
+      var okMsg =
+        "已儲存到 GitHub。GitHub Pages 通常要 1–2 分鐘（有時更久）才會更新官網，請稍候再重新整理查看，不必再按一次儲存。";
+      setBanner("ok", okMsg);
+      if (els.loadStatus) els.loadStatus.textContent = okMsg;
     } catch (err) {
       setBanner("error", err.message || "儲存失敗，請稍後再試。");
+      if (els.loadStatus) els.loadStatus.textContent = "儲存失敗，請看上方說明後再試。";
     } finally {
       state.saving = false;
-      els.saveBtn.disabled = false;
-      els.saveBtn.textContent = "儲存並發布";
+      if (els.saveBtn) {
+        els.saveBtn.disabled = false;
+        els.saveBtn.removeAttribute("aria-busy");
+        els.saveBtn.textContent = "儲存並發布";
+      }
+      if (els.previewBtn) els.previewBtn.disabled = false;
     }
   }
 
@@ -1332,10 +1586,7 @@
 
   function onGroupsChange(event) {
     var select = event.target;
-    if (select.matches('[data-field="category"]')) {
-      var wrap = select.closest("article").querySelector(".custom-cat");
-      if (wrap) wrap.hidden = select.value !== "__custom__";
-    }
+    onClassificationEvent("used", event);
     if (select.matches('[data-field="sealerType"]')) {
       var wrap2 = select.closest("article").querySelector(".custom-type");
       if (wrap2) wrap2.hidden = select.value !== "__custom__";
@@ -1476,10 +1727,7 @@
 
   function onCatalogChange(kind, event) {
     var el = event.target;
-    if (el.matches('[data-field="category"]')) {
-      var wrap = el.closest("article").querySelector(".custom-cat");
-      if (wrap) wrap.hidden = el.value !== "__custom__";
-    }
+    onClassificationEvent(kind === "newMachines" ? "new" : "parts", event);
     if (el.matches('[data-field="title"]')) {
       var title = el.closest("article").querySelector(".card-head .title");
       if (title) title.textContent = el.value.trim() || (kind === "parts" ? "未命名零件" : "未命名商品");
@@ -1518,6 +1766,8 @@
     els.saveBtn = $("save-btn");
     els.preview = $("preview-overlay");
     els.previewFrame = $("preview-frame");
+    els.previewBtn = $("preview-btn");
+    els.editorStatus = $("editor-status");
 
     els.loginForm.addEventListener("submit", handleLogin);
     $("show-token").addEventListener("change", function () {
@@ -1598,7 +1848,10 @@
     });
     els.newList.addEventListener("click", function (e) { onCatalogClick("newMachines", "data-new", e); });
     els.newList.addEventListener("input", function (e) { onCatalogChange("newMachines", e); });
-    els.newList.addEventListener("change", function (e) { onCatalogFile("newMachines", "data-new", "images/new/", 800, e); });
+    els.newList.addEventListener("change", function (e) {
+      onCatalogChange("newMachines", e);
+      onCatalogFile("newMachines", "data-new", "images/new/", 800, e);
+    });
     els.partsList.addEventListener("click", function (e) { onCatalogClick("parts", "data-part", e); });
     els.partsList.addEventListener("change", function (e) {
       onCatalogChange("parts", e);
@@ -1637,6 +1890,10 @@
     collectContent: collectContent,
     fillAll: fillAll,
     syncFormsToState: syncFormsToState,
+    parseClassification: parseClassification,
+    classificationValue: classificationValue,
+    convertItem: convertItem,
+    applyClassificationChange: applyClassificationChange,
     generateLogoIcons: generateLogoIcons,
     normalizeLogoChar: normalizeLogoChar,
     getContent: function () {

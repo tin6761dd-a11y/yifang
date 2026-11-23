@@ -14,7 +14,7 @@
   <link rel="manifest" href="manifest.json">
   <link rel="apple-touch-icon" href="apple-touch-icon.png">
   <link rel="icon" href="apple-touch-icon.png" type="image/png">
-  <link rel="stylesheet" href="admin.css">
+  <link rel="stylesheet" href="admin.css?v=202611231900">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@800&display=swap" rel="stylesheet">
@@ -106,6 +106,7 @@
     </div>
 
     <p id="editor-error" class="banner error" hidden></p>
+    <p id="editor-status" class="banner status" hidden></p>
     <p id="editor-ok" class="banner ok" hidden></p>
 
     <nav class="jump" aria-label="編輯區塊">
@@ -115,7 +116,9 @@
       <a href="#sec-chat">線上客服</a>
       <a href="#sec-channels">客服諮詢</a>
       <a href="#sec-services">服務項目</a>
+      <a href="#sec-new">全新封口機</a>
       <a href="#sec-used">中古機</a>
+      <a href="#sec-parts">零件</a>
       <a href="#sec-faq">常見問題</a>
     </nav>
 
@@ -221,21 +224,21 @@
 
     <section id="sec-new" class="panel">
       <h2>全新封口機</h2>
-      <p class="hint">這裡的每一筆都是單一一台商品。展示機可在「標籤」填例如「展示機 9.99成新．保固一年」。勾選「隱藏」後就不會出現在官網。若已設定線上客服，商品卡會出現「詢問這個商品」按鈕。</p>
+      <p class="hint">這裡的每一筆都是單一一台商品。展示機可在「標籤」填例如「展示機 9.99成新．保固一年」。勾選「隱藏」後就不會出現在官網。若已設定線上客服，商品卡會出現「詢問這個商品」按鈕。可用「分類」把商品改放到中古機或零件專區。</p>
       <div id="new-list" class="stack"></div>
       <button type="button" class="btn btn-secondary" id="add-new">新增一台全新機</button>
     </section>
 
     <section id="sec-used" class="panel">
       <h2>中古機分組（封口機、果糖機等）</h2>
-      <p class="hint">機型一樣、售價差不多的可以放在同一組，只寫大概價格。機器賣掉了也不必立刻改網站。名稱請沿用「微電腦」「機械式」「碼錶機械式」等專有名詞，不要自行改寫。</p>
+      <p class="hint">機型一樣、售價差不多的可以放在同一組，只寫大概價格。機器賣掉了也不必立刻改網站。名稱請沿用「微電腦」「機械式」「碼錶機械式」等專有名詞，不要自行改寫。可用「分類」改子分類（官網篩選按鈕會跟著變），或把這一組改放到全新封口機、零件專區。</p>
       <div id="groups-list" class="stack"></div>
       <button type="button" class="btn btn-secondary" id="add-group">新增一組機型</button>
     </section>
 
     <section id="sec-parts" class="panel">
       <h2>零件專區</h2>
-      <p class="hint">零件可依「封口機零件」或「果糖機零件」分類，也能自己改分類名稱。勾選「隱藏」後就不會出現在官網。</p>
+      <p class="hint">零件可依「封口機零件」或「果糖機零件」分類，也能自己改分類名稱。勾選「隱藏」後就不會出現在官網。可用「分類」改子分類（官網篩選按鈕會跟著變），或把零件改放到全新封口機、中古機專區。</p>
       <div id="parts-list" class="stack"></div>
       <button type="button" class="btn btn-secondary" id="add-part">新增一個零件</button>
     </section>
@@ -267,7 +270,7 @@
     <iframe id="preview-frame" title="官網預覽"></iframe>
   </div>
 
-  <script src="../js/render.js"></script>
-  <script src="admin.js"></script>
+  <script src="../js/render.js?v=202611231900"></script>
+  <script src="admin.js?v=202611231900"></script>
 </body>
 </html>
