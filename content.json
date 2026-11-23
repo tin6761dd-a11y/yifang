@@ -362,6 +362,21 @@
       ]
     },
     {
+      "id": "group-mwso1v8c",
+      "name": "益芳中古16鍵果糖機",
+      "category": "二手果糖機",
+      "sealerType": "未分類",
+      "price": "NT$7000",
+      "description": "益芳二手16鍵果糖機，機況良好，整台已大整理過，功能正常，依現場剩餘機種為主。",
+      "notes": [],
+      "images": [
+        "images/group-mwso1v8c-mwsokwxx-0.jpg",
+        "images/group-mwso1v8c-mwsokwyi-1.jpg",
+        "images/group-mwso1v8c-mwsokwyy-2.jpg",
+        "images/group-mwso1v8c-mwsokwze-3.jpg"
+      ]
+    },
+    {
       "id": "et-58l-178",
       "name": "全自動 ET-58L 178口徑",
       "category": "二手封口機",
@@ -401,21 +416,6 @@
         "images/powder-dispenser-1.jpg",
         "images/powder-dispenser-2.jpg",
         "images/powder-dispenser-3.jpg"
-      ]
-    },
-    {
-      "id": "group-mwso1v8c",
-      "name": "益芳中古16鍵果糖機",
-      "category": "二手果糖機",
-      "sealerType": "未分類",
-      "price": "NT$7000",
-      "description": "益芳二手16鍵果糖機，機況良好，整台已大整理過，功能正常，依現場剩餘機種為主。",
-      "notes": [],
-      "images": [
-        "images/group-mwso1v8c-mwsokwxx-0.jpg",
-        "images/group-mwso1v8c-mwsokwyi-1.jpg",
-        "images/group-mwso1v8c-mwsokwyy-2.jpg",
-        "images/group-mwso1v8c-mwsokwze-3.jpg"
       ]
     }
   ],
