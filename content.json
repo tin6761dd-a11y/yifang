@@ -55,7 +55,7 @@
         "closes": "18:00"
       }
     ],
-    "shopeeUrl": "https://shopee.tw/tin6761",
+    "shopeeUrl": "",
     "shopeeRating": "5.0",
     "shopeeReviews": 1439,
     "years": 10,
@@ -71,9 +71,7 @@
     "contact": "聯絡我們",
     "faq": "常見問題",
     "support": "免費客服諮詢",
-    "heroShopee": "蝦皮賣場",
     "heroUsed": "中古機專區",
-    "contactShopee": "打開蝦皮賣場",
     "filterAll": "全部",
     "floatToggle": "免費客服諮詢",
     "new": "全新封口機",
@@ -152,21 +150,21 @@
   },
   "usedSection": {
     "title": "中古機專區",
-    "lead": "以下依機型整理參考售價，不逐台上架。價格僅由目前蝦皮賣場現貨計算，實際成交依機況與口徑而定。",
+    "lead": "以下依機型整理參考售價，不逐台上架。實際成交依機況與口徑而定。",
     "note": "價格為參考，依機況與口徑而定；二手機流動快，實際庫存請來電 客服 04-23398679、手機 0911-773723 或加 LINE 詢問；中古機僅售中彰投。",
-    "buyLabel": "到蝦皮購買",
+    "buyLabel": "",
     "callLabel": "電話詢問"
   },
   "newSection": {
     "title": "全新封口機",
     "lead": "以下為現貨全新封口機，價格與庫存請來電或加 LINE 確認。",
-    "buyLabel": "到蝦皮購買",
+    "buyLabel": "",
     "callLabel": "電話詢問"
   },
   "partsSection": {
     "title": "零件專區",
     "lead": "以下為現貨零件，可用分類或關鍵字尋找。售完商品不列出，價格與庫存請來電或加 LINE 確認。",
-    "buyLabel": "到蝦皮購買",
+    "buyLabel": "",
     "searchPlaceholder": "搜尋零件名稱"
   },
   "contact": {

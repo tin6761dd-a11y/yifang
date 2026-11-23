@@ -671,9 +671,6 @@
     $("store-slogan").value = store.slogan || "";
     $("store-address").value = store.address || "";
     $("store-hours").value = store.hours || "";
-    $("store-shopee").value = store.shopeeUrl || "";
-    $("store-rating").value = store.shopeeRating || "";
-    $("store-reviews").value = store.shopeeReviews == null ? "" : store.shopeeReviews;
     $("store-years").value = store.years == null ? "" : store.years;
     $("store-area").value = store.usedMachineArea || "";
     $("store-hero").value = store.heroText || "";
@@ -742,9 +739,9 @@
     delete store.phoneLink;
     store.address = $("store-address").value.trim();
     store.hours = $("store-hours").value.trim();
-    store.shopeeUrl = $("store-shopee").value.trim();
-    store.shopeeRating = $("store-rating").value.trim();
-    store.shopeeReviews = Number($("store-reviews").value || 0);
+    store.shopeeUrl = "";
+    delete store.shopeeRating;
+    delete store.shopeeReviews;
     store.years = Number($("store-years").value || 0);
     store.usedMachineArea = $("store-area").value.trim();
     store.heroText = $("store-hero").value.trim();

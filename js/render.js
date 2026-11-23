@@ -23,7 +23,7 @@
     return escapeHtml(value);
   }
 
-  var ASSET_VERSION = "202611172330";
+  var ASSET_VERSION = "202611231840";
 
   function withCacheBust(href) {
     href = String(href || "");
@@ -716,11 +716,9 @@
       contact: labels.contact || contact.title || "聯絡我們",
       faq: labels.faq || "常見問題",
       support: labels.support || "客服諮詢",
-      heroShopee: labels.heroShopee || "蝦皮賣場",
       heroUsed: labels.heroUsed || labels.used || used.title || "中古機專區",
       heroNew: labels.heroNew || labels.new || neu.title || "全新封口機",
       heroParts: labels.heroParts || labels.parts || partsSec.title || "零件專區",
-      contactShopee: labels.contactShopee || "打開蝦皮賣場",
       filterAll: labels.filterAll || "全部",
       floatToggle: labels.floatToggle || labels.support || "客服諮詢",
       partsSearch: labels.partsSearch || partsSec.searchPlaceholder || "搜尋零件名稱"
@@ -1118,7 +1116,6 @@
       openingHoursSpecification: hours,
       sameAs: (function () {
         var list = [];
-        if (store.shopeeUrl) list.push(store.shopeeUrl);
         visibleChannels(content).forEach(function (ch) {
           var href = channelHref(ch);
           if (href && /^https?:\/\//i.test(href) && list.indexOf(href) === -1) list.push(href);
@@ -1192,19 +1189,39 @@
       join: "\n      "
     });
     if (phones) html.push(phones);
-    visibleChannels(content).forEach(function (ch) {
-      if (String(ch.type || "").toLowerCase() !== "line") return;
-      html.push(
-        '<a class="' +
+    var lineBtns = renderLineButtons(content, className);
+    if (lineBtns) html.push(lineBtns);
+    return html.join("\n      ");
+  }
+
+  var DEFAULT_LINE_CHANNEL = {
+    type: "line",
+    label: "LINE ID：wf.827888",
+    value: "https://line.me/ti/p/~wf.827888"
+  };
+
+  function lineChannels(content) {
+    var list = visibleChannels(content).filter(function (ch) {
+      return String(ch.type || "").toLowerCase() === "line";
+    });
+    return list.length ? list : [DEFAULT_LINE_CHANNEL];
+  }
+
+  function renderLineButtons(content, className) {
+    className = className || "btn btn-outline";
+    return lineChannels(content)
+      .map(function (ch) {
+        return (
+          '<a class="' +
           escapeAttr(className) +
           ' channel-line" href="' +
           escapeAttr(channelHref(ch)) +
           '" rel="noopener noreferrer" target="_blank">' +
           escapeHtml(channelDisplay(ch)) +
           "</a>"
-      );
-    });
-    return html.join("\n      ");
+        );
+      })
+      .join("\n      ");
   }
 
   function renderHead(content, options) {
@@ -1311,10 +1328,9 @@
       id: id,
       image: images[0] ? absoluteAssetUrl(content, images[0], options) : ""
     });
-    var callButtons = renderPhoneButtons(store, {
+    var inquiry = renderInquiryButtons(content, {
       className: "btn btn-outline",
-      singlePrefix: callLabel,
-      join: "\n      "
+      callLabel: callLabel
     });
     return (
       '<article class="card machine filter-item" data-category="' +
@@ -1341,7 +1357,7 @@
       (notes ? "    " + notes + "\n" : "    \n") +
       '    <div class="actions">\n' +
       (inquireBtn ? "      " + inquireBtn + "\n" : "") +
-      (callButtons ? "      " + callButtons + "\n" : "") +
+      (inquiry ? "      " + inquiry + "\n" : "") +
       "    </div>\n" +
       "  </div>\n" +
       "</article>"
@@ -1536,6 +1552,7 @@
       id: id,
       image: item.image ? absoluteAssetUrl(content, item.image, options) : ""
     });
+    var lineBtn = renderLineButtons(content, "btn btn-outline");
     var search = (title + " " + (item.category || "")).toLowerCase();
     var thumb = img
       ? '<img src="' +
@@ -1563,7 +1580,9 @@
       '<p class="approx">' +
       escapeHtml(item.price || "") +
       "</p>" +
-      (inquireBtn || "") +
+      '<div class="actions">' +
+      ([inquireBtn, lineBtn].filter(Boolean).join("\n      ") || "") +
+      "</div>" +
       "</div></article>"
     );
   }
@@ -1669,18 +1688,10 @@
     var site = content.site || {};
     var contact = content.contact || {};
     var url = siteUrl(content);
-    var shopee = store.shopeeUrl || "#";
-    var reviews = formatInt(store.shopeeReviews || 0);
     var mapSrc =
       "https://www.google.com/maps?q=" +
       encodeURIComponent(store.address || "") +
       "&hl=zh-TW&output=embed";
-    var shopeeHost = "";
-    try {
-      shopeeHost = shopee.replace(/^https?:\/\//i, "").replace(/\/$/, "");
-    } catch (e) {
-      shopeeHost = shopee;
-    }
 
     var labels = labelsOf(content);
     var mark = logoChar(store);
@@ -1768,11 +1779,6 @@
       "</a>\n" +
       "        </div>\n" +
       '        <div class="meta-row">\n' +
-      "          <span>蝦皮評價 " +
-      escapeHtml(store.shopeeRating || "") +
-      " 星（" +
-      escapeHtml(reviews) +
-      " 則評價）</span>\n" +
       "          <span>經營 " +
       escapeHtml(store.years) +
       " 年</span>\n" +
@@ -1808,12 +1814,6 @@
       "            <dd>" +
       escapeHtml(store.hours || "") +
       "</dd>\n" +
-      "            <dt>蝦皮賣場</dt>\n" +
-      "            <dd><a href=\"" +
-      escapeAttr(shopee) +
-      '" rel="noopener noreferrer" target="_blank">' +
-      escapeHtml(shopeeHost) +
-      "</a></dd>\n" +
       "          </dl>\n" +
       "        </aside>\n" +
       "      </div>\n" +
@@ -1847,18 +1847,6 @@
       "            <dd>" +
       escapeHtml(store.hours || "") +
       "</dd>\n" +
-      "            <dt>蝦皮賣場</dt>\n" +
-      '            <dd><a href="' +
-      escapeAttr(shopee) +
-      '" rel="noopener noreferrer" target="_blank">' +
-      escapeHtml(shopee) +
-      "</a>（" +
-      escapeHtml(store.shopeeRating || "") +
-      " 星，" +
-      escapeHtml(reviews) +
-      " 則評價，經營 " +
-      escapeHtml(store.years) +
-      " 年）</dd>\n" +
       "          </dl>\n" +
       '          <div class="actions" style="margin-top:1.2rem">\n' +
       "            " +
