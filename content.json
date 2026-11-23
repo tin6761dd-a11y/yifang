@@ -365,7 +365,7 @@
       "id": "group-mwso1v8c",
       "name": "益芳中古16鍵果糖機",
       "category": "二手果糖機",
-      "sealerType": "未分類",
+      "sealerType": "",
       "price": "NT$7000",
       "description": "益芳二手16鍵果糖機，機況良好，整台已大整理過，功能正常，依現場剩餘機種為主。",
       "notes": [],
@@ -374,6 +374,62 @@
         "images/group-mwso1v8c-mwsokwyi-1.jpg",
         "images/group-mwso1v8c-mwsokwyy-2.jpg",
         "images/group-mwso1v8c-mwsokwze-3.jpg"
+      ]
+    },
+    {
+      "id": "group-mwsosxgw",
+      "name": "益芳中古24鍵果糖機",
+      "category": "二手果糖機",
+      "sealerType": "",
+      "price": "NT$8000",
+      "description": "益芳二手24鍵果糖機，機況良好，整台已大整理過，功能正常，依現場剩餘機種為主。",
+      "notes": [],
+      "images": [
+        "images/group-mwsosxgw-mwsowdpj-0.jpg",
+        "images/group-mwsosxgw-mwsowehy-1.jpg"
+      ]
+    },
+    {
+      "id": "group-mwsox2dn",
+      "name": "益芳中古24鍵果糖機",
+      "category": "二手果糖機",
+      "sealerType": "",
+      "price": "NT$9000",
+      "description": "益芳二手24鍵果糖機，機況良好，整台已大整理過，功能正常，依現場剩餘機種為主。",
+      "notes": [],
+      "images": [
+        "images/group-mwsox2dn-mwsoyqao-0.jpg",
+        "images/group-mwsox2dn-mwsoyqb6-1.jpg",
+        "images/group-mwsox2dn-mwsoyqbm-2.jpg"
+      ]
+    },
+    {
+      "id": "group-mwsozg45",
+      "name": "益芳中古24鍵YF-8E果糖機",
+      "category": "二手果糖機",
+      "sealerType": "",
+      "price": "NT$9000",
+      "description": "益芳二手24鍵果糖機，機況良好，整台已大整理過，功能正常，依現場剩餘機種為主。",
+      "notes": [],
+      "images": [
+        "images/group-mwsozg45-mwsp17oi-0.jpg",
+        "images/group-mwsozg45-mwsp17p7-1.jpg",
+        "images/group-mwsozg45-mwsp17pt-2.jpg",
+        "images/group-mwsozg45-mwsp17rd-3.jpg"
+      ]
+    },
+    {
+      "id": "powder-dispenser",
+      "name": "益芳中古粉末定量機",
+      "category": "其他設備",
+      "sealerType": "",
+      "price": "NT$10,000",
+      "description": "益芳中古粉末定量機，適用奶粉、奶精粉。機況良好，整台已大整理過，功能正常，依現場剩餘機種為主。",
+      "notes": [],
+      "images": [
+        "images/powder-dispenser-1.jpg",
+        "images/powder-dispenser-2.jpg",
+        "images/powder-dispenser-3.jpg"
       ]
     },
     {
@@ -388,34 +444,6 @@
         "images/et-58l-178-1.jpg",
         "images/et-58l-178-2.jpg",
         "images/et-58l-178-3.jpg"
-      ]
-    },
-    {
-      "id": "fructose-16-24",
-      "name": "二手果糖機 16/24鍵",
-      "category": "二手果糖機",
-      "sealerType": "",
-      "price": "約 NT$7,000–9,000",
-      "description": "益芳二手果糖機，含 16鍵、24鍵與 YF-8E 24鍵。機況良好，整台已大整理過，功能正常，依現場剩餘機種為主。下單前請先確認容器規格是否適用。",
-      "notes": [],
-      "images": [
-        "images/fructose-16-24-1.jpg",
-        "images/fructose-16-24-2.jpg",
-        "images/fructose-16-24-3.jpg"
-      ]
-    },
-    {
-      "id": "powder-dispenser",
-      "name": "中古粉末定量機",
-      "category": "其他設備",
-      "sealerType": "",
-      "price": "NT$10,000",
-      "description": "益芳中古粉末定量機，適用奶粉、奶精粉。機況良好，整台已大整理過，功能正常，依現場剩餘機種為主。",
-      "notes": [],
-      "images": [
-        "images/powder-dispenser-1.jpg",
-        "images/powder-dispenser-2.jpg",
-        "images/powder-dispenser-3.jpg"
       ]
     }
   ],
