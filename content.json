@@ -60,7 +60,9 @@
     "usedMachineNote": "價格為參考，依機況與口徑而定；二手機流動快，實際庫存請來電 客服 04-23398679、手機 0911-773723 或加 LINE 詢問；中古機僅售中彰投。",
     "usedMachineArea": "中古機僅售台中、彰化、南投",
     "footerNote": "台中合法專業「益芳封口機授權代理經銷商」",
-    "logoChar": "WF"
+    "logoChar": "WF",
+    "shopeeRating": "",
+    "shopeeReviews": 0
   },
   "labels": {
     "about": "關於我們",
@@ -213,21 +215,6 @@
         "images/group-mwloedb7-mwloftth-1.jpg",
         "images/group-mwloedb7-mwlofum0-2.jpg",
         "images/group-mwloedb7-mwlofved-3.jpg"
-      ]
-    },
-    {
-      "id": "group-mwlpala1",
-      "name": "機械式碼表中古機 95/90口徑",
-      "category": "二手封口機",
-      "sealerType": "碼錶機械式",
-      "price": "NT$10000",
-      "description": "益芳機械式碼表白鐵款，95&90口徑。機況良好，整台已大整理過，功能正常。實際口徑依現場剩餘機種為主。",
-      "notes": [],
-      "images": [
-        "images/group-mwlpala1-mwlpvip0-0.jpg",
-        "images/group-mwlpala1-mwlpvipg-1.jpg",
-        "images/group-mwlpala1-mwlpviq5-2.jpg",
-        "images/group-mwlpala1-mwlpviqi-3.jpg"
       ]
     },
     {
