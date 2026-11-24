@@ -15,8 +15,7 @@
       "name": "維修與大保養",
       "price_from": 800,
       "price_label": "NT$800 起",
-      "area": "限中彰投",
-      "shopee": "https://shopee.tw/tin6761"
+      "area": "限中彰投"
     },
     "address": "台中市霧峰區林森路827號",
     "telephone": "04-23398679",
@@ -38,15 +37,12 @@
       "Mo-Fr 09:00-12:00",
       "Mo-Fr 13:00-18:00"
     ],
-    "shopee": "https://shopee.tw/tin6761",
-    "shopee_rating": "5.0",
-    "shopee_reviews": 1439,
     "years": 10,
-    "used_machine_note": "價格為參考，依機況與口徑而定；二手機流動快，實際庫存請來電 客服 04-23398679、手機 0911-773723 或看蝦皮賣場；中古機僅售中彰投。",
+    "used_machine_note": "價格為參考，依機況與口徑而定；二手機流動快，實際庫存請來電或 LINE 詢問；中古機僅售中彰投。",
     "used_machine_area": "中古機僅售台中、彰化、南投"
   },
   "collected_at": "2026-11-17T00:50:00+08:00",
-  "source": "Shopee shop tin6761 (shopid 10362769), in-stock used machines collected from logged-in product pages / PDP API",
+  "source": "in-stock used machines collected from product records",
   "in_stock_item_count": 18,
   "groups": [
     {
@@ -76,24 +72,21 @@
           "title": "益芳二手封口機 微電腦中古機 95&90口徑 烤漆款",
           "price": 9000,
           "price_min": 9000,
-          "price_max": 9000,
-          "url": "https://shopee.tw/product/10362769/56121056767"
+          "price_max": 9000
         },
         {
           "item_id": 49621210554,
           "title": "益芳二手封口機 微電腦中古機 90口徑 烤漆款",
           "price": 9000,
           "price_min": 9000,
-          "price_max": 9000,
-          "url": "https://shopee.tw/product/10362769/49621210554"
+          "price_max": 9000
         },
         {
           "item_id": 42786571430,
           "title": "益芳二手封口機 微電腦中古機 95&90口徑 白鐵款",
           "price": 9000,
           "price_min": 9000,
-          "price_max": 9000,
-          "url": "https://shopee.tw/product/10362769/42786571430"
+          "price_max": 9000
         }
       ],
       "local_images": [
@@ -127,8 +120,7 @@
           "title": "益芳二手封口機 微電腦中古機 7.0口徑 右下帶撕角",
           "price": 15000,
           "price_min": 15000,
-          "price_max": 15000,
-          "url": "https://shopee.tw/product/10362769/54459208031"
+          "price_max": 15000
         }
       ],
       "local_images": [
@@ -164,24 +156,21 @@
           "title": "益芳二手封口機 機械式中古機  95&90口徑 碼錶烤漆款",
           "price": 10000,
           "price_min": 10000,
-          "price_max": 10000,
-          "url": "https://shopee.tw/product/10362769/50119465907"
+          "price_max": 10000
         },
         {
           "item_id": 28646157959,
           "title": "益芳二手封口機 機械式中古機  95&90口徑 碼表白鐵款",
           "price": 10000,
           "price_min": 10000,
-          "price_max": 10000,
-          "url": "https://shopee.tw/product/10362769/28646157959"
+          "price_max": 10000
         },
         {
           "item_id": 53120111667,
           "title": "益芳二手封口機 機械式中古機  95&90口徑 碼表白鐵款",
           "price": 10000,
           "price_min": 10000,
-          "price_max": 10000,
-          "url": "https://shopee.tw/product/10362769/53120111667"
+          "price_max": 10000
         }
       ],
       "local_images": [
@@ -215,8 +204,7 @@
           "title": "益芳二手封口機 機械式白鐵中古機 95口徑 右下帶撕角",
           "price": 15000,
           "price_min": 15000,
-          "price_max": 15000,
-          "url": "https://shopee.tw/product/10362769/54768214211"
+          "price_max": 15000
         }
       ],
       "local_images": [
@@ -252,16 +240,14 @@
           "title": "益芳胖胖杯 機械式中古機 ET-89M 105口徑",
           "price": 19000,
           "price_min": 19000,
-          "price_max": 19000,
-          "url": "https://shopee.tw/product/10362769/49467840147"
+          "price_max": 19000
         },
         {
           "item_id": 49321612723,
           "title": "益芳胖胖杯 機械式中古機 113口徑",
           "price": 15000,
           "price_min": 15000,
-          "price_max": 15000,
-          "url": "https://shopee.tw/product/10362769/49321612723"
+          "price_max": 15000
         }
       ],
       "local_images": [
@@ -295,8 +281,7 @@
           "title": "ET-58L全自動二手封口機 178(碗)口徑",
           "price": 45000,
           "price_min": 45000,
-          "price_max": 45000,
-          "url": "https://shopee.tw/product/10362769/42558568590"
+          "price_max": 45000
         }
       ],
       "local_images": [
@@ -331,8 +316,7 @@
           "title": "非益芳二手飲料封口機-便宜出清",
           "price": 7000,
           "price_min": 7000,
-          "price_max": 11000,
-          "url": "https://shopee.tw/product/10362769/23060999064"
+          "price_max": 11000
         }
       ],
       "local_images": [
@@ -350,7 +334,7 @@
       "item_ids": [
         "193696301"
       ],
-      "summary": "蝦皮標題為「益芳二手封口機 CP值超高飲料封口機」。商品說明寫「益芳微電腦封口機&機械式封口機」，並列 ET899、ET899-1、ET95S 等等的不同機型；實際價格與機器型號以現場庫存為主。",
+      "summary": "商品名稱為「益芳二手封口機 CP值超高飲料封口機」。商品說明寫「益芳微電腦封口機&機械式封口機」，並列 ET899、ET899-1、ET95S 等等的不同機型；實際價格與機器型號以現場庫存為主。",
       "notes": [
         "此檔同時提到微電腦封口機與機械式封口機，未單獨歸入三種機型之一，請來電確認實際機型。"
       ],
@@ -368,8 +352,7 @@
           "title": "益芳二手封口機 CP值超高飲料封口機",
           "price": 9000,
           "price_min": 9000,
-          "price_max": 9000,
-          "url": "https://shopee.tw/product/10362769/193696301"
+          "price_max": 9000
         }
       ],
       "local_images": [
@@ -409,32 +392,28 @@
           "title": "益芳二手16鍵果糖機",
           "price": 7000,
           "price_min": 7000,
-          "price_max": 7000,
-          "url": "https://shopee.tw/product/10362769/41574106028"
+          "price_max": 7000
         },
         {
           "item_id": 42834948782,
           "title": "益芳二手YF-8E 24鍵果糖機",
           "price": 9000,
           "price_min": 9000,
-          "price_max": 9000,
-          "url": "https://shopee.tw/product/10362769/42834948782"
+          "price_max": 9000
         },
         {
           "item_id": 50959222005,
           "title": "益芳二手24鍵果糖機",
           "price": 8000,
           "price_min": 8000,
-          "price_max": 8000,
-          "url": "https://shopee.tw/product/10362769/50959222005"
+          "price_max": 8000
         },
         {
           "item_id": 57309395477,
           "title": "益芳二手24鍵果糖機",
           "price": 9000,
           "price_min": 9000,
-          "price_max": 9000,
-          "url": "https://shopee.tw/product/10362769/57309395477"
+          "price_max": 9000
         }
       ],
       "local_images": [
@@ -468,8 +447,7 @@
           "title": "益芳中古粉末定量機 奶粉 奶精粉 定量機",
           "price": 10000,
           "price_min": 10000,
-          "price_max": 10000,
-          "url": "https://shopee.tw/product/10362769/55809296478"
+          "price_max": 10000
         }
       ],
       "local_images": [

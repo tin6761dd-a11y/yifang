@@ -23,7 +23,7 @@
     return escapeHtml(value);
   }
 
-  var ASSET_VERSION = "202611231900";
+  var ASSET_VERSION = "202611241730";
 
   function withCacheBust(href) {
     href = String(href || "");

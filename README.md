@@ -2,7 +2,7 @@
 
 官方網站（GitHub Pages）：https://tin6761dd-a11y.github.io/yifang/
 
-靜態網站，中古機以機型分組標示參考售價，實際庫存請來電或至 [蝦皮賣場](https://shopee.tw/tin6761) 確認。
+靜態網站，中古機以機型分組標示參考售價，實際庫存請來電或 LINE 詢問。
 
 官網內容寫在 `content.json`。後台按「儲存並發布」時，會一併產生靜態網頁、網站地圖並更新 GitHub Pages。
 

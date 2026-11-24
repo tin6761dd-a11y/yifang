@@ -412,7 +412,6 @@
         id: uniqueCatalogId("new-", state.content.newMachines || []),
         title: title,
         price: price,
-        url: item.url || "",
         badge: item.badge || "",
         hidden: !!item.hidden,
         image: images[0] || "",
@@ -435,7 +434,6 @@
       id: uniqueCatalogId("part-", state.content.parts || []),
       title: title,
       price: price,
-      url: item.url || "",
       category: resolveCategory("parts", category, item) || defaultCategory("parts"),
       hidden: !!item.hidden,
       image: images[0] || "",
@@ -1012,7 +1010,7 @@
     delete store.phoneLink;
     store.address = $("store-address").value.trim();
     store.hours = $("store-hours").value.trim();
-    store.shopeeUrl = "";
+    delete store.shopeeUrl;
     delete store.shopeeRating;
     delete store.shopeeReviews;
     store.years = Number($("store-years").value || 0);
@@ -1124,7 +1122,6 @@
         id: existing.id,
         title: card.querySelector('[data-field="title"]').value.trim(),
         price: card.querySelector('[data-field="price"]').value.trim(),
-        url: existing.url || "",
         badge: card.querySelector('[data-field="badge"]').value.trim(),
         hidden: card.querySelector('[data-field="hidden"]').checked,
         image: existing.image || ""
@@ -1139,7 +1136,6 @@
         id: existing.id,
         title: card.querySelector('[data-field="title"]').value.trim(),
         price: card.querySelector('[data-field="price"]').value.trim(),
-        url: existing.url || "",
         category: readCategoryFromCard(card, "parts", existing),
         hidden: card.querySelector('[data-field="hidden"]').checked,
         image: existing.image || ""
@@ -1167,6 +1163,9 @@
     chat.propertyId = $("chat-property-id").value.trim();
     chat.widgetId = $("chat-widget-id").value.trim();
     chat.label = $("chat-label").value.trim() || "💬 線上文字客服（免費）";
+
+    delete labels.heroShopee;
+    delete labels.contactShopee;
 
     return {
       site: site,
@@ -1835,7 +1834,6 @@
         id: uniqueCatalogId("new-", state.content.newMachines),
         title: "",
         price: "NT$",
-        url: "",
         badge: "",
         hidden: false,
         image: ""
@@ -1852,7 +1850,6 @@
         id: uniqueCatalogId("part-", state.content.parts),
         title: "",
         price: "NT$",
-        url: "",
         category: "封口機零件",
         hidden: false,
         image: ""
