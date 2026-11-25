@@ -215,6 +215,21 @@
       ]
     },
     {
+      "id": "group-mwvqs0y7",
+      "name": "微電腦中古機 95/90口徑",
+      "category": "二手封口機",
+      "sealerType": "微電腦",
+      "price": "NT$9000",
+      "description": "益芳微電腦中古機白鐵款，95&90口徑。機況良好，整台已大整理過，功能正常。實際口徑依現場剩餘機種為主。",
+      "notes": [],
+      "images": [
+        "images/group-mwvqs0y7-mwvqtvoo-0.jpg",
+        "images/group-mwvqs0y7-mwvqtvoz-1.jpg",
+        "images/group-mwvqs0y7-mwvqtvp8-2.jpg",
+        "images/group-mwvqs0y7-mwvqtvpi-3.jpg"
+      ]
+    },
+    {
       "id": "group-mwlq0sqf",
       "name": "機械式碼表中古機 95/90口徑",
       "category": "二手封口機",
@@ -272,21 +287,6 @@
         "images/group-mwlqrfyi-mwlr715y-1.jpg",
         "images/group-mwlqrfyi-mwlr7168-2.jpg",
         "images/group-mwlqrfyi-mwlr716v-3.jpg"
-      ]
-    },
-    {
-      "id": "group-mwvqs0y7",
-      "name": "微電腦中古機 95/90口徑",
-      "category": "二手封口機",
-      "sealerType": "微電腦",
-      "price": "NT$9000",
-      "description": "益芳微電腦中古機白鐵款，95&90口徑。機況良好，整台已大整理過，功能正常。實際口徑依現場剩餘機種為主。",
-      "notes": [],
-      "images": [
-        "images/group-mwvqs0y7-mwvqtvoo-0.jpg",
-        "images/group-mwvqs0y7-mwvqtvoz-1.jpg",
-        "images/group-mwvqs0y7-mwvqtvp8-2.jpg",
-        "images/group-mwvqs0y7-mwvqtvpi-3.jpg"
       ]
     },
     {
